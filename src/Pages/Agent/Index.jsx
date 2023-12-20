@@ -1,135 +1,105 @@
 import React from 'react'
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Sidebar'
 import { Link } from 'react-router-dom'
+
+
+function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+  
+  const rows = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+  ];
+
 export default function Index() {
+    
   return (
     <>
        <Header />
        <Sidebar />
-       <div class="main-content app-content">
-            <div class="container-fluid">
+       <div className="main-content app-content">
+            <div className="container-fluid">
 
       {/* <!-- PAGE-HEADER --> */}
-                <div class="page-header">
-                  <h1 class="page-title my-auto">Dashboard</h1>
+                <div className="page-header">
+                  <h1 className="page-title my-auto">Dashboard</h1>
                   <div>
-                    <ol class="breadcrumb mb-0">
-                      <li class="breadcrumb-item">
+                    <ol className="breadcrumb mb-0">
+                      <li className="breadcrumb-item">
                         <a href="javascript:void(0)">Home</a>
                       </li>
-                      <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                      <li className="breadcrumb-item active" aria-current="page">Dashboard</li>
                     </ol>
                   </div>
                 </div>
                 {/* <!-- PAGE-HEADER END --> */}
 
-                <div class="row">
-                    <div class="col-12 col-sm-12">
-                        <div class="card">
-                            <div class="card-header d-lg-flex">
-                                <h3 class="card-title mb-lg-0 mb-3">My Customer</h3>
-                                <div class="tabs-menu1 ms-auto border-0 p-0">
-                                    <ul class="nav panel-tabs product-sale">
-                                        <li><button type="button" class="btn" style={{ backgroundColor: '#6c757d' }}><Link to='/agentform' style={{ color: 'white'}}>+ Add New Customer</Link></button></li>
+                <div className="row">
+                    <div className="col-12 col-sm-12">
+                        <div className="card">
+                            <div className="card-header d-lg-flex">
+                                <h3 className="card-title mb-lg-0 mb-3">My Customer</h3>
+                                <div className="tabs-menu1 ms-auto border-0 p-0">
+                                    <ul className="nav panel-tabs product-sale">
+                                        <li><button type="button" className="btn" style={{ backgroundColor: '#6c757d' }}><Link to='/agentform' style={{ color: 'white'}}>+ Add New Customer</Link></button></li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="card-body product-table">
-                                <div class="tab-content">
-                                    <div class="tab-pane border-0 p-0 active" id="tab5">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered text-nowrap mb-0">
-                                                <thead class="border-top">
-                                                    <tr>
-                                                        <th scope="col" class="">Title</th>
-                                                        <th scope="col" class="">First Name</th>
-                                                        <th scope="col" class="">Last Name</th>
-                                                        <th scope="col" class="">Gender</th>
-                                                        <th scope="col" class="">DOB</th>
-                                                        <th scope="col" class="">Passport</th>
-                                                        <th scope="col" class="">Expriry</th>
-                                                        <th scope="col" class="">Update</th>
-                                                        <th scope="col" class="">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold">Mr</h6></td>
-                                                        <td>
-                                                            <div class="d-flex">
-                                                                
-                                                                <h6 class="ms-3 my-auto fs-14 fw-semibold">Jhon</h6>
-                                                            </div>
-                                                        </td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold">Taylor</h6></td>
-                                                        <td>Male</td>
-                                                        <td><span class="fw-semibold">30 Aug 2023</span></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> N2352642</h6></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> 25 Aug 2026</h6></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> 10 Aug 2023</h6></td>
-                                                        <td>
-                                                            <div class="g-2">
-                                                                <Link to='/agentedit' class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></Link>
-                                                                <Link to='' class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></Link>
-                                                                <Link to='/agentview' class="btn text-dark btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fa-solid fa-eye"></span></Link>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold">Mr</h6></td>
-                                                        <td>
-                                                            <div class="d-flex">
-                                                               
-                                                                <h6 class="ms-3 my-auto fs-14 fw-semibold">Jhon</h6>
-                                                            </div>
-                                                        </td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold">Taylor</h6></td>
-                                                        <td>Male</td>
-                                                        <td><span class="fw-semibold">30 Aug 2023</span></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> N2352642</h6></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> 25 Aug 2026</h6></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> 10 Aug 2023</h6></td>
-                                                        <td>
-                                                        <div class="g-2">
-                                                                <Link to='/agentedit' class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></Link>
-                                                                <Link to='' class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></Link>
-                                                                <Link to='/agentview' class="btn text-dark btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fa-solid fa-eye"></span></Link>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold">Mr</h6></td>
-                                                        <td>
-                                                            <div class="d-flex">
-                                                                <h6 class="ms-3 my-auto fs-14 fw-semibold">Jhon</h6>
-                                                            </div>
-                                                        </td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold">Taylor</h6></td>
-                                                        <td>Male</td>
-                                                        <td><span class="fw-semibold">30 Aug 2023</span></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> N2352642</h6></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> 25 Aug 2026</h6></td>
-                                                        <td><h6 class="mb-0 fs-14 fw-semibold"> 10 Aug 2023</h6></td>
-                                                        <td>
-                                                        <div class="g-2">
-                                                                <Link to='/agentedit' class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></Link>
-                                                                <Link to='' class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></Link>
-                                                                <Link to='/agentview' class="btn text-dark btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fa-solid fa-eye"></span></Link>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-sm-12 col-md-6 my-auto">
-                                        <span>Total Records: 1-1 of 1</span>
-                                    </div>
-                               
-                                </div>
+                            <div className="card-body product-table">
+                                <TableContainer component={Paper}>
+                                    <Table sx={{ minWidth: 650 }} aria-label="simple table" className="table-bordered">
+                                        <TableHead>
+                                        <TableRow>
+                                            <TableCell>Title (100g serving)</TableCell>
+                                            <TableCell align="right">First Name	</TableCell>
+                                            <TableCell align="right">Last Name	</TableCell>
+                                            <TableCell align="right">Gender</TableCell>
+                                            <TableCell align="right">DOB</TableCell>
+                                            <TableCell align="right">Passport</TableCell>
+                                            <TableCell align="right">Expriry</TableCell>
+                                            <TableCell align="right">Update</TableCell>
+                                            <TableCell align="right">Action</TableCell>
+                                        </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                        {rows.map((row) => (
+                                            <TableRow
+                                            key={row.name}>
+                                            <TableCell component="th" scope="row">
+                                                {row.name}
+                                            </TableCell>
+
+                                                <TableCell align="right"><Typography variant="span" className="mb-0 fs-14 fw-semibold"> {row.calories} </Typography></TableCell>
+                                                <TableCell align="right"><Typography variant="span" className="mb-0 fs-14 fw-semibold"> {row.fat} </Typography></TableCell>
+                                                <TableCell align="right"><Typography variant="span" className="mb-0 fs-14 fw-semibold"> {row.carbs} </Typography></TableCell>
+                                                <TableCell align="right"><Typography variant="span" className="mb-0 fs-14 fw-semibold"> {row.protein} </Typography></TableCell>
+                                                <TableCell align="right"><Typography variant="span" className="mb-0 fs-14 fw-semibold"> {row.protein} </Typography></TableCell>
+                                                <TableCell align="right"><Typography variant="span" className="mb-0 fs-14 fw-semibold"> {row.protein} </Typography></TableCell>
+                                                <TableCell align="right"><Typography variant="span" className="mb-0 fs-14 fw-semibold"> {row.protein} </Typography></TableCell>
+                                                <TableCell align="right">
+                                                    <Typography variant="span" className="mb-0 fs-14 fw-semibold"> 
+                                                    <Link to='/agentedit' className="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><Typography variant="span" className="fa fa-edit fs-14"> </Typography> </Link>
+                                                        <Link to='' className="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><Typography variant="span"className="fa fa-trash fs-14"> </Typography> </Link>
+                                                        <Link to='/agentview' className="btn text-dark btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><Typography variant="span"className="fa-solid fa-eye"> </Typography> </Link>
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
                             </div>
                         </div>
                     </div>

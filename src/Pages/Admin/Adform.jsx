@@ -2,6 +2,7 @@ import React from 'react'
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Admin/Sidebar'
 import { Form, Formik } from "formik";
+import * as Yup from "yup";
 import {
     Grid,
     InputLabel,
@@ -9,23 +10,58 @@ import {
     Button
 } from "@mui/material";
 
-export default function Edit() {
+
+
+export default function Adform() {
+    
+    console.info("Add Agent frm")
+    const agendValidationSchema = Yup.object().shape({
+        firstName: Yup.string()
+            .required("First name is required")
+            .max(60, 'First name maximum length is 60'),
+
+        lastName: Yup.string()
+            .required("Last name is required")
+            .max(70, 'First name maximum length is 70'),
+
+            number: Yup.string()
+            .required("Number is required"),
+
+            emailAddress: Yup.string()
+            .required("Email Address is required")
+    });
+
+     // Here init value of from
+     const initialValues = {
+        "firstName": "",
+        "lastName": "",
+        "number": "",
+        "emailAddress": "",
+    }
+
+    // const nameForm = React.useRef(null)
+    // Here store apis data
+    const [agendInitialValues, setAgendInitialValues] = React.useState(initialValues);
+    const handleOnSubmit = async (values, { resetForm }) => {
+        console.log("values",values);
+    };
+    
   return (
     <>
       <Header />
       <Sidebar />
-      <div className="main-content app-content">
-                <div className="container-fluid">
+      <div class="main-content app-content">
+                <div class="container-fluid">
 
                     {/* <!-- PAGE-HEADER --> */}
-                    <div className="page-header">
-                      <h1 className="page-title my-auto">Agent Form Edit</h1>
+                    <div class="page-header">
+                      <h1 class="page-title my-auto">Agent Form</h1>
                       <div>
-                        {/* <ol className="breadcrumb mb-0">
-                          <li className="breadcrumb-item">
+                        {/* <ol class="breadcrumb mb-0">
+                          <li class="breadcrumb-item">
                             <a href="javascript:void(0)">Form Elements</a>
                           </li>
-                          <li className="breadcrumb-item active" aria-current="page">Inputs</li>
+                          <li class="breadcrumb-item active" aria-current="page">Inputs</li>
                         </ol> */}
                       </div>
                     </div>
@@ -33,36 +69,75 @@ export default function Edit() {
 
 
                     {/* <!-- Start:: row-1 --> */}
-                    <div className="row">
-                        <div className="col-xl-12">
-                            <div className="card custom-card">
-                                <div className="card-header justify-content-between">
-                                    <div className="card-title">
-                                    Account Information
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card custom-card">
+                                <div class="card-header justify-content-between">
+                                    <div class="card-title">
+                                        Agent Information
                                     </div>
-                                    {/* <div className="prism-toggle">
-                                        <button className="btn btn-sm btn-primary-light"><i className="ri-code-line ms-2 d-inline-block align-middle"></i></button>
+                                    {/* <div class="prism-toggle">
+                                        <button class="btn btn-sm btn-primary-light"><i class="ri-code-line ms-2 d-inline-block align-middle"></i></button>
                                     </div> */}
                                 </div>
-                                <Formik>
+                                
+                                <Formik
+                                    initialValues={agendInitialValues}
+                                    validationSchema={agendValidationSchema}
+                                    onSubmit={handleOnSubmit}
+                                    enableReinitialize={true}
+                                    >
+                                    {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
                                     <Form>
                                         <div className="card-body">
                                             <Grid container spacing={4}>
                                                 <Grid item xs={6}>
                                                     <InputLabel className="form-label">First Name:</InputLabel>
-                                                    <TextField type="text" className="" fullWidth  id="input" placeholder='Json' />
+                                                    <TextField 
+                                                        type="text" 
+                                                        className="" 
+                                                        fullWidth  
+                                                        placeholder="Last Name"
+                                                        onChange={handleChange}
+                                                        value={values.firstName}
+                                                        helperText={touched.firstName ? errors.firstName : ""}
+                                                        error={touched.firstName && Boolean(errors.firstName)} 
+                                                    />
                                                 </Grid>
                                                 <Grid item xs={6}> 
                                                     <InputLabel className="form-label">Last Name:</InputLabel>
-                                                    <TextField type="text" className="" fullWidth id="input" placeholder='Taylor' />
+                                                    <TextField type="text"
+                                                     fullWidth 
+                                                     placeholder="Last Name"
+                                                     onChange={handleChange}
+                                                     value={values.lastName}
+                                                     helperText={touched.lastName ? errors.lastName : ""}
+                                                     error={touched.lastName && Boolean(errors.lastName)}
+                                                      />
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <InputLabel className="form-label">Mobile Number:</InputLabel>
-                                                    <TextField type="text" className="" fullWidth id="input" placeholder='7410258963'/>
+                                                    <TextField type="text" 
+                                                    id="number" 
+                                                    fullWidth
+                                                    placeholder='7410258963'
+                                                    onChange={handleChange}
+                                                    value={values.number}
+                                                    helperText={touched.number ? errors.number : ""}
+                                                    error={touched.number && Boolean(errors.number)}/>
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <InputLabel className="form-label">Email Address:</InputLabel>
-                                                    <TextField type="text" className="" fullWidth id="input" placeholder='jhon@info.com' />
+                                                    <TextField 
+                                                     type="text" 
+                                                     className=""
+                                                     fullWidth 
+                                                     id="emailAddress"
+                                                     placeholder='jhon@info.com'
+                                                     onChange={handleChange}
+                                                     value={values.emailAddress}
+                                                     helperText={touched.emailAddress ? errors.emailAddress : ""}
+                                                     error={touched.emailAddress && Boolean(errors.emailAddress)} />
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <InputLabel className="form-label">Password:</InputLabel>
@@ -72,19 +147,19 @@ export default function Edit() {
                                                     <InputLabel className="form-label">Conform Password:</InputLabel>
                                                     <TextField type="text" className="" fullWidth id="input" placeholder='*************' />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <InputLabel className="form-label">Address:</InputLabel>
                                                     <TextField type="text" className="" fullWidth id="input" placeholder='Ganesh, Indore' />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={4}>
                                                     <InputLabel className="form-label">Country:</InputLabel>
                                                     <TextField type="text" className="" fullWidth id="input" placeholder='India' />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={4}>
                                                     <InputLabel className="form-label">State:</InputLabel>
                                                     <TextField type="text" className="" fullWidth id="input" placeholder='Madhya Pradesh' />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={4}>
                                                     <InputLabel className="form-label">City:</InputLabel>
                                                     <TextField type="text" className="" fullWidth id="input" placeholder='Indore'/>
                                                 </Grid>
@@ -122,11 +197,12 @@ export default function Edit() {
                                                 </Grid>
                                             </Grid>
                                             <div className='registerbtn mt-5' >
-                                                <Button className='btn btn-primary'>Submit</Button>
+                                                <Button className='btn btn-primary' type='Submit'>Submit</Button>
                                             </div>
                                         </div>      
                                     </Form>
-                                </Formik>      
+                                    )}
+                                </Formik>         
                             </div>
                         </div>
                     </div>

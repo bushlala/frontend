@@ -13,7 +13,7 @@ import Profileview from './Pages/Profile/Profileview';
 import AdminDash from './Pages/Admin/Dashboard';
 import AdList from './Pages/Admin/List';
 import AdEdit from './Pages/Admin/Edit';
-import AdForm from './Pages/Admin/Form';
+import AdForm from './Pages/Admin/Adform';
 function App() {
   return (
     <BrowserRouter>
