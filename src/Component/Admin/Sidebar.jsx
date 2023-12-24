@@ -39,15 +39,25 @@ export default function Sidebar() {
                                 <span class="side-menu__label">Dashboard</span>
                             </Link>
                         </li>
+                        
                         <li class="slide">
                             <Link to='/agent' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
-                                <span class="side-menu__label">Agent</span>
+                                <span class="side-menu__label">Manage Agents</span>
                             </Link>
                         </li>
+
                         <li class="slide">
-                            <Link to='/' class="side-menu__item">
+                            <Link to='/country' class="side-menu__item">
+                                <i class="fa-regular fa-user side-menu__icon"></i>
+                                {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
+                                <span class="side-menu__label">Manage Contries</span>
+                            </Link>
+                        </li>
+
+                        <li class="slide">
+                            <Link to='/BookingList' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 <span class="side-menu__label">Bookings</span>
                             </Link>
@@ -71,7 +81,7 @@ export default function Sidebar() {
                             </Link>
                         </li>
                         <li class="slide">
-                            <Link to='/' class="side-menu__item">
+                            <Link to='/CancellationList' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 <span class="side-menu__label">Flight Cancellation</span>
                             </Link>

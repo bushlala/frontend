@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 const profile =require('../assets/images/profile.jpg');
 const flag =require('../assets/images/flag.jpg');
 
@@ -7,6 +8,10 @@ const flag =require('../assets/images/flag.jpg');
 export default function Header() {
   return (
     <>
+        <Toaster
+            position="top-right"
+            reverseOrder={false}
+        />
        {/* <!-- app-header --> */}
        <header className="app-header">
             {/* <!-- Start::main-header-container --> */}

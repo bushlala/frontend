@@ -23,33 +23,31 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Admin/Sidebar'
 import { Link } from 'react-router-dom'
-import { AgentAPI } from '../../Services/Agent.Service';
+import { CountryAPI } from '../../Services/Country.Service';
 import { RequestPagination } from "../../Services/RequestPagination"
 import { TableHeadComponent } from '../../Component/Common/TableHeadComponent';
 
 // For Swal
 import Swal from 'sweetalert2';
 
-export default function Index() {
+export default function CountryList() {
     const columns = [
-        { id: 'firstName', label: 'First Name', minWidth: 170, sortable: true },
-        { id: 'lastName', label: 'Last Name', minWidth: 100, sortable: true },
-        { id: 'email', label: 'Email', minWidth: 100, sortable: true },
-        { id: 'mobileNumber', label: 'Mobile Number', minWidth: 100, sortable: true },
+        { id: 'name', label: 'Country Name', minWidth: 170, sortable: true },
+        { id: 'sortName', label: 'Country Sort Name', minWidth: 100, sortable: true },
+        { id: 'code', label: 'Country Code', minWidth: 100, sortable: true },
         { id: 'id', label: 'Action', minWidth: 100, sortable: false },
     ]
     const [list, setList] = React.useState([]);
     const [request, setRequest] = React.useState(RequestPagination);
     const [totalCount, setTotalCount] = React.useState(0);
-    const [formTitle, setFormTitle] = React.useState('Agent');
+    const [formTitle, setFormTitle] = React.useState('Country');
     
     React.useEffect(() => {
         getListData(request);
     }, [])
 
     const getListData = async (data) => {
-        console.log("data",data);
-        AgentAPI.getAll(data).then(async (response) => {
+        CountryAPI.getAll(data).then(async (response) => {
             console.log("response",response);
             setList(response.data.result);
             setTotalCount(response.data.totalItems)
@@ -103,7 +101,7 @@ export default function Index() {
             confirmButtonText: 'Yes, delete it!'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await AgentAPI.delete(id).then((response) => {
+                await CountryAPI.delete(id).then((response) => {
                     getListData(request);
                 })
                 .catch((e) => {
@@ -178,7 +176,7 @@ export default function Index() {
                                                                                 sx={{ bgcolor: "#00bbd9", cursor: 'pointer' }}
                                                                                 className="avatar-left-radius"
                                                                                 variant="square">
-                                                                                <Tooltip title="View Agend">
+                                                                                <Tooltip title={`View ${formTitle}`}>
                                                                                     <VisibilityIcon />
                                                                                 </Tooltip>
                                                                             </Avatar>
@@ -190,7 +188,7 @@ export default function Index() {
                                                                                 sx={{ bgcolor: "rgb(46 204 113)", cursor: 'pointer' }}
                                                                                 className="avatar-center-radius"
                                                                                 variant="square">
-                                                                                <Tooltip title="Edit Agent">
+                                                                                <Tooltip title={`Edit ${formTitle}`}>
                                                                                     <EditIcon sx={{ fontSize: "17px" }} />
                                                                                 </Tooltip>
                                                                             </Avatar>
@@ -202,7 +200,7 @@ export default function Index() {
                                                                             className="avatar-right-radius"
                                                                         onClick={() => userDelete(column.format && typeof value === 'number' ? column.format(value) : value)}
                                                                             >
-                                                                            <Tooltip title="Delete Agend" >
+                                                                            <Tooltip title={`Delete ${formTitle}`} >
                                                                                 <DeleteIcon sx={{ fontSize: "17px" }} />
                                                                             </Tooltip>
                                                                         </Avatar>
