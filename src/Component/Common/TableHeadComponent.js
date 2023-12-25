@@ -5,7 +5,6 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 
 export function TableHeadComponent({ columns, request, onHandleSorrting }) {
-    console.log("request11", request);
     return (
         <>
             <TableHead>

@@ -41,7 +41,7 @@ export default function Adform() {
 
     // const nameForm = React.useRef(null)
     // Here store apis data
-    const [agendInitialValues, setAgendInitialValues] = React.useState(initialValues);
+    //const [agendInitialValues, setAgendInitialValues] = React.useState(initialValues);
     const handleOnSubmit = async (values, { resetForm }) => {
         console.log("values",values);
     };
@@ -82,7 +82,7 @@ export default function Adform() {
                                 </div>
                                 
                                 <Formik
-                                    initialValues={agendInitialValues}
+                                    initialValues={initialValues}
                                     validationSchema={agendValidationSchema}
                                     onSubmit={handleOnSubmit}
                                     enableReinitialize={true}

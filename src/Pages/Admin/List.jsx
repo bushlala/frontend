@@ -46,7 +46,7 @@ export default function List() {
                   <div>
                     <ol className="breadcrumb mb-0">
                       <li className="breadcrumb-item">
-                        <a href="javascript:void(0)">Home</a>
+                        <a href={() => false}>Home</a>
                       </li>
                       <li className="breadcrumb-item active" aria-current="page">Dashboard</li>
                     </ol>

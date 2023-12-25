@@ -2,7 +2,7 @@ import React from 'react'
 import './assets/css/styles.css'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 
@@ -18,10 +18,14 @@ import AdminDash from './Pages/Admin/Dashboard';
 import AdList from './Pages/Admin/List';
 import AdEdit from './Pages/Admin/Edit';
 import AdForm from './Pages/Admin/Adform';
-import Bookinglist from './Pages/Admin/booking/index';
+import Bookinglist from './Pages/Admin/booking/Index';
 import CancellationList from './Pages/Admin/Cancellation/Index';
 import CountryList from './Pages/Country/Index';
 import CreateCountry from './Pages/Country/Create.jsx';
+import CreateState from './Pages/State/Create.jsx';
+import StateList from './Pages/State/Index.jsx';
+import CreateCity from './Pages/City/Create.jsx';
+import CityList from './Pages/City/Index.jsx';
 
 function App() {
   return (
@@ -36,6 +40,14 @@ function App() {
        <Route exact path='/country' element={<CountryList />}></Route>
        <Route exact path='/country/add' element={<CreateCountry />}></Route>
        <Route exact path='/country/edit/:slug' element={<CreateCountry />}></Route>
+
+       <Route exact path='/state' element={<StateList />}></Route>
+       <Route exact path='/state/add' element={<CreateState />}></Route>
+       <Route exact path='/state/edit/:slug' element={<CreateState />}></Route>
+
+       <Route exact path='/city' element={<CityList />}></Route>
+       <Route exact path='/city/add' element={<CreateCity />}></Route>
+       <Route exact path='/city/edit/:slug' element={<CreateCity />}></Route>
 
        <Route exact path='/agentedit' element={<Agentedit />}></Route>
        <Route exact path='/agentview' element={<Agentview />}></Route>

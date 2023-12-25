@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Sidebar'
-import { Link } from 'react-router-dom'
+//import { Link } from 'react-router-dom'
 
 const profile =require('../../assets/images/profile.jpg');
 export default function Profileview() {
@@ -18,7 +18,7 @@ export default function Profileview() {
                         <div>
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item">
-                                    <a href="javascript:void(0)">Home</a>
+                                    <a href={() => false}>Home</a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                             </ol>

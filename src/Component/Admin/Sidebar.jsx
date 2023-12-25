@@ -44,7 +44,7 @@ export default function Sidebar() {
                             <Link to='/agent' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
-                                <span class="side-menu__label">Manage Agents</span>
+                                <span class="side-menu__label">Agent List</span>
                             </Link>
                         </li>
 
@@ -52,7 +52,23 @@ export default function Sidebar() {
                             <Link to='/country' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
-                                <span class="side-menu__label">Manage Contries</span>
+                                <span class="side-menu__label">Contry List</span>
+                            </Link>
+                        </li>
+
+                        <li class="slide">
+                            <Link to='/state' class="side-menu__item">
+                                <i class="fa-regular fa-user side-menu__icon"></i>
+                                {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
+                                <span class="side-menu__label">State List</span>
+                            </Link>
+                        </li>
+                        
+                        <li class="slide">
+                            <Link to='/city' class="side-menu__item">
+                                <i class="fa-regular fa-user side-menu__icon"></i>
+                                {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
+                                <span class="side-menu__label">City List</span>
                             </Link>
                         </li>
 

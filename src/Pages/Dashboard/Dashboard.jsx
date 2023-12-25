@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Sidebar'
-import Icon from '../../assets/images/icon.svg';
+import IconImage from '../../assets/images/icon.svg';
 import Icon2 from '../../assets/images/icon2.svg';
 import Icon3 from '../../assets/images/icon3.svg';
 import Icon4 from '../../assets/images/icon4.svg';
@@ -24,7 +24,7 @@ export default function Dashboard() {
                   <div>
                     <ol class="breadcrumb mb-0">
                       <li class="breadcrumb-item">
-                        <a href="javascript:void(0)">Home</a>
+                        <a href={() => false}>Home</a>
                       </li>
                       <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                     </ol>
@@ -43,7 +43,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                         <div class="chart-wrapper mt-3">
-                                            <img src={Icon} style={{width: '45px'}} />
+                                            <img src={IconImage} style={{width: '45px'}} alt=""/>
                                         </div>
                                     </div>
                                 </div>
@@ -60,7 +60,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                         <div class="chart-wrapper mt-3">
-                                            <img src={Icon2} style={{width: '45px'}} />
+                                            <img src={Icon2} style={{width: '45px'}}  alt=""/>
                                         </div>
                                     </div>
                                 </div>
@@ -77,7 +77,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                     <div class="chart-wrapper mt-3">
-                                            <img src={Icon3} style={{width: '45px'}} />
+                                            <img src={Icon3} style={{width: '45px'}} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                     <div class="chart-wrapper mt-3">
-                                            <img src={Icon4} style={{width: '45px'}} />
+                                            <img src={Icon4} style={{width: '45px'}} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -113,7 +113,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                     <div class="chart-wrapper mt-3">
-                                            <img src={Icon5} style={{width: '45px'}} />
+                                            <img src={Icon5} style={{width: '45px'}} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -130,7 +130,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                     <div class="chart-wrapper mt-3">
-                                            <img src={Icon6} style={{width: '45px'}} />
+                                            <img src={Icon6} style={{width: '45px'}} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +147,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                     <div class="chart-wrapper mt-3">
-                                            <img src={Icon8} style={{width: '45px'}} />
+                                            <img src={Icon8} style={{width: '45px'}} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@ export default function Dashboard() {
                                     </div>
                                     <div class="ms-auto">
                                     <div class="chart-wrapper mt-3">
-                                            <img src={Icon8} style={{width: '45px'}} />
+                                            <img src={Icon8} style={{width: '45px'}} alt="" />
                                         </div>
                                     </div>
                                 </div>

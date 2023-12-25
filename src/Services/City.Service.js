@@ -1,14 +1,10 @@
-import { apiConfig } from "./Configs/AxiosUtils"
-export const AgentAPI = {
-
-    getAll: async function (request, cancel = false) {
-      // var requestParam = {
-      //     params: request
-      // };
+import { apiConfig } from "./Configs/AxiosUtils";
+const routeName = "city";
+export const CityAPI = {
+    getAll: async function (id, cancel = false) {
       const response = await apiConfig.request({
-        url: `user`,
+        url: `${routeName}`,
         method: "GET",
-        params:request
         // retrieving the signal value by using the property name
         //signal: cancel ? apiConfig[this.get.name].handleRequestCancellation().signal : undefined,
       })
@@ -18,40 +14,40 @@ export const AgentAPI = {
 
     create: async function (userData) {
         const response =  await apiConfig.request({
-          url: `user`,
+          url: `${routeName}`,
           method: "POST",
           data: userData,
           //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,
         })
-        console.log("'response",response);
+        //console.log("'response",response);
         return response
 
     },
 
     get: async function (id) {
       const response =  await apiConfig.request({
-        url: `user/${id}`,
+        url: `${routeName}/${id}`,
         method: "GET",
         //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,
       })
-      console.log("update response",response);
+      //console.log("update response",response);
       return response
     },
 
     update: async function (userData,id) {
       const response =  await apiConfig.request({
-        url: `user/${id}`,
+        url: `${routeName}/${id}`,
         method: "PUT",
         data: userData,
         //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,
       })
-      console.log("update response",response);
+      //console.log("update response",response);
       return response
     },
 
     delete: async function (id) {
       const response =  await apiConfig.request({
-        url: `user/${id}`,
+        url: `${routeName}/${id}`,
         method: "Delete",
         //data: userData,
         //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,

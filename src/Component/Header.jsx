@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 const profile =require('../assets/images/profile.jpg');
 const flag =require('../assets/images/flag.jpg');
 
@@ -35,7 +35,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element">
                         {/* <!-- Start::header-link --> */}
-                        <a aria-label="Hide Sidebar" className="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle" data-bs-toggle="sidebar" href="javascript:void(0);"><span></span></a>
+                        <a aria-label="Hide Sidebar" className="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle" data-bs-toggle="sidebar" href={() => false}><span></span></a>
                         {/* <!-- End::header-link --> */}
                     </div>
                     {/* <!-- End::header-element --> */}
@@ -49,9 +49,9 @@ export default function Header() {
                                 <div className="">
                                     <p className="fw-semibold text-muted mb-2 fs-13">Recent Searches</p>
                                     <div className="ps-0">
-                                        <a  href="javascript:void(0)" className="search-tags"><i className="fa fa-search me-2"></i>People<span></span></a>
-                                        <a  href="javascript:void(0)" className="search-tags"><i className="fa fa-search me-2"></i>Pages<span></span></a>
-                                        <a  href="javascript:void(0)" className="search-tags"><i className="fa fa-search me-2"></i>Articles<span></span></a>
+                                        <a  href={() => false} className="search-tags"><i className="fa fa-search me-2"></i>People<span></span></a>
+                                        <a  href={() => false} className="search-tags"><i className="fa fa-search me-2"></i>Pages<span></span></a>
+                                        <a  href={() => false} className="search-tags"><i className="fa fa-search me-2"></i>Articles<span></span></a>
                                     </div>
                                 </div>
                                  <div className="mt-3">
@@ -72,17 +72,17 @@ export default function Header() {
                                    <p className="fw-semibold text-muted mb-2 fs-13">Links</p>
                                    <ul className="ps-0 list-unstyled mb-0">
                                         <li className="p-1 align-items-center text-muted mb-1 search-app">
-                                                <a href="javascript:void(0)" className="text-primary"><u>http://spruko/spruko.com</u></a>
+                                                <a href={() => false} className="text-primary"><u>http://spruko/spruko.com</u></a>
                                         </li>
                                         <li className="p-1 align-items-center text-muted mb-0 pb-0 search-app">
-                                                <a href="javascript:void(0)" className="text-primary"><u>http://spruko/spruko.com</u></a>
+                                                <a href={() => false} className="text-primary"><u>http://spruko/spruko.com</u></a>
                                         </li>
                                     </ul>
                                </div>
                             </div>
                             <div className="py-3 border-top px-0">
                                 <div className="text-center">
-                                    <a href="javascript:void(0)" className="text-primary text-decoration-underline fs-15">View all</a>
+                                    <a href={() => false} className="text-primary text-decoration-underline fs-15">View all</a>
                                 </div>
                             </div>
                         </div>
@@ -98,7 +98,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element header-search d-lg-none d-block">
                         {/* <!-- Start::header-link --> */}
-                        <a aria-label="anchor" href="javascript:void(0);" className="header-link" data-bs-toggle="modal" data-bs-target="#searchModal">
+                        <a aria-label="anchor" href={() => false} className="header-link" data-bs-toggle="modal" data-bs-target="#searchModal">
                             <i className="fa fa-search header-link-icon"></i>
                         </a>
                         {/* <!-- End::header-link --> */}
@@ -108,13 +108,13 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element country-selector d-none">
                         {/* <!-- Start::header-link|dropdown-toggle --> */}
-                        <a href="javascript:void(0);" className="header-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown">
+                        <a href={() => false} className="header-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown">
                             <img src={flag} alt="img" className="rounded-circle" />
                         </a>
                         {/* <!-- End::header-link|dropdown-toggle --> */}
                         <ul className="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
                             <li>
-                                <a className="dropdown-item d-flex align-items-center" href="javascript:void(0);">
+                                <a className="dropdown-item d-flex align-items-center" href={() => false}>
                                     <span className="avatar avatar-xs lh-1 me-2">
                                         <img src="../assets/images/flags/us_flag.jpg" alt="img" /> 
                                     </span>
@@ -122,7 +122,7 @@ export default function Header() {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item d-flex align-items-center" href="javascript:void(0);">
+                                <a className="dropdown-item d-flex align-items-center" href={() => false}>
                                     <span className="avatar avatar-xs lh-1 me-2">
                                         <img src="../assets/images/flags/spain_flag.jpg" alt="img" />
                                     </span>
@@ -130,7 +130,7 @@ export default function Header() {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item d-flex align-items-center" href="javascript:void(0);">
+                                <a className="dropdown-item d-flex align-items-center" href={() => false}>
                                     <span className="avatar avatar-xs lh-1 me-2">
                                         <img src="../assets/images/flags/french_flag.jpg" alt="img" />
                                     </span>
@@ -138,7 +138,7 @@ export default function Header() {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item d-flex align-items-center" href="javascript:void(0);">
+                                <a className="dropdown-item d-flex align-items-center" href={() => false}>
                                     <span className="avatar avatar-xs lh-1 me-2">
                                         <img src="../assets/images/flags/germany_flag.jpg" alt="img" />
                                     </span>
@@ -146,7 +146,7 @@ export default function Header() {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item d-flex align-items-center" href="javascript:void(0);">
+                                <a className="dropdown-item d-flex align-items-center" href={() => false}>
                                     <span className="avatar avatar-xs lh-1 me-2">
                                         <img src="../assets/images/flags/italy_flag.jpg" alt="img" />
                                     </span>
@@ -154,7 +154,7 @@ export default function Header() {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item d-flex align-items-center" href="javascript:void(0);">
+                                <a className="dropdown-item d-flex align-items-center" href={() => false}>
                                     <span className="avatar avatar-xs lh-1 me-2">
                                         <img src="../assets/images/flags/russia_flag.jpg" alt="img" />
                                     </span>
@@ -168,7 +168,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element header-theme-mode d-none">
                         {/* <!-- Start::header-link|layout-setting --> */}
-                        <a aria-label="anchor" href="javascript:void(0);" className="header-link layout-setting">
+                        <a aria-label="anchor" href={() => false} className="header-link layout-setting">
                             <span className="light-layout">
                                 {/* <!-- Start::header-link-icon --> */}
                             <i className="fa fa-moon header-link-icon"></i>
@@ -187,7 +187,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element cart-dropdown d-none">
                         {/* <!-- Start::header-link|dropdown-toggle --> */}
-                        <a href="javascript:void(0);" className="header-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown">
+                        <a href={() => false} className="header-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown">
                             <i className="fa fa-shopping-cart header-link-icon"></i>
                             <span className="badge bg-secondary rounded-pill header-icon-badge" id="cart-icon-badge">4</span>
                         </a>
@@ -216,7 +216,7 @@ export default function Header() {
                                                 </div>
                                                 <div className="ms-auto text-end d-flex fs-16">
                                                     <span className="fs-16 text-dark mb-1">$438</span>
-                                                    <a aria-label="anchor" href="javascript:void(0);" className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
+                                                    <a aria-label="anchor" href={() => false} className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -236,7 +236,7 @@ export default function Header() {
                                                 </div>
                                                 <div className="ms-auto text-end d-flex fs-16">
                                                     <span className="fs-16 text-dark mb-1">$867</span>
-                                                    <a aria-label="anchor" href="javascript:void(0);" className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
+                                                    <a aria-label="anchor" href={() => false} className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -256,7 +256,7 @@ export default function Header() {
                                                 </div>
                                                 <div className="ms-auto text-end d-flex fs-16">
                                                     <span className="fs-16 text-dark mb-1">$323</span>
-                                                    <a aria-label="anchor" href="javascript:void(0);" className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
+                                                    <a aria-label="anchor" href={() => false} className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -276,7 +276,7 @@ export default function Header() {
                                                 </div>
                                                 <div className="ms-auto text-end d-flex fs-16">
                                                     <span className="fs-16 text-dark mb-1">$867</span>
-                                                    <a aria-label="anchor" href="javascript:void(0);" className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
+                                                    <a aria-label="anchor" href={() => false} className="header-cart-remove dropdown-item-close btn"><i className="ti ti-trash"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -305,7 +305,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element notifications-dropdown" >
                         {/* <!-- Start::header-link|dropdown-toggle --> */}
-                        <a aria-label="anchor" href="javascript:void(0);" className="header-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
+                        <a aria-label="anchor" href={() => false} className="header-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
                             <i className="fa fa-bell header-link-icon"></i>
                             <span className="w-9 h-9 p-0 bg-success rounded-pill header-icon-badge pulse pulse-success" id="notification-icon-badge"></span>
                         </a>
@@ -331,7 +331,7 @@ export default function Header() {
                                                 <span className="text-muted fw-normal fs-12 header-notification-text">3 days ago</span>
                                             </div>
                                             <div className="ms-auto my-auto">
-                                                <a aria-label="anchor" href="javascript:void(0);" className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
+                                                <a aria-label="anchor" href={() => false} className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
                                             </div>
                                          </div>
                                     </div>
@@ -347,7 +347,7 @@ export default function Header() {
                                                 <span className="text-muted fw-normal fs-12 header-notification-text">2 hours ago</span>
                                             </div>
                                             <div className="ms-auto my-auto">
-                                                <a aria-label="anchor" href="javascript:void(0);" className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
+                                                <a aria-label="anchor" href={() => false} className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
                                             </div>
                                          </div>
                                     </div>
@@ -363,7 +363,7 @@ export default function Header() {
                                                 <span className="text-muted fw-normal fs-12 header-notification-text">30 min ago</span>
                                             </div>
                                             <div className="ms-auto my-auto">
-                                                <a aria-label="anchor" href="javascript:void(0);" className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
+                                                <a aria-label="anchor" href={() => false} className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
                                             </div>
                                          </div>
                                     </div>
@@ -379,7 +379,7 @@ export default function Header() {
                                                 <span className="text-muted fw-normal fs-12 header-notification-text">10 min ago</span>
                                             </div>
                                             <div className="ms-auto my-auto">
-                                                <a aria-label="anchor" href="javascript:void(0);" className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
+                                                <a aria-label="anchor" href={() => false} className="min-w-fit-content text-muted me-1 dropdown-item-close1"><i className="ti ti-x fs-16"></i></a>
                                             </div>
                                          </div>
                                     </div>
@@ -404,7 +404,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element message-dropdown">
                         {/* <!-- Start::header-link|dropdown-toggle --> */}
-                        <a aria-label="anchor" href="javascript:void(0);" className="header-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="messageDropdown2" aria-expanded="false">
+                        <a aria-label="anchor" href={() => false} className="header-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="messageDropdown2" aria-expanded="false">
                             <i className="fa-solid fa-envelope header-link-icon"></i>
                             <span className="w-9 h-9 p-0 bg-danger rounded-pill header-icon-badge pulse pulse-danger" id="message-icon-badge"></span>
                         </a>
@@ -438,7 +438,7 @@ export default function Header() {
                                                     <span className="text-muted fw-normal fs-12">New Product Realease......</span>
                                                 </div>
                                                 <div className="ms-auto text-end">
-                                                    <a aria-label="anchor" href="javascript:void(0);" className="min-w-fit-content text-muted me-1 dropdown-item-close2"><i className="ti ti-x fs-16"></i></a>
+                                                    <a aria-label="anchor" href={() => false} className="min-w-fit-content text-muted me-1 dropdown-item-close2"><i className="ti ti-x fs-16"></i></a>
                                                 </div>
                                              </div>
                                          </div>
@@ -463,7 +463,7 @@ export default function Header() {
                                                     <span className="text-muted fw-normal fs-12">You have appointment on......</span>
                                                 </div>
                                                 <div className="ms-auto text-end">
-                                                    <a aria-label="anchor" href="javascript:void(0);" className="min-w-fit-content text-muted me-1 dropdown-item-close2"><i className="ti ti-x fs-16"></i></a>
+                                                    <a aria-label="anchor" href={() => false} className="min-w-fit-content text-muted me-1 dropdown-item-close2"><i className="ti ti-x fs-16"></i></a>
                                                 </div>
                                              </div>
                                          </div>
@@ -489,7 +489,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element header-fullscreen d-none">
                         {/* <!-- Start::header-link --> */}
-                        <a aria-label="anchor" onclick="openFullscreen();" href="#" className="header-link">
+                        <a aria-label="anchor" onclick="openFullscreen();" href={() => false} className="header-link">
                             <i className="fa fa-minimize full-screen-open header-link-icon"></i>
                             <i className="fa fa-minimize-2 full-screen-close header-link-icon d-none"></i>
                         </a>
@@ -500,7 +500,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element d-none">
                         {/* <!-- Start::header-link|dropdown-toggle --> */}
-                        <a aria-label="anchor" href="javascript:void(0);" className="header-link dropdown-toggle" data-bs-toggle="offcanvas" data-bs-target="#sidebar-right">
+                        <a aria-label="anchor" href={() => false} className="header-link dropdown-toggle" data-bs-toggle="offcanvas" data-bs-target="#sidebar-right">
                             <i className="fa fa-align-right header-link-icon"></i>
                         </a>
                         {/* <!-- End::header-link|dropdown-toggle --> */}
@@ -510,7 +510,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element main-profile-user">
                         {/* <!-- Start::header-link|dropdown-toggle --> */}
-                        <a href="#" className="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <a href={() => false} className="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             <div className="d-flex align-items-center">
                                 <div className="me-xxl-2 me-0">
                                     <img src={profile} alt="img" width="32" height="32" className="rounded-circle" />
@@ -542,7 +542,7 @@ export default function Header() {
                     {/* <!-- Start::header-element --> */}
                     <div className="header-element d-none">
                         {/* <!-- Start::header-link|switcher-icon --> */}
-                        <a aria-label="anchor" href="#" className="header-link switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                        <a aria-label="anchor" href={() => false} className="header-link switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
                             <i className="bx bx-cog header-link-icon"></i>
                         </a>
                         {/* <!-- End::header-link|switcher-icon --> */}

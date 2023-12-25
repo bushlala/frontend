@@ -1,10 +1,11 @@
-import { apiConfig } from "./Configs/AxiosUtils"
+import { apiConfig } from "./Configs/AxiosUtils";
+const routeName = "country";
 export const CountryAPI = {
-
-    getAll: async function (id, cancel = false) {
+    getAll: async function (request, cancel = false) {
       const response = await apiConfig.request({
-        url: `country`,
+        url: `${routeName}`,
         method: "GET",
+        params:request
         // retrieving the signal value by using the property name
         //signal: cancel ? apiConfig[this.get.name].handleRequestCancellation().signal : undefined,
       })
@@ -14,7 +15,7 @@ export const CountryAPI = {
 
     create: async function (userData) {
         const response =  await apiConfig.request({
-          url: `country`,
+          url: `${routeName}`,
           method: "POST",
           data: userData,
           //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,
@@ -26,7 +27,7 @@ export const CountryAPI = {
 
     get: async function (id) {
       const response =  await apiConfig.request({
-        url: `country/${id}`,
+        url: `${routeName}/${id}`,
         method: "GET",
         //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,
       })
@@ -36,12 +37,23 @@ export const CountryAPI = {
 
     update: async function (userData,id) {
       const response =  await apiConfig.request({
-        url: `country/${id}`,
+        url: `${routeName}/${id}`,
         method: "PUT",
         data: userData,
         //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,
       })
       //console.log("update response",response);
+      return response
+    },
+
+    delete: async function (id) {
+      const response =  await apiConfig.request({
+        url: `${routeName}/${id}`,
+        method: "Delete",
+        //data: userData,
+        //signal: cancel ? cancelApiObject[this.create.name].handleRequestCancellation().signal : undefined,
+      })
+      console.log("update response",response);
       return response
     },
 }

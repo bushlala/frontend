@@ -17,16 +17,12 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Admin/Sidebar'
 import { Link } from 'react-router-dom'
 import { CountryAPI } from '../../Services/Country.Service';
 import { RequestPagination } from "../../Services/RequestPagination"
 import { TableHeadComponent } from '../../Component/Common/TableHeadComponent';
-
 // For Swal
 import Swal from 'sweetalert2';
 
@@ -37,18 +33,19 @@ export default function CountryList() {
         { id: 'code', label: 'Country Code', minWidth: 100, sortable: true },
         { id: 'id', label: 'Action', minWidth: 100, sortable: false },
     ]
+    const formTitle = "Country";
     const [list, setList] = React.useState([]);
     const [request, setRequest] = React.useState(RequestPagination);
     const [totalCount, setTotalCount] = React.useState(0);
-    const [formTitle, setFormTitle] = React.useState('Country');
+    //const [formTitle, setFormTitle] = React.useState('Country');
     
     React.useEffect(() => {
         getListData(request);
-    }, [])
+    }, [request])
 
     const getListData = async (data) => {
         CountryAPI.getAll(data).then(async (response) => {
-            console.log("response",response);
+            //console.log("response",response);
             setList(response.data.result);
             setTotalCount(response.data.totalItems)
             
@@ -60,7 +57,7 @@ export default function CountryList() {
     // Here change page 
     const handleChangePage = (event, newPage) => {
         request.page = newPage;
-        console.log("request",request);
+        //console.log("request",request);
         setRequest(request);
         getListData(request);
     };
@@ -68,7 +65,7 @@ export default function CountryList() {
     // Here change page size of record
     const handleChangeRowsPerPage = (event) => {
         request.size = event.target.value;
-        console.log("request",request);
+        //console.log("request",request);
         setRequest(request);
         getListData(request);
     };
@@ -82,7 +79,7 @@ export default function CountryList() {
     // Here sorting of column
     const handleSorting = (id) => {
         if (id) {
-            request.sortOrder = request.sortOrder == 'ASC' ? 'DESC' : 'ASC';
+            request.sortOrder = request.sortOrder === 'ASC' ? 'DESC' : 'ASC';
             request.sortBy = id;
             setRequest(request);
             getListData(request);
@@ -147,7 +144,7 @@ export default function CountryList() {
                         sx={{ fontWeight: 500, fontSize: 12, ml: 2 }} 
                         //onClick={() => handleClickOpen(0)}
                         >
-                            <Link to='/agent/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
+                            <Link to='/country/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
                         </Button>
                     </Box>
             
@@ -168,7 +165,7 @@ export default function CountryList() {
                                                     return (
                                                         <TableCell key={column.id} align={column.align} style={{ fontSize: "15px" }}>
                                                             {
-                                                                column.id == 'id'
+                                                                column.id === 'id'
                                                                     ?
                                                                     <Stack direction="row" spacing={0}>
                                                                         {/* <Link to={`/agent/edit/${(column.format && typeof value === 'number' ? column.format(value) : value)}`}>
@@ -183,7 +180,7 @@ export default function CountryList() {
                                                                         </Link> */}
                                                                         
 
-                                                                        <Link to={`/agent/edit/${(column.format && typeof value === 'number' ? column.format(value) : value)}`} >
+                                                                        <Link to={`/country/edit/${(column.format && typeof value === 'number' ? column.format(value) : value)}`} >
                                                                             <Avatar
                                                                                 sx={{ bgcolor: "rgb(46 204 113)", cursor: 'pointer' }}
                                                                                 className="avatar-center-radius"
@@ -198,7 +195,7 @@ export default function CountryList() {
                                                                             sx={{ bgcolor: "#e74a25", cursor: 'pointer' }}
                                                                             variant="square"
                                                                             className="avatar-right-radius"
-                                                                        onClick={() => userDelete(column.format && typeof value === 'number' ? column.format(value) : value)}
+                                                                            onClick={() => userDelete(column.format && typeof value === 'number' ? column.format(value) : value)}
                                                                             >
                                                                             <Tooltip title={`Delete ${formTitle}`} >
                                                                                 <DeleteIcon sx={{ fontSize: "17px" }} />

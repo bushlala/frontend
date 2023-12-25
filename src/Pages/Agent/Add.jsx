@@ -1,32 +1,18 @@
 import React from 'react'
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Admin/Sidebar'
-import { FieldArray, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { AgentAPI } from '../../Services/Agent.Service';
 import toast, { Toaster } from 'react-hot-toast';
-import {Link, Routes, Route, useNavigate,useParams} from 'react-router-dom';
+import {Link,useNavigate,useParams} from 'react-router-dom';
 import {
-    Container,
     Card,
     CardContent,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     Grid,
-    Input,
     InputLabel,
     MenuItem,
     Select,
-    Avatar,
-    Divider,
-    OutlinedInput,
-    Chip,
-    Stack,
-    Autocomplete,
     TextField
 } from "@mui/material";
 
@@ -101,7 +87,7 @@ export default function Add() {
             setFormTitle("Edit Agent");
 
         }
-    }, [])
+    }, [slug])
 
     const getUserData = async (slug) => {
         //console.log("slug",slug);

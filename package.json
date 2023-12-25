@@ -36,7 +36,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+     "no-script-url": "off"
+   }
   },
   "browserslist": {
     "production": [
