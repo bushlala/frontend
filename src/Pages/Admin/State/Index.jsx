@@ -17,24 +17,22 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Header from '../../Component/Header'
-import Sidebar from '../../Component/Admin/Sidebar'
+import AdminLayout from '../../../Component/Layout/Admin/AdminLayout';
 import { Link } from 'react-router-dom'
-import { CityAPI } from '../../Services/City.Service';
-import { RequestPagination } from "../../Services/RequestPagination"
-import { TableHeadComponent } from '../../Component/Common/TableHeadComponent';
+import { StateAPI } from '../../../Services/State.Service';
+import { RequestPagination } from "../../../Services/RequestPagination"
+import { TableHeadComponent } from '../../../Component/Common/TableHeadComponent';
 // For Swal
 import Swal from 'sweetalert2';
 
-export default function CityList() {
+export default function StateList() {
     const columns = [
         { id: 'code', label: 'Country Name', minWidth: 100, sortable: true },
-        { id: 'code', label: 'State Name', minWidth: 100, sortable: true },
-        { id: 'name', label: 'City Name', minWidth: 170, sortable: true },
-        { id: 'sortName', label: 'City Sort Name', minWidth: 100, sortable: true },
+        { id: 'name', label: 'State Name', minWidth: 170, sortable: true },
+        { id: 'sortName', label: 'State Sort Name', minWidth: 100, sortable: true },
         { id: 'id', label: 'Action', minWidth: 100, sortable: false },
     ]
-    const formTitle = "City";
+    const formTitle = "State";
     const [list, setList] = React.useState([]);
     const [request, setRequest] = React.useState(RequestPagination);
     const [totalCount, setTotalCount] = React.useState(0);
@@ -45,7 +43,7 @@ export default function CityList() {
     }, [request])
 
     const getListData = async (data) => {
-        CityAPI.getAll(data).then(async (response) => {
+        StateAPI.getAll(data).then(async (response) => {
             //console.log("response",response);
             setList(response.data.rows);
             setTotalCount(response.data.count)
@@ -99,7 +97,7 @@ export default function CityList() {
             confirmButtonText: 'Yes, delete it!'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await CityAPI.delete(id).then((response) => {
+                await StateAPI.delete(id).then((response) => {
                     getListData(request);
                 })
                 .catch((e) => {
@@ -112,8 +110,7 @@ export default function CityList() {
     
   return (
     <>
-       <Header />
-       <Sidebar />
+       <AdminLayout />
        <div className="main-content app-content">
             <div className="container-fluid">
                 {/* <!-- PAGE-HEADER --> */}
@@ -140,7 +137,7 @@ export default function CityList() {
                         sx={{ fontWeight: 500, fontSize: 12, ml: 2 }} 
                         //onClick={() => handleClickOpen(0)}
                         >
-                            <Link to='/city/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
+                            <Link to='/state/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
                         </Button>
                     </Box>
             
@@ -176,7 +173,7 @@ export default function CityList() {
                                                                         </Link> */}
                                                                         
 
-                                                                        <Link to={`/city/edit/${(column.format && typeof value === 'number' ? column.format(value) : value)}`} >
+                                                                        <Link to={`/state/edit/${(column.format && typeof value === 'number' ? column.format(value) : value)}`} >
                                                                             <Avatar
                                                                                 sx={{ bgcolor: "rgb(46 204 113)", cursor: 'pointer' }}
                                                                                 className="avatar-center-radius"

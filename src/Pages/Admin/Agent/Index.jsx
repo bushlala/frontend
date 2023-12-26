@@ -17,37 +17,41 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+
 import Header from '../../Component/Header'
 import Sidebar from '../../Component/Admin/Sidebar'
 import { Link } from 'react-router-dom'
-import { StateAPI } from '../../Services/State.Service';
+import { AgentAPI } from '../../Services/Agent.Service';
 import { RequestPagination } from "../../Services/RequestPagination"
 import { TableHeadComponent } from '../../Component/Common/TableHeadComponent';
+
 // For Swal
 import Swal from 'sweetalert2';
 
-export default function StateList() {
+export default function Index() {
     const columns = [
-        { id: 'code', label: 'Country Name', minWidth: 100, sortable: true },
-        { id: 'name', label: 'State Name', minWidth: 170, sortable: true },
-        { id: 'sortName', label: 'State Sort Name', minWidth: 100, sortable: true },
+        { id: 'firstName', label: 'First Name', minWidth: 170, sortable: true },
+        { id: 'lastName', label: 'Last Name', minWidth: 100, sortable: true },
+        { id: 'email', label: 'Email', minWidth: 100, sortable: true },
+        { id: 'mobileNumber', label: 'Mobile Number', minWidth: 100, sortable: true },
         { id: 'id', label: 'Action', minWidth: 100, sortable: false },
     ]
-    const formTitle = "State";
+    const formTitle = "Agent";
     const [list, setList] = React.useState([]);
     const [request, setRequest] = React.useState(RequestPagination);
     const [totalCount, setTotalCount] = React.useState(0);
-    //const [formTitle, setFormTitle] = React.useState('Country');
+    //const [formTitle, setFormTitle] = React.useState('Agent');
     
     React.useEffect(() => {
         getListData(request);
     }, [request])
 
     const getListData = async (data) => {
-        StateAPI.getAll(data).then(async (response) => {
-            //console.log("response",response);
-            setList(response.data.rows);
-            setTotalCount(response.data.count)
+        console.log("data",data);
+        AgentAPI.getAll(data).then(async (response) => {
+            console.log("response",response);
+            setList(response.data.result);
+            setTotalCount(response.data.totalItems)
             
         }).catch((e) => {
             console.log(e);
@@ -57,7 +61,7 @@ export default function StateList() {
     // Here change page 
     const handleChangePage = (event, newPage) => {
         request.page = newPage;
-        //console.log("request",request);
+        console.log("request",request);
         setRequest(request);
         getListData(request);
     };
@@ -65,7 +69,7 @@ export default function StateList() {
     // Here change page size of record
     const handleChangeRowsPerPage = (event) => {
         request.size = event.target.value;
-        //console.log("request",request);
+        console.log("request",request);
         setRequest(request);
         getListData(request);
     };
@@ -98,12 +102,17 @@ export default function StateList() {
             confirmButtonText: 'Yes, delete it!'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await StateAPI.delete(id).then((response) => {
+                await AgentAPI.delete(id).then((response) => {
                     getListData(request);
                 })
                 .catch((e) => {
                     console.log(e);
                 });
+                /*Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )*/
             }
         })
     }
@@ -139,7 +148,7 @@ export default function StateList() {
                         sx={{ fontWeight: 500, fontSize: 12, ml: 2 }} 
                         //onClick={() => handleClickOpen(0)}
                         >
-                            <Link to='/state/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
+                            <Link to='/agent/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
                         </Button>
                     </Box>
             
@@ -168,19 +177,19 @@ export default function StateList() {
                                                                                 sx={{ bgcolor: "#00bbd9", cursor: 'pointer' }}
                                                                                 className="avatar-left-radius"
                                                                                 variant="square">
-                                                                                <Tooltip title={`View ${formTitle}`}>
+                                                                                <Tooltip title="View Agend">
                                                                                     <VisibilityIcon />
                                                                                 </Tooltip>
                                                                             </Avatar>
                                                                         </Link> */}
                                                                         
 
-                                                                        <Link to={`/state/edit/${(column.format && typeof value === 'number' ? column.format(value) : value)}`} >
+                                                                        <Link to={`/agent/edit/${(column.format && typeof value === 'number' ? column.format(value) : value)}`} >
                                                                             <Avatar
                                                                                 sx={{ bgcolor: "rgb(46 204 113)", cursor: 'pointer' }}
                                                                                 className="avatar-center-radius"
                                                                                 variant="square">
-                                                                                <Tooltip title={`Edit ${formTitle}`}>
+                                                                                <Tooltip title="Edit Agent">
                                                                                     <EditIcon sx={{ fontSize: "17px" }} />
                                                                                 </Tooltip>
                                                                             </Avatar>
@@ -190,9 +199,9 @@ export default function StateList() {
                                                                             sx={{ bgcolor: "#e74a25", cursor: 'pointer' }}
                                                                             variant="square"
                                                                             className="avatar-right-radius"
-                                                                            onClick={() => userDelete(column.format && typeof value === 'number' ? column.format(value) : value)}
+                                                                        onClick={() => userDelete(column.format && typeof value === 'number' ? column.format(value) : value)}
                                                                             >
-                                                                            <Tooltip title={`Delete ${formTitle}`} >
+                                                                            <Tooltip title="Delete Agend" >
                                                                                 <DeleteIcon sx={{ fontSize: "17px" }} />
                                                                             </Tooltip>
                                                                         </Avatar>

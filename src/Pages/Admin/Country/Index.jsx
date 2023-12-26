@@ -17,12 +17,11 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Header from '../../Component/Header'
-import Sidebar from '../../Component/Admin/Sidebar'
+import AdminLayout from '../../../Component/Layout/Admin/AdminLayout';
 import { Link } from 'react-router-dom'
-import { CountryAPI } from '../../Services/Country.Service';
-import { RequestPagination } from "../../Services/RequestPagination"
-import { TableHeadComponent } from '../../Component/Common/TableHeadComponent';
+import { CountryAPI } from '../../../Services/Country.Service';
+import { RequestPagination } from "../../../Services/RequestPagination"
+import { TableHeadComponent } from '../../../Component/Common/TableHeadComponent';
 // For Swal
 import Swal from 'sweetalert2';
 
@@ -116,8 +115,7 @@ export default function CountryList() {
     
   return (
     <>
-       <Header />
-       <Sidebar />
+       <AdminLayout />
        <div className="main-content app-content">
             <div className="container-fluid">
                 {/* <!-- PAGE-HEADER --> */}

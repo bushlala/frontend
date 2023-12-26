@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from '../../Component/Header'
-import Sidebar from '../../Component/Sidebar'
+import Header from '../../../Component/Header'
+import Sidebar from '../../../Component/Sidebar'
 //import { Link } from 'react-router-dom'
 
 const profile =require('../../assets/images/profile.jpg');

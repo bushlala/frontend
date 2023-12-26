@@ -1,9 +1,8 @@
 import React from 'react'
-import Header from '../../Component/Header'
-import Sidebar from '../../Component/Admin/Sidebar'
+import AdminLayout from '../../../Component/Layout/Admin/AdminLayout';
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { CityAPI } from '../../Services/City.Service';
+import { CityAPI } from '../../../Services/City.Service';
 import toast from 'react-hot-toast';
 
 import {Link, useNavigate,useParams} from 'react-router-dom';
@@ -99,8 +98,7 @@ export default function CreateCity() {
     };
   return (
     <>  
-        <Header />
-        <Sidebar />
+        <AdminLayout />
         <div className="main-content app-content">
             <div className="container-fluid">
                 {/* <!-- PAGE-HEADER --> */}

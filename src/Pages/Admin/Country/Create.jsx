@@ -1,9 +1,8 @@
 import React from 'react'
-import Header from '../../Component/Header'
-import Sidebar from '../../Component/Admin/Sidebar'
+import AdminLayout from '../../../Component/Layout/Admin/AdminLayout';
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { CountryAPI } from '../../Services/Country.Service';
+import { CountryAPI } from '../../../Services/Country.Service';
 import toast from 'react-hot-toast';
 
 import {Link, useNavigate,useParams} from 'react-router-dom';
@@ -13,19 +12,18 @@ import {
     Grid,
     InputLabel,
     TextField,
-    Button,
-    Select,
-    MenuItem
+    Button
 } from "@mui/material";
 
-export default function CreateState() {
+export default function CreateCountry() {
     const navigate = useNavigate();
     const { slug } = useParams();
     //console.log("slug",slug);
     //console.info("Create country form")
     const countryValidationSchema = Yup.object().shape({
-        countryId: Yup.string()
-            .required("Country name is required"),
+        name: Yup.string()
+            .required("Country name is required")
+            .max(60, 'Country name is maximum length is 60'),
         sortName: Yup.string()
             .required("Sort name is required")
             .max(5, 'Sort name maximum length is 70'),
@@ -35,18 +33,18 @@ export default function CreateState() {
     });
 
     const initialValues = {
-        "countryId":"",
         "name":"",
         "sortName":"",
+        "code":"",
     }
     const nameForm = React.useRef(null)
     // Here store apis data
     const [countryInitialValues, setCountryInitialValues] = React.useState(initialValues);
-    const [formTitle, setFormTitle] = React.useState('State');
+    const [formTitle, setFormTitle] = React.useState('Country');
     const [action, setAction] = React.useState('Add');
     React.useEffect(() => {
         if(slug){
-            setFormTitle("State");
+            setFormTitle("Country");
             setAction("Edit");
             getData(slug);
         }
@@ -61,6 +59,7 @@ export default function CreateState() {
                 let reInitialValuee = {};
                 reInitialValuee.name = result.name;
                 reInitialValuee.sortName = result.sortName;
+                reInitialValuee.code = result.code;
                 //console.log('reInitialValuee',reInitialValuee);
                 setCountryInitialValues(reInitialValuee);
             }else{
@@ -71,7 +70,8 @@ export default function CreateState() {
             toast.error('Something went wrong');
         });
     };
-    
+
+
     const handleOnSubmit = async (values, { resetForm }) => {
         console.log("values",values);
         if(slug){
@@ -96,8 +96,7 @@ export default function CreateState() {
     };
   return (
     <>  
-      <Header />
-      <Sidebar />
+    <AdminLayout />
             <div className="main-content app-content">
                 <div className="container-fluid">
                     {/* <!-- PAGE-HEADER --> */}
@@ -139,32 +138,11 @@ export default function CreateState() {
                                                 <CardContent>
                                                         <Grid container spacing={4}>
                                                             <Grid item xs={6}>
-                                                                <InputLabel>Country</InputLabel>
-                                                                <Select
-                                                                    id="countryId"
-                                                                    name="countryId"
-                                                                    fullWidth
-                                                                    onChange={handleChange}
-                                                                    value={values.countryId}
-                                                                    helperText={touched.countryId ? errors.countryId : ""}
-                                                                    error={touched.countryId && Boolean(errors.countryId)}
-                                                                >
-                                                                    <MenuItem  value="">Select Country</MenuItem>
-                                                                    <MenuItem  value="1">India</MenuItem>
-                                                                    <MenuItem  value="2">US</MenuItem>
-                                                                    {
-                                                                        // country && genders.map((value, key) => (
-                                                                        //     <MenuItem key={key} value={value.NEMSISCode}>{value.Name}</MenuItem>
-                                                                        // ))
-                                                                    }
-                                                                </Select>
-                                                            </Grid>
-                                                            <Grid item xs={6}>
-                                                                <InputLabel>State Name</InputLabel>
+                                                                <InputLabel>Country Name</InputLabel>
                                                                 <TextField
                                                                     type="text"
                                                                     id="name"
-                                                                    placeholder="Enter State Name"
+                                                                    placeholder="Enter Country Name"
                                                                     fullWidth
                                                                     onChange={handleChange}
                                                                     value={values.name}
@@ -175,16 +153,30 @@ export default function CreateState() {
                                                             </Grid>
 
                                                             <Grid item xs={6}>
-                                                                <InputLabel>State Sort Name</InputLabel>
+                                                                <InputLabel>Country Sort Name</InputLabel>
                                                                 <TextField
                                                                     id="sortName"
                                                                     type="text"
-                                                                    placeholder="Enter Sort State Name"
+                                                                    placeholder="Enter Sort Name"
                                                                     fullWidth
                                                                     onChange={handleChange}
                                                                     value={values.sortName}
                                                                     helperText={touched.sortName ? errors.sortName : ""}
                                                                     error={touched.sortName && Boolean(errors.sortName)}
+                                                                />
+                                                            </Grid>
+
+                                                            <Grid item xs={6}>
+                                                                <InputLabel>Country Code</InputLabel>
+                                                                <TextField
+                                                                    id="code"
+                                                                    type="text"
+                                                                    placeholder="Enter Country Code"
+                                                                    fullWidth
+                                                                    onChange={handleChange}
+                                                                    value={values.code}
+                                                                    helperText={touched.code ? errors.code : ""}
+                                                                    error={touched.code && Boolean(errors.code)}
                                                                 />
                                                             </Grid>
 
