@@ -1,0 +1,23 @@
+
+.login {
+    background-image: url('../../../assets/images/banner.jpg');
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    padding-top: 109px; 
+}
+.login .login-header h4{
+    font-weight: 500;
+    color: #6c5ffc;
+    font-size: 29px;
+}
+
+.login .login-header span {
+    font-weight: 300;
+    color: #c5c5c5;
+}
+
+.register .MuiInputBase-input {
+    height: 17px !important;
+    font-size: 14px;
+}

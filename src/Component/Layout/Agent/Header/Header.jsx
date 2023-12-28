@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import { AuthAPI } from '../../../../Services/Auth.Service';
 const profile =require('../../../../assets/images/profile.jpg');
 const flag =require('../../../../assets/images/flag.jpg');
-
+// import Button from '@mui/material/Button';
+// import HomeIcon from '@mui/icons-material/Home';
+// import HotelIcon from '@mui/icons-material/Hotel';
+// import FlightIcon from '@mui/icons-material/Flight';
+// import './Header.css';
 
 
 export default function Header() {
@@ -11,6 +15,9 @@ export default function Header() {
         AuthAPI.logout();
         window.location.href = "/"
     }
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    //console.log("userData",userData.data.token)
+    const jwtToken = userData.data.token;
   return (
     <>
         
@@ -20,7 +27,21 @@ export default function Header() {
             <div className="main-header-container container-fluid">
                 {/* <!-- Start::header-content-left --> */}
                 <div className="header-content-left">
-                    
+                    {/* <div className='mt-3 header-icon'> 
+                        <Button color="secondary" variant='outlined' startIcon={<HomeIcon />}>
+                            Dashboard
+                        </Button>   
+                    </div>
+                    <div className='mt-3 header-icon'> 
+                        <Button color="success" variant='outlined' startIcon={<HotelIcon />}>
+                            Hotels
+                        </Button>   
+                    </div>
+                    <div className='mt-3 header-icon'> 
+                        <Button color='primary' variant='outlined' startIcon={<FlightIcon />}>
+                            Flights
+                        </Button>   
+                    </div>    */}
                 </div>
                 {/* <!-- End::header-content-left --> */}
 
@@ -40,7 +61,7 @@ export default function Header() {
                                     <img src={profile} alt="img" width="32" height="32" className="rounded-circle" />
                                 </div>
                                 <div className="d-xxl-block d-none my-auto">
-                                    <h6 className="fw-semibold mb-0 lh-1 fs-14">Json Taylor</h6>
+                                    <h6 className="fw-semibold mb-0 lh-1 fs-14">{`${userData.data.firstName} ${userData.data.lastName}`}</h6>
                                 </div>
                             </div>
                         </a>
@@ -48,8 +69,8 @@ export default function Header() {
                         <ul className="main-header-dropdown dropdown-menu pt-0 header-profile-dropdown dropdown-menu-end" aria-labelledby="mainHeaderProfile">
                             <li className="drop-heading d-xxl-none d-block">
                                  <div className="text-center">
-                                    <h5 className="text-dark mb-0 fs-14 fw-semibold">Json Taylor</h5>
-                                    <small className="text-muted">Web Designer</small>
+                                    <h5 className="text-dark mb-0 fs-14 fw-semibold">{`${userData.data.firstName} ${userData.data.lastName}`}</h5>
+                                    <small className="text-muted">Role:Agent</small>
                                 </div>
                             </li>
                             <li className="dropdown-item"><Link className="d-flex w-100" to='/profile'><i className="fa fa-user fs-18 me-2 text-primary"></i>Profile</Link></li>

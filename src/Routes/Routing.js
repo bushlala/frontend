@@ -27,10 +27,15 @@ import CreateState from '../Pages/Admin/State/Create.jsx';
 import StateList from '../Pages/Admin/State/Index.jsx';
 import CreateCity from '../Pages/Admin/City/Create.jsx';
 import CityList from '../Pages/Admin/City/Index.jsx';
+import Home from "../Pages/Index.jsx";
 import Login from "../Pages/Auth/Login/Login.jsx";
 import Register from "../Pages/Auth/Register/Register.jsx";
+// Import for agen
 import AgentDashboard from "../Pages/Agent/Dashboard/Dashboard.jsx";
+import AgentCustomerList from "../Pages/Agent/Customer/Index.jsx";
+import AgentCustomerAdd from "../Pages/Agent/Customer/Add.jsx";
 import Nopage from "./NoPage.jsx";
+
 
 /// Calling Arrow Routing Function
 const Routing = () => {
@@ -39,6 +44,9 @@ const Routing = () => {
         <Provider store={StoreData}>
             {/* <BrowserRouter> */}
             <Routes>
+            
+            
+            <Route exact path='/Home' element={<Home />}></Route>
             <Route
                     path="/login"
                     element={
@@ -57,7 +65,7 @@ const Routing = () => {
             />
             <Route exact path='*' element={<Nopage />} />
             <Route exact path='/register' element={<Register />}></Route>
-            
+            {/* Here route for agent */}
             <Route
                 path="agent/dashboard"
                 element={
@@ -66,6 +74,38 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
+
+            <Route
+                path="agent/customer"
+                element={
+                    <PrivateRoute>
+                        <AgentCustomerList />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path="agent/customer/add"
+                element={
+                    <PrivateRoute>
+                        <AgentCustomerAdd />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="agent/customer/edit/:slug"
+                element={
+                    <PrivateRoute>
+                        <AgentCustomerAdd />
+                    </PrivateRoute>
+                }
+            />
+
+
+
+
+
+            
 
             {/* <Route exact path='/dashboard' element={<Dashboard />}></Route> */}
             

@@ -1,6 +1,7 @@
 import axios from 'axios'
 //import { RM_BASE_URL } from "../../../ReactConfig";
 const BASE_URL = 'http://localhost:3001/';
+//const BASE_URL = 'http://192.168.0.108:3001/';
 // Here config for response master api
 export const apiConfig = axios.create({
     baseURL: `${BASE_URL}api/`,
