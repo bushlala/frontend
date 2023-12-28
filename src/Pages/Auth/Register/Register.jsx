@@ -2,8 +2,10 @@ import React from 'react'
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { AuthAPI } from '../../../Services/Auth.Service';
+import { CommonService } from '../../../Services/Common/Common.Service';
 import toast, { Toaster } from 'react-hot-toast';
-import {Link,useNavigate,useParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import './Register.css';
 import {
     Card,
     CardContent,
@@ -36,7 +38,8 @@ export default function Register() {
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), null], 'Passwords must match'),
         panNumber: Yup.string()
-                .min(10,"Pan number must be at least 10 characters."),
+                .min(10,"Pan number must be at least 10 characters.")
+                .matches(/[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Please enter valid pan number'),
         
             //.email('Mobile number email address'),
     });
@@ -60,12 +63,90 @@ export default function Register() {
     }
     const nameForm = React.useRef(null)
     // Here store apis data
-    const [agendInitialValues, setAgendInitialValues] = React.useState(initialValues);
-    const [formTitle, setFormTitle] = React.useState('Agent Registration');
+    //const [agendInitialValues, setAgendInitialValues] = React.useState(initialValues);
+    const [countryList, setCountryList] = React.useState([]);
+    const [stateList, setStateList] = React.useState([]);
+    const [cityList, setCityList] = React.useState([]);
+    //const [formTitle, setFormTitle] = React.useState('Agent Registration');
+    const formTitle = "Agent Registration";
 
     React.useEffect(() => {
-        
+        getAllCountry();
     }, [])
+
+    const getAllCountry = async () =>{
+        CommonService.getAllCountry().then((response)=>{
+            if(response.status === 200){
+                if(response.data.status){
+                    if(response.data.data.rows && response.data.data.rows.length){
+                        const rows = response.data.data.rows;
+                        //console.log("rows",rows);
+                        const country = rows[0];
+                        getAllState(country.id,null);
+                        setCountryList(rows);
+                    }
+                    
+                }else{
+                    toast.error(`CountryApi:${response.data.message}`);
+                }
+            }
+        }).catch((error) =>{
+            toast.error("CountryApi:Something went wrong");
+        })
+    }
+
+    const handleChangeCountry = (event, setFieldValue) => {
+        const countryId = event.target.value
+        setFieldValue('countryId', countryId);
+        getAllState(countryId, setFieldValue);
+        //getStates(countryCode, 'state_issue_dl', setFieldValue);
+    }
+
+    const getAllState = async (countryId,setFieldValue) =>{
+        CommonService.getAllState(countryId).then((response)=>{
+            if(response.status === 200){
+                if(response.data.status){
+                    if(response.data.data.rows && response.data.data.rows.length){
+                        const rows = response.data.data.rows;
+                        //console.log("rows",rows);
+                        const state = rows[0];
+                        getAllCity(state.id,null);
+                        setStateList(rows);
+                    }
+                }else{
+                    toast.error(`StateApi:${response.data.message}`);
+                }
+            }
+        }).catch((error) =>{
+            toast.error("StateApi:Something went wrong");
+        })
+    }
+
+    const handleChangeState = (event, setFieldValue) => {
+        const stateId = event.target.value
+        setFieldValue('stateId', stateId);
+        getAllCity(stateId, setFieldValue);
+        //getStates(countryCode, 'state_issue_dl', setFieldValue);
+    }
+
+    const getAllCity = async (stateId) =>{
+        CommonService.getAllCity(stateId).then((response)=>{
+            if(response.status === 200){
+                if(response.data.status){
+                    if(response.data.data.rows && response.data.data.rows.length){
+                        const rows = response.data.data.rows;
+                        //console.log("rows",rows);
+                        setCityList(rows);
+                    }
+                }else{
+                    toast.error(`CityApi:${response.data.message}`);
+                }
+            }
+        }).catch((error) =>{
+            toast.error("CityApi:Something went wrong");
+        })
+    }
+
     const handleOnSubmit = async (values, { resetForm }) => {
         console.log("reguest",values);
         const response = await AuthAPI.agentRegister(values);
@@ -79,129 +160,129 @@ export default function Register() {
     };
   return (
     <>
-        <Toaster
-            position="top-right"
-            reverseOrder={false}
-        />
-        <Formik
-            initialValues={agendInitialValues}
-            validationSchema={agendValidationSchema}
-            onSubmit={handleOnSubmit}
-            enableReinitialize={true}
-        >
-            {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
-                <Form ref={nameForm}>
-                    <Card>
-                    <Typography 
-                        variant="h4" 
-                        component="h2"
-                    >
-                        {formTitle}
-                    </Typography>
+        <div className='backimage'>
+            <div className="page-register">
+                <Toaster
+                    position="top-right"
+                    reverseOrder={false}
+                />
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={agendValidationSchema}
+                    onSubmit={handleOnSubmit}
+                    enableReinitialize={true}
+                >
+                    {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
+                        <Form ref={nameForm}>
+                            <Card>
+                            <Typography 
+                                variant="h4" 
+                                component="h2"
+                            >
+                                {formTitle}
+                            </Typography>
+                            <hr></hr>
+                                <CardContent> 
+                                    <Grid container spacing={4}>
 
-                        <CardContent> 
-                            <Grid container spacing={4}>
+                                        <Grid item xs={6}>
+                                            <InputLabel>First Name</InputLabel>
+                                            <TextField
+                                                type="text"
+                                                id="firstName"
+                                                placeholder="Enter First Name"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                value={values.firstName}
+                                                helperText={touched.firstName ? errors.firstName : ""}
+                                                error={touched.firstName && Boolean(errors.firstName)} 
+                                            />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <InputLabel>Last Name</InputLabel>
+                                            <TextField
+                                                id="lastName"
+                                                type="text"
+                                                placeholder="Enter Last Name"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                value={values.lastName}
+                                                helperText={touched.lastName ? errors.lastName : ""}
+                                                error={touched.lastName && Boolean(errors.lastName)}
+                                            />
+                                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <InputLabel>First Name</InputLabel>
-                                    <TextField
-                                        type="text"
-                                        id="firstName"
-                                        placeholder="Enter First Name"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        value={values.firstName}
-                                        helperText={touched.firstName ? errors.firstName : ""}
-                                        error={touched.firstName && Boolean(errors.firstName)} 
-                                    />
-                                    
-                                </Grid>
+                                        <Grid item xs={6}>
+                                            <InputLabel>Mobile Number</InputLabel>
+                                            <TextField
+                                                id="mobileNumber"
+                                                type="text"
+                                                placeholder="Enter Mobile Number"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                value={values.mobileNumber}
+                                                helperText={touched.mobileNumber ? errors.mobileNumber : ""}
+                                                error={touched.mobileNumber && Boolean(errors.mobileNumber)}
+                                            />
+                                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <InputLabel>Last Name</InputLabel>
-                                    <TextField
-                                        id="lastName"
-                                        type="text"
-                                        placeholder="Enter Last Name"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        value={values.lastName}
-                                        helperText={touched.lastName ? errors.lastName : ""}
-                                        error={touched.lastName && Boolean(errors.lastName)}
-                                    />
-                                </Grid>
+                                        <Grid item xs={6}>
+                                            <InputLabel>Email</InputLabel>
+                                            <TextField
+                                                id="email"
+                                                type="text"
+                                                placeholder="Enter Email"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                value={values.email}
+                                                helperText={touched.email ? errors.email : ""}
+                                                error={touched.email && Boolean(errors.email)}
+                                            />
+                                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <InputLabel>Mobile Number</InputLabel>
-                                    <TextField
-                                        id="mobileNumber"
-                                        type="text"
-                                        placeholder="Enter Mobile Number"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        value={values.mobileNumber}
-                                        helperText={touched.mobileNumber ? errors.mobileNumber : ""}
-                                        error={touched.mobileNumber && Boolean(errors.mobileNumber)}
-                                    />
-                                </Grid>
+                                        <Grid item xs={6}>
+                                            <InputLabel>Password</InputLabel>
+                                            <TextField
+                                                id="password"
+                                                name='password'
+                                                type="password"
+                                                placeholder="Enter Password"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                value={values.password}
+                                                helperText={touched.password ? errors.password : ""}
+                                                error={touched.password && Boolean(errors.password)}
+                                            />
+                                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <InputLabel>Email</InputLabel>
-                                    <TextField
-                                        id="email"
-                                        type="text"
-                                        placeholder="Enter Email"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        value={values.email}
-                                        helperText={touched.email ? errors.email : ""}
-                                        error={touched.email && Boolean(errors.email)}
-                                    />
-                                </Grid>
+                                        <Grid item xs={6}>
+                                            <InputLabel>Confirm Password</InputLabel>
+                                            <TextField
+                                                id="confirmPassword"
+                                                name='confirmPassword'
+                                                type="password"
+                                                placeholder="Enter Confirm Password"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                value={values.confirmPassword}
+                                                helperText={touched.confirmPassword ? errors.confirmPassword : ""}
+                                                error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                                            />
+                                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <InputLabel>Password</InputLabel>
-                                    <TextField
-                                        id="password"
-                                        name='password'
-                                        type="password"
-                                        placeholder="Enter Password"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        value={values.password}
-                                        helperText={touched.password ? errors.password : ""}
-                                        error={touched.password && Boolean(errors.password)}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                    <InputLabel>Confirm Password</InputLabel>
-                                    <TextField
-                                        id="confirmPassword"
-                                        name='confirmPassword'
-                                        type="password"
-                                        placeholder="Enter Confirm Password"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        value={values.confirmPassword}
-                                        helperText={touched.confirmPassword ? errors.confirmPassword : ""}
-                                        error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <InputLabel>Address</InputLabel>
-                                    <TextField
-                                        id="address"
-                                        type="text"
-                                        placeholder="Enter Address"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        value={values.address}
-                                        helperText={touched.address ? errors.address : ""}
-                                        error={touched.address && Boolean(errors.address)}
-                                    />
-                                </Grid>
+                                        <Grid item xs={12}>
+                                            <InputLabel>Address</InputLabel>
+                                            <TextField
+                                                id="address"
+                                                type="text"
+                                                placeholder="Enter Address"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                value={values.address}
+                                                helperText={touched.address ? errors.address : ""}
+                                                error={touched.address && Boolean(errors.address)}
+                                            />
+                                        </Grid>
 
                                 <Grid item xs={4}>
                                     <InputLabel>Country</InputLabel>
@@ -209,18 +290,18 @@ export default function Register() {
                                         id="countryId"
                                         name="countryId"
                                         fullWidth
-                                        onChange={handleChange}
+                                        //onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChangeCountry(e, setFieldValue);
+                                        }}
                                         value={values.countryId}
                                         helperText={touched.countryId ? errors.countryId : ""}
                                         error={touched.countryId && Boolean(errors.countryId)}
-                                        
                                     >
-                                        <MenuItem  value="1">India</MenuItem>
-                                        <MenuItem  value="2">US</MenuItem>
                                         {
-                                            // genders && genders.map((value, key) => (
-                                            //     <MenuItem key={key} value={value.NEMSISCode}>{value.Name}</MenuItem>
-                                            // ))
+                                            countryList && countryList.map((value, key) => (
+                                                <MenuItem key={key} value={value.id}>{value.name}</MenuItem>
+                                            ))
                                         }
                                     </Select>
                                 </Grid>
@@ -231,13 +312,18 @@ export default function Register() {
                                         id="stateId"
                                         name="stateId"
                                         fullWidth
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            handleChangeState(e, setFieldValue);
+                                        }}
                                         value={values.stateId}
                                         helperText={touched.stateId ? errors.stateId : ""}
                                         error={touched.stateId && Boolean(errors.stateId)}
                                     >
-                                        <MenuItem  value="1">MP</MenuItem>
-                                        <MenuItem  value="2">UP</MenuItem>
+                                        {
+                                            stateList && stateList.map((value, key) => (
+                                                <MenuItem key={key} value={value.id}>{value.name}</MenuItem>
+                                            ))
+                                        }
                                     </Select>
                                 </Grid>
 
@@ -252,8 +338,11 @@ export default function Register() {
                                         helperText={touched.cityId ? errors.cityId : ""}
                                         error={touched.cityId && Boolean(errors.cityId)}
                                     >
-                                        <MenuItem  value="1">Indore</MenuItem>
-                                        <MenuItem  value="2">Khargone</MenuItem>
+                                        {
+                                            cityList && cityList.map((value, key) => (
+                                                <MenuItem key={key} value={value.id}>{value.name}</MenuItem>
+                                            ))
+                                        }
                                     </Select>
                                 </Grid>
 
@@ -337,7 +426,9 @@ export default function Register() {
                     </Card>
                 </Form>
             )}
-        </Formik>             
+                </Formik>  
+            </div>
+        </div>           
     </>
   )
 }
