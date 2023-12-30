@@ -1,5 +1,6 @@
 import React from 'react'
-import AdminLayout from '../../../Component/Layout/Admin/AdminLayout';
+import Header from '../../../Component/Header'
+import Sidebar from '../../../Component/Admin/Sidebar'
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { CountryAPI } from '../../../Services/Country.Service';
@@ -94,8 +95,9 @@ export default function CreateState() {
         }
     };
   return (
-    <>  
-        <AdminLayout />
+    <>   {/* <AdminLayout /> */}
+    <Header />
+   <Sidebar />
         <div className="main-content app-content">
                 <div className="container-fluid">
                     {/* <!-- PAGE-HEADER --> */}

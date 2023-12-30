@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Icon from '../../../../assets/icon/setting.svg'
 export default function Sidebar() {
   return (
     <>
@@ -41,18 +42,76 @@ export default function Sidebar() {
                 </li>
                 <li class="slide">
                     <Link to='/agent/customer' class="side-menu__item">
-                        <i class="fa-regular fa-user side-menu__icon"></i>
-                        {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
+                        <i class="fa-solid fa-user side-menu__icon"></i>
                         <span class="side-menu__label">My Customers</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='/agent/booking' class="side-menu__item">
-                        <i class="fa-regular fa-user side-menu__icon"></i>
+                        <i class="fa-solid fa-book side-menu__icon"></i>
                         <span class="side-menu__label">My Bookings</span>
                     </Link>
                 </li>
-                
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-clipboard-question side-menu__icon"></i>
+                        <span class="side-menu__label"> Queries</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">My Packages</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Mannual Hotel</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Manage Markup</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Web Check-in</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Reminder Web Checkin</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Online Recharge</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Invoice</span>
+                    </Link>
+                </li>  
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Generate Invoice</span>
+                    </Link>
+                </li>
+                <li class="slide">
+                    <Link to='*' class="side-menu__item">
+                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <span class="side-menu__label">Setting</span>
+                    </Link>
+                </li>
             </ul>
             <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>
                 </nav>

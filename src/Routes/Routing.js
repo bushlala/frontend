@@ -34,7 +34,19 @@ import Register from "../Pages/Auth/Register/Register.jsx";
 import AgentDashboard from "../Pages/Agent/Dashboard/Dashboard.jsx";
 import AgentCustomerList from "../Pages/Agent/Customer/Index.jsx";
 import AgentCustomerAdd from "../Pages/Agent/Customer/Add.jsx";
+import AgentFlightSearch from "../Pages/Agent/Flights/Search.jsx";
+
+// import my customer
+// import MyCustomer from "../Pages/Agent/MyCustomer/Customer.jsx";
+import CustomerForm from "../Pages/Agent/MyCustomer/CustomerForm.jsx";
+import MyBooking from "../Pages/Agent/MyBooking/Booking.jsx";
+
+// Agent Flight Booking
+import Flightreview from "../Pages/Agent/Flights/FlightReview/Flightreview.jsx";
+import FlightBook from "../Pages/Agent/Flights/FlightBook/FlightBook.jsx"
+
 import Nopage from "./NoPage.jsx";
+import Flight from "@mui/icons-material/Flight.js";
 
 
 /// Calling Arrow Routing Function
@@ -48,20 +60,20 @@ const Routing = () => {
             
             <Route exact path='/Home' element={<Home />}></Route>
             <Route
-                    path="/login"
-                    element={
-                        <GuestRoute>
-                            <Login />
-                        </GuestRoute>
-                    }
+                path="/login"
+                element={
+                    <GuestRoute>
+                        <Login />
+                    </GuestRoute>
+                }
             />
             <Route
-                    path="/"
-                    element={
-                        <GuestRoute>
-                            <Login />
-                        </GuestRoute>
-                    }
+                path="/"
+                element={
+                    <GuestRoute>
+                        <Login />
+                    </GuestRoute>
+                }
             />
             <Route exact path='*' element={<Nopage />} />
             <Route exact path='/register' element={<Register />}></Route>
@@ -74,7 +86,6 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-
             <Route
                 path="agent/customer"
                 element={
@@ -83,7 +94,40 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-
+            <Route
+                path="agent/flight"
+               
+                element={
+                    <PrivateRoute>
+                        <AgentFlightSearch />
+                       
+                    </PrivateRoute>
+                }
+            />
+             <Route
+                path="agent/Flightreview"
+                element={
+                    <PrivateRoute>
+                        <Flightreview />
+                    </PrivateRoute>
+                }
+            />
+             <Route
+                path="agent/FlightBook"
+                element={
+                    <PrivateRoute>
+                        <FlightBook />
+                    </PrivateRoute>
+                }
+            />
+            {/* <Route
+                path="/agent/mycustomer"
+                element={
+                    <PrivateRoute>
+                        < MyCustomer />
+                    </PrivateRoute>
+                }
+            /> */}
             <Route
                 path="agent/customer/add"
                 element={
@@ -100,13 +144,6 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-
-
-
-
-
-            
-
             {/* <Route exact path='/dashboard' element={<Dashboard />}></Route> */}
             
             <Route exact path='admin/agent' element={<Agent />}></Route>
@@ -129,6 +166,11 @@ const Routing = () => {
             <Route exact path='/agentview' element={<Agentview />}></Route>
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}
 
+            {/* MyCustomer */}
+            <Route exact path='/agent/customerform' element={<CustomerForm />}></Route>
+            <Route exact path='/agent/booking' element={<MyBooking />}></Route>
+
+            
 
             {/* <Route exact path='/' element={<AdminDash />}></Route>
             <Route exact path='/adlist' element={<AdList />}></Route>

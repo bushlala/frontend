@@ -1,7 +1,7 @@
 import { apiConfig } from "../Configs/AxiosUtils"
 const userData = JSON.parse(localStorage.getItem('userData'));
 //console.log("userData",userData.data.token)
-const jwtToken = userData.data.token;
+  const jwtToken = userData?.data?.token || " ";
 export const CustomerService = {
     
     getAll: async function (request, cancel = false) {
@@ -11,7 +11,7 @@ export const CustomerService = {
       //     params: request
       // };
       const response = await apiConfig.request({
-        url: `customer/get-all-customer?id=isequal:${userData.data.id}&pagination=true`,
+        url: `customer/get-all-customer/?pagination=true`,
         method: "GET",
         params:request,
         headers: { 
@@ -21,7 +21,7 @@ export const CustomerService = {
         //signal: cancel ? apiConfig[this.get.name].handleRequestCancellation().signal : undefined,
       })
       // returning the product returned by the API
-      return response.data
+      return response?.data
     },
 
     create: async function (request) {

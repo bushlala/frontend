@@ -165,8 +165,6 @@ export default function AgentCustomerAdd() {
                       </div>
                     </div>
                     {/* <!-- PAGE-HEADER END --> */}
-
-
                     {/* <!-- Start:: row-1 --> */}
                     <div className="row">
                         <div className="col-xl-12">
@@ -299,7 +297,6 @@ export default function AgentCustomerAdd() {
                                                                 error={touched.dob && Boolean(errors.dob)}
                                                             />
                                                         </Grid>
-
                                                         <Grid item xs={6}>
                                                             <InputLabel>Passport Number</InputLabel>
                                                             <TextField

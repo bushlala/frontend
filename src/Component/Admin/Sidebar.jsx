@@ -41,7 +41,7 @@ export default function Sidebar() {
                         </li>
                         
                         <li class="slide">
-                            <Link to='/agent' class="side-menu__item">
+                            <Link to='/admin/agent' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
                                 <span class="side-menu__label">Agent List</span>
@@ -49,7 +49,7 @@ export default function Sidebar() {
                         </li>
 
                         <li class="slide">
-                            <Link to='/country' class="side-menu__item">
+                            <Link to='/admin/country' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
                                 <span class="side-menu__label">Contry List</span>
@@ -57,7 +57,7 @@ export default function Sidebar() {
                         </li>
 
                         <li class="slide">
-                            <Link to='/state' class="side-menu__item">
+                            <Link to='/admin/state' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
                                 <span class="side-menu__label">State List</span>
@@ -65,7 +65,7 @@ export default function Sidebar() {
                         </li>
                         
                         <li class="slide">
-                            <Link to='/city' class="side-menu__item">
+                            <Link to='/admin/city' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 {/* <!-- <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span> --> */}
                                 <span class="side-menu__label">City List</span>
@@ -73,7 +73,7 @@ export default function Sidebar() {
                         </li>
 
                         <li class="slide">
-                            <Link to='/BookingList' class="side-menu__item">
+                            <Link to='/' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 <span class="side-menu__label">Bookings</span>
                             </Link>
@@ -97,7 +97,7 @@ export default function Sidebar() {
                             </Link>
                         </li>
                         <li class="slide">
-                            <Link to='/CancellationList' class="side-menu__item">
+                            <Link to='/' class="side-menu__item">
                                 <i class="fa-regular fa-user side-menu__icon"></i>
                                 <span class="side-menu__label">Flight Cancellation</span>
                             </Link>

@@ -148,7 +148,7 @@ export default function Index() {
                         sx={{ fontWeight: 500, fontSize: 12, ml: 2 }} 
                         //onClick={() => handleClickOpen(0)}
                         >
-                            <Link to='/agent/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
+                            <Link to='admin/agent/add' style={{ color: 'white'}}>+ Add2 {formTitle}</Link>
                         </Button>
                     </Box>
             

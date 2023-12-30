@@ -17,7 +17,8 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AdminLayout from '../../../Component/Layout/Admin/AdminLayout';
+import Header from '../../../Component/Header'
+import Sidebar from '../../../Component/Admin/Sidebar'
 import { Link } from 'react-router-dom'
 import { CountryAPI } from '../../../Services/Country.Service';
 import { RequestPagination } from "../../../Services/RequestPagination"
@@ -114,8 +115,9 @@ export default function CountryList() {
 
     
   return (
-    <>
-       <AdminLayout />
+    <>{/* <AdminLayout /> */}
+    <Header />
+   <Sidebar />
        <div className="main-content app-content">
             <div className="container-fluid">
                 {/* <!-- PAGE-HEADER --> */}

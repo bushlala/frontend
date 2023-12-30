@@ -1,13 +1,14 @@
 import React from 'react'
+import Button from '@mui/material/Button';
+import HomeIcon from '@mui/icons-material/Home';
+import HotelIcon from '@mui/icons-material/Hotel';
+import FlightIcon from '@mui/icons-material/Flight';
+import Badge from '@mui/material/Badge';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import './Header.css';
 import { Link } from 'react-router-dom';
 import { AuthAPI } from '../../../../Services/Auth.Service';
 const profile =require('../../../../assets/images/profile.jpg');
-const flag =require('../../../../assets/images/flag.jpg');
-// import Button from '@mui/material/Button';
-// import HomeIcon from '@mui/icons-material/Home';
-// import HotelIcon from '@mui/icons-material/Hotel';
-// import FlightIcon from '@mui/icons-material/Flight';
-// import './Header.css';
 
 
 export default function Header() {
@@ -20,31 +21,28 @@ export default function Header() {
     const jwtToken = userData.data.token;
   return (
     <>
-        
        {/* <!-- app-header --> */}
        <header className="app-header">
             {/* <!-- Start::main-header-container --> */}
             <div className="main-header-container container-fluid">
                 {/* <!-- Start::header-content-left --> */}
                 <div className="header-content-left">
-                    {/* <div className='mt-3 header-icon'> 
-                        <Button color="secondary" variant='outlined' startIcon={<HomeIcon />}>
-                            Dashboard
-                        </Button>   
+                    <div className='mt-3 header-icon'> 
+                    <Link to={`/agent/dashboard`}> <button className='btn btn-outline-primary btn-border'><i class="fa-solid fa-gauge"></i> Dashboard</button> </Link>
                     </div>
                     <div className='mt-3 header-icon'> 
-                        <Button color="success" variant='outlined' startIcon={<HotelIcon />}>
-                            Hotels
-                        </Button>   
+                    {/* <Link to={ `/agent/Flightreview`}><button type="button" class="btn btn-outline-success btn-border"><i class="fa-solid fa-plane-up"></i> Flights</button></Link> */}
+                    <Link to={`/agent/flight`}>
+                        <button type="button" class="btn btn-outline-success btn-border"><i class="fa-solid fa-plane-up"></i> Flights</button>
+                    </Link>  
                     </div>
                     <div className='mt-3 header-icon'> 
-                        <Button color='primary' variant='outlined' startIcon={<FlightIcon />}>
-                            Flights
-                        </Button>   
-                    </div>    */}
+                    <Link>
+                        <button type="button" class="btn btn-outline-secondary btn-border"><i class="fa-solid fa-hotel"></i> Hotels</button>
+                    </Link>
+                    </div>   
                 </div>
                 {/* <!-- End::header-content-left --> */}
-
                 {/* <!-- Start::header-content-right --> */}
                 <div className="header-content-right">
                     
@@ -53,15 +51,23 @@ export default function Header() {
                             <i className="fa fa-align-right header-link-icon"></i>
                         </a>
                     </div>
-                    
+                        
                     <div className="header-element main-profile-user">
+                        <button className='btn wallet-btn'>
+                            <span className='wallet-icon'><i class="fa-solid fa-credit-card"></i> INR</span>
+                            <span className='wallet-text'>0</span>
+                        </button>
+                        <a href="" class="header-link">
+                            <i class="fa-solid fa-bell header-link-icon"></i>
+                        </a>
                         <a href={() => false} className="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             <div className="d-flex align-items-center">
                                 <div className="me-xxl-2 me-0">
                                     <img src={profile} alt="img" width="32" height="32" className="rounded-circle" />
                                 </div>
-                                <div className="d-xxl-block d-none my-auto">
-                                    <h6 className="fw-semibold mb-0 lh-1 fs-14">{`${userData.data.firstName} ${userData.data.lastName}`}</h6>
+                                <div className="d-xxl-block my-auto">
+                                    <h6 className="user-text mb-0 lh-1 text-dark text-uppercase">{`${userData.data.firstName} ${userData.data.lastName}`}</h6>
+                                    <button class="agent-button bg-primary text-light mt-1">Agent</button>
                                 </div>
                             </div>
                         </a>

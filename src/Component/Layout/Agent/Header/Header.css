@@ -5,3 +5,38 @@
 .header-icon{
     margin-right: 20px !important;
 }
+.notification-bell{
+    margin-top: 20px;
+    margin-right: 20px;
+}
+.agent-button{
+    border: none;
+    font-size: 12px;
+    border-radius: 5px;
+}
+.user-text{
+        font-size: 13px;
+        font-weight: 700;
+}
+
+.btn-border{
+    border-radius: 50px;
+}
+.wallet-text{
+    margin-left: 5px;
+}
+.wallet-icon{
+    background-color: #c3c6d1;
+    padding: 6px;
+    border-radius: 5px 0px 0px 5px;
+    font-weight: bold;
+}
+.wallet-btn{
+   height: 35px;
+   padding: 0px;
+   margin-top: 15px;
+   border: 1px solid;
+}
+.wallet-text{
+    margin-right: 5px;
+}

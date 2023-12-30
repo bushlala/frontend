@@ -6,7 +6,7 @@ function GuestRoute({ children }) {
     const isAuth = useSelector(isAuthSelector);
     const user = JSON.parse(localStorage.getItem('userData'));
     //return isAuth ? children : <Navigate to="/Home" />;
-    return user ? <Navigate to="/dashboard" /> : children;
+    return user ? <Navigate to="/agent/dashboard" /> : children;
     //return isAuth ? <Navigate to="/" /> : <Route {...props} />;
 }
 export default GuestRoute;

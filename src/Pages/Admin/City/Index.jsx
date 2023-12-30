@@ -22,6 +22,8 @@ import { Link } from 'react-router-dom'
 import { CityAPI } from '../../../Services/City.Service';
 import { RequestPagination } from "../../../Services/RequestPagination"
 import { TableHeadComponent } from '../../../Component/Common/TableHeadComponent';
+import Header from '../../../Component/Header'
+import Sidebar from '../../../Component/Admin/Sidebar'
 // For Swal
 import Swal from 'sweetalert2';
 
@@ -111,7 +113,9 @@ export default function CityList() {
     
   return (
     <>
-       <AdminLayout />
+       {/* <AdminLayout /> */}
+       <Header />
+      <Sidebar />
        <div className="main-content app-content">
             <div className="container-fluid">
                 {/* <!-- PAGE-HEADER --> */}
@@ -138,7 +142,7 @@ export default function CityList() {
                         sx={{ fontWeight: 500, fontSize: 12, ml: 2 }} 
                         //onClick={() => handleClickOpen(0)}
                         >
-                            <Link to='/city/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
+                            <Link to='/admin/city/add' style={{ color: 'white'}}>+ Add {formTitle}</Link>
                         </Button>
                     </Box>
             

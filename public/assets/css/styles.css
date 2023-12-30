@@ -9027,9 +9027,6 @@ caption {
 .authentication .authentication-cover .aunthentication-cover-content {
   width: 70%;
   height: 37.5rem;
-  background-color: rgba(0, 0, 0, 0.2);
-  -webkit-backdrop-filter: blur(1.875rem);
-          backdrop-filter: blur(1.875rem);
   padding: 2rem;
   position: relative;
 }

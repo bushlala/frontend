@@ -1,0 +1,16 @@
+.agent-flight-search  .homeflightsearchouterbox .search-flights .btn{
+    position: relative;
+    bottom:initial;
+    padding: 17px 29px !important;
+}
+.agent-flight-search  .homeflightsearchouterbox {
+    background-color: #d1d1d1;
+    padding-top: 36px;
+    position: relative;
+    height: 287px;
+}
+.agent-flight-search .homeflightsearchouterbox h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #545454 !important;
+}

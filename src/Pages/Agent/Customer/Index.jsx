@@ -46,10 +46,11 @@ export default function AgentCustomerList() {
     }, [request])
 
     const getListData = async (data) => {
-        console.log("data",data);
+        // console.log("data gsdgdfh gdsgdsfhg dfHDFH@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data);s
         CustomerService.getAll(data).then(async (response) => {
+            console.log("data gsdgdfh gdsgdsfhg dfHDFH@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",response.data.re);
             console.log("response",response);
-            setList(response.data.result);
+            setList(response?.data?.result);
             setTotalCount(response.data.totalItems)
             
         }).catch((e) => {
@@ -221,7 +222,7 @@ export default function AgentCustomerList() {
 
                     <TablePagination
                         //className="pagination-block"
-                        rowsPerPageOptions={[2, 5, 10]}
+                        rowsPerPageOptions={[5, 10]}
                         component="div"
                         count={totalCount}
                         rowsPerPage={request.size}
