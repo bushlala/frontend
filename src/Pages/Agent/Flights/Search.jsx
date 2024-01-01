@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import './search.css';
 
 export default function AgentFlightSearch() {
+
     const initialValues = {
         "tripType": "1",
         "fromcitydesti": "DEL - NEW DELHI",
@@ -25,8 +26,16 @@ export default function AgentFlightSearch() {
         "INFANT": "0",
         "PC": "Economy",
         "isDirectFlight": true,
-        "isConnectingFlight": false
+        "isConnectingFlight": false,
+        travellersClass : {
+            adults:1,
+            childrens:1,
+            infants:1,
+            prefferedClass:"",
+            resultFareType:"",
+        }
     }
+
     const cityList = [
         {
             city : "DEL - NEW DELHI",
@@ -37,6 +46,72 @@ export default function AgentFlightSearch() {
             destinationFlight : "BOM-India"
         }
     ]
+
+    const seatNumber = [
+        {
+            name : 1,
+        },
+        {
+            name : 2,
+        },
+        {
+            name : 3,
+        },
+        {
+            name : 4,
+        },
+        {
+            name : 6,
+        },
+        {
+            name : 7,
+        },
+        {
+            name : 8,
+        },
+        {
+            name : 9,
+        }
+    ]
+
+    const prefferedClass=[
+        {
+            name : "Economy Class",
+            sortName : "EC"
+        },
+        {
+            name : "PremiumEconomy Class",
+            sortName : "PE"
+        },
+        {
+            name : "Business Class",
+            sortName : "BU"
+        },
+        {
+            name : "PremiumBusiness Class",
+            sortName : "PB"
+        },
+        {
+            name : "First Class",
+            sortName : "FI"
+        },
+    ]
+    
+    const resultFareType = [
+        {
+            name : "Regular Fare",
+            sortName : "1"
+        },
+        {
+            name : "Student Fare",
+            sortName : "2"
+        },
+        {
+            name : "Senior Citizen",
+            sortName : "3"
+        },
+    ];
+
     const validationSchema = Yup.object().shape({
         fromcitydesti: Yup.string()
             .required("Title is required"),
@@ -50,6 +125,16 @@ export default function AgentFlightSearch() {
     const [departureDate, setDepartureDate] = React.useState(new Date());
     const [minDate, setmMinDate] = React.useState(new Date());
     const [returnDate, setReturnDate] = React.useState();
+
+    // const [travellersClass , setTravellersClass] = React.useState({
+    //     adults:1,
+    //     childrens:1,
+    //     infants:1,
+    //     prefferedClass:"",
+    //     resultFareType:1,
+    //     adults:1
+    // });
+
     const handleChangeDepartureDate = (range) => {
         console.log("range",range);
         setDepartureDate(range);
@@ -74,6 +159,20 @@ export default function AgentFlightSearch() {
             toast.error('Something went wrong');
         });
     };
+    const [travellersModelShow, setTravellersModelShow] = React.useState(false);
+    
+    const onChangeTravellersShow = () => {
+        if(travellersModelShow){
+            setTravellersModelShow(false);
+        }else{
+            setTravellersModelShow(true);
+        }
+    }
+
+    const handleChangeTravellersValue = (event,setFieldValue,fieldNamme) => {
+        console.log("event",event.target.value);
+        setFieldValue(fieldNamme,event.target.value);
+    }
 
   return (
     <>
@@ -84,314 +183,292 @@ export default function AgentFlightSearch() {
         <div className="">
             <div className='agent-flight-search'>
                 <div className='homeflightsearchouterbox'>
-               <Formik
-                    initialValues={reInitialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={handleOnSubmit}
-                    enableReinitialize={true}
-                >
-                    {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
-                        <Form ref={nameForm}>
-                            <div className='container'>
-                                <h4 className='text-center text-white'>Book flights and explore the world with us.</h4>
-                                <Box className='card home-flightsear-card'>
-                                    <Box className='card-body'>
-                                    
-                                        <ul className="nav nav-pills One-Way-tab">
-                                            <li className="nav-item">
-                                                <Link className={`nav-link ${tripType === 1 ? "active" : ""}`} aria-current="page" href="#" onClick={()=>changeTripType(1)}>One-Way</Link>
-                                            </li>
+                    <Formik
+                        initialValues={reInitialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={handleOnSubmit}
+                        enableReinitialize={true}
+                    >
+                        {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
+                            <Form ref={nameForm}>
+                                <div className='container'>
+                                    <h4 className='text-center text-white'>Book flights and explore the world with us.</h4>
+                                    <Box className='card home-flightsear-card'>
+                                        <Box className='card-body'>
+                                        
+                                            <ul className="nav nav-pills One-Way-tab">
+                                                <li className="nav-item">
+                                                    <Link className={`nav-link ${tripType === 1 ? "active" : ""}`} aria-current="page" href="#" onClick={()=>changeTripType(1)}>One-Way</Link>
+                                                </li>
 
-                                            <li className="nav-item">
-                                                <Link className={`nav-link ${tripType === 2 ? "active" : ""}`} href="#" onClick={()=>changeTripType(2)}>Round-Trip</Link>
-                                            </li>
-                                        </ul>  
-                                        <Grid container spacing={2}>
+                                                <li className="nav-item">
+                                                    <Link className={`nav-link ${tripType === 2 ? "active" : ""}`} href="#" onClick={()=>changeTripType(2)}>Round-Trip</Link>
+                                                </li>
+                                            </ul>
 
-                                            <Grid item className='col'>
-                                                <div className='form-group field-label'>
-                                                    <InputLabel className=''>From</InputLabel>
-
-                                                   
-
-                                                    <select className='form-control' name='fromDestinationFlight'>
-                                                        {
-                                                            cityList && cityList.map((value, key) => (
-                                                                <option key={key} value={value.city} >{value.city}</option>
-                                                                
-                                                            ))
-                                                        }
-                                                    </select>
-                                                    <div className='searchdestinationboxclass'>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
+                                            <Grid container spacing={2}>
+                                                
+                                                <Grid item className='col'>
+                                                    <div className='form-group field-label'>
+                                                        <InputLabel className=''>From</InputLabel>
+                                                        <select className='form-control' name='fromDestinationFlight'>
+                                                            {
+                                                                cityList && cityList.map((value, key) => (
+                                                                    <option key={key} value={value.city} >{value.city}</option>
+                                                                    
+                                                                ))
+                                                            }
+                                                        </select>
+                                                        {/* <div className='searchdestinationboxclass'>
+                                                            <div className='list'>
+                                                                DDN - Delta Downs, Australia
+                                                                <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
+                                                                <img className='flag' src={auFlag} />
+                                                            </div>
+                                                            <div className='list'>
+                                                                DDN - Delta Downs, Australia
+                                                                <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
+                                                                <img className='flag' src={auFlag} />
+                                                            </div>
+                                                            <div className='list'>
+                                                                DDN - Delta Downs, Australia
+                                                                <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
+                                                                <img className='flag' src={auFlag} />
+                                                            </div>
+                                                            <div className='list'>
+                                                                DDN - Delta Downs, Australia
+                                                                <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
+                                                                <img className='flag' src={auFlag} />
+                                                            </div>
+                                                            <div className='list'>
+                                                                DDN - Delta Downs, Australia
+                                                                <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
+                                                                <img className='flag' src={auFlag} />
+                                                            </div>
+                                                            <div className='list'>
+                                                                DDN - Delta Downs, Australia
+                                                                <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
+                                                                <img className='flag' src={auFlag} />
+                                                            </div>
+                                                        </div> */}
                                                     </div>
+                                                </Grid>
 
-                                                </div>
-                                            </Grid>
-
-                                            <Grid item className='col'>
-                                                <div className='form-group field-label'>
-                                                    <InputLabel className=''>To</InputLabel>
-                                                    <select className='form-control' name='tocitydesti'>
-                                                        {
-                                                            cityList && cityList.map((value, key) => (
-                                                                <option key={key} value={value.city} >{value.city}</option>
-                                                                
-                                                            ))
-                                                        }
-                                                    </select>
-                                                    <div className='searchdestinationboxclass'>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
-                                                        <div className='list'>
-                                                            DDN - Delta Downs, Australia
-                                                            <div className='' style={{color:"#666666", fontSize:"11px"}}>Delta Downs</div>
-                                                            <img className='flag' src={auFlag} />
-                                                        </div>
+                                                <Grid item className='col'>
+                                                    <div className='form-group field-label'>
+                                                        <InputLabel className=''>To</InputLabel>
+                                                        <select className='form-control' name='tocitydesti'>
+                                                            {
+                                                                cityList && cityList.map((value, key) => (
+                                                                    <option key={key} value={value.city} >{value.city}</option>
+                                                                    
+                                                                ))
+                                                            }
+                                                        </select>
                                                     </div>
-                                                </div>
-                                            </Grid>
+                                                </Grid>
 
-                                            <Grid item className='col'>
-                                                <div className='form-group field-label'>
-                                                    <InputLabel className=''>Departure</InputLabel>
-                                                    <DatePicker 
-                                                    className='form-control'
-                                                    selected={departureDate}
-                                                    //startDate={startDate}
-                                                    minDate={minDate}
-                                                    onChange={(date) => handleChangeDepartureDate(date)} 
-                                                    />
-
-                                                </div>
-                                            </Grid>
-                                            {
-                                                tripType === 2 && <Grid item className='col'>
-                                                <div className='form-group field-label'>
-                                                    <InputLabel className=''>Return</InputLabel>
-                                                    <DatePicker 
+                                                <Grid item className='col'>
+                                                    <div className='form-group field-label'>
+                                                        <InputLabel className=''>Departure</InputLabel>
+                                                        <DatePicker 
                                                         className='form-control'
-                                                        name='journeyDateRound'
-                                                        selected={returnDate}
-                                                        minDate={departureDate}
-                                                        onChange={(date) => setReturnDate(date)} 
-                                                    />
-                                                </div>
-                                            </Grid>
-
-                                            }
-                                            
-                                            <Grid item className='col'>
-                                                <div className='form-group field-label'>
-                                                    <InputLabel className=''>Travellers & Class</InputLabel>
-                                                    <input className='form-control' type='text' />
-                                                    <div className='travellersshow'>
-                                                        <div className='d-flex justify-content-between'> 
-                                                            <h6>Travellers</h6>
-                                                            <i className='fa fa-times'></i>    
-                                                        </div>
-                                                        <div className='mb-2'>
-                                                            <span className='small'>Adults</span>
-                                                            <div className='boxselectpax'>
-                                                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio1">1</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio2">2</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio3">3</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio4">4</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio5">5</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio6">6</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio7">7</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio8" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio8">8</label>
-
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio9" autocomplete="off" />
-                                                                    <label class="btn" for="btnradio9">9</label>
-                                                                </div>
-                                                            </div>    
-                                                        </div>
-                                                        <div className='mb-2'>
-                                                            <span className='small'>Children </span>
-                                                            <div className='boxselectpax'>
-                                                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="Children1" autocomplete="off" />
-                                                                    <label class="btn" for="Children1">1</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children2" autocomplete="off" />
-                                                                    <label class="btn" for="Children2">2</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children3" autocomplete="off" />
-                                                                    <label class="btn" for="Children3">3</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children4" autocomplete="off" />
-                                                                    <label class="btn" for="Children4">4</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children5" autocomplete="off" />
-                                                                    <label class="btn" for="Children5">5</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children6" autocomplete="off" />
-                                                                    <label class="btn" for="Children6">6</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children7" autocomplete="off" />
-                                                                    <label class="btn" for="Children7">7</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children8" autocomplete="off" />
-                                                                    <label class="btn" for="Children8">8</label>
-
-                                                                    <input type="radio" class="btn-check" name="Children" id="Children9" autocomplete="off" />
-                                                                    <label class="btn" for="Children9">9</label>
-                                                                </div>
-                                                            </div>    
-                                                        </div>
-                                                        <div className='mb-2'>
-                                                            <span className='small'>Infants </span>
-                                                            <div className='boxselectpax'>
-                                                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                                                    <input type="radio" class="btn-check" name="btnradio" id="Infants1" autocomplete="off" />
-                                                                    <label class="btn" for="Infants1">1</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants2" autocomplete="off" />
-                                                                    <label class="btn" for="Infants2">2</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants3" autocomplete="off" />
-                                                                    <label class="btn" for="Infants3">3</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants4" autocomplete="off" />
-                                                                    <label class="btn" for="Infants4">4</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants5" autocomplete="off" />
-                                                                    <label class="btn" for="Infants5">5</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants6" autocomplete="off" />
-                                                                    <label class="btn" for="Infants6">6</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants7" autocomplete="off" />
-                                                                    <label class="btn" for="Infants7">7</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants8" autocomplete="off" />
-                                                                    <label class="btn" for="Infants8">8</label>
-
-                                                                    <input type="radio" class="btn-check" name="Infants" id="Infants9" autocomplete="off" />
-                                                                    <label class="btn" for="Infants9">9</label>
-                                                                </div>
-                                                            </div>    
-                                                        </div>
-                                                        <div class="mb-2">
-                                                            <span class="small">Preffered Class</span>
-                                                            <select  class="form-select">
-                                                                <option value="EC" selected="">Economy Class</option>
-                                                                <option value="PE">PremiumEconomy Class</option>
-                                                                <option value="BU">Business Class</option>
-                                                                <option value="PB">PremiumBusiness Class</option>
-                                                                <option value="FI">First Class</option>
-                                                            </select>
-                                                         </div>
-                                                        <div class="mb-2">
-                                                            <span class="small">Result Fare Type</span>
-                                                            <select  class="form-select">
-                                                                <option value="2" selected="">Regular Fare</option>
-                                                                <option value="3">Student Fare</option>
-                                                                <option value="4">senior citizen</option>
-                                                            </select>
-                                                         </div>
+                                                        selected={departureDate}
+                                                        //startDate={startDate}
+                                                        minDate={minDate}
+                                                        onChange={(date) => handleChangeDepartureDate(date)} 
+                                                        />
 
                                                     </div>
-                                                </div>
-                                            </Grid>
+                                                </Grid>
+                                                {
+                                                    tripType === 2 && <Grid item className='col'>
+                                                    <div className='form-group field-label'>
+                                                        <InputLabel className=''>Return</InputLabel>
+                                                        <DatePicker 
+                                                            className='form-control'
+                                                            name='journeyDateRound'
+                                                            selected={returnDate}
+                                                            minDate={departureDate}
+                                                            onChange={(date) => setReturnDate(date)} 
+                                                        />
+                                                    </div>
+                                                </Grid>
 
-                                            <Grid item className='col'>
-                                                <div className='search-flights'> 
-                                                   <button className='btn search-flights' type='submit'>SEARCH FLIGHTS</button>
-                                                </div>
+                                                }
+                                                
+                                                <Grid item className='col'>
+                                                    <div className='form-group field-label'>
+                                                        <InputLabel className=''>Travellers & Class</InputLabel>
+                                                        <input className='form-control' name='travellersshow' id='travellersshow' type='text' value={values.travellersshow} onClick={()=>onChangeTravellersShow()}  />
+                                                        {
+                                                            travellersModelShow && 
+                                                            <div className='travellersshow'>
+                                                                <div className='d-flex justify-content-between'> 
+                                                                    <h6>Travellers</h6>
+                                                                    <i className='fa fa-times' onClick={()=>onChangeTravellersShow()}></i>    
+                                                                </div>
+
+                                                                <div className='mb-2'>
+                                                                    <span className='small'>Adults</span>
+                                                                    <div className='boxselectpax'>
+                                                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                                                            {
+                                                                                seatNumber && seatNumber.map((value, key) => (
+                                                                                    <div key={key}>
+                                                                                        <input 
+                                                                                            type="radio" 
+                                                                                            class="btn-check" 
+                                                                                            autocomplete="off" 
+                                                                                            name="adults" 
+                                                                                            id="adults"  
+                                                                                            checked={values.travellersClass.adults===value.name? "checked": ""}
+                                                                                            value={value.name}
+                                                                                            onChange={(e) => {
+                                                                                                handleChangeTravellersValue(e, setFieldValue,"travellersClass.adults");
+                                                                                            }} 
+                                                                                        />
+                                                                                        <label class="btn" for="btnradio3">{value.name}</label>
+                                                                                    </div>        
+                                                                                ))
+                                                                            }
+                                                                        </div>
+                                                                    </div>    
+                                                                </div>
+
+                                                                <div className='mb-2'>
+                                                                    <span className='small'>Children </span>
+                                                                    <div className='boxselectpax'>
+                                                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                                                            <input type="radio" class="btn-check" name="childrens" id="childrens"  autocomplete="off" />
+                                                                            {
+                                                                                seatNumber && seatNumber.map((value, key) => (
+                                                                                    <div key={key}>
+                                                                                        <input 
+                                                                                            type="radio"
+                                                                                            class="btn-check"
+                                                                                            autocomplete="off"
+                                                                                            name="travellersClass.childrens"
+                                                                                            id="travellersClass.childrens"
+                                                                                            checked={values.travellersClass.childrens===value.name? "checked": ""}
+                                                                                            value={value.name}
+                                                                                            onChange={(e) => {
+                                                                                                handleChangeTravellersValue(e, setFieldValue,"travellersClass.childrens");
+                                                                                            }} 
+                                                                                        />
+                                                                                        <label class="btn" for="btnradio3">{value.name}</label>
+                                                                                    </div>        
+                                                                                ))
+                                                                            }
+                                                                        </div>
+                                                                    </div>    
+                                                                </div>
+
+                                                                <div className='mb-2'>
+                                                                    <span className='small'>Infants </span>
+                                                                    <div className='boxselectpax'>
+                                                                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                                                            {
+                                                                                seatNumber && seatNumber.map((value, key) => (
+                                                                                    <div key={key}>
+                                                                                        <input 
+                                                                                            type="radio"
+                                                                                            class="btn-check"
+                                                                                            autocomplete="off"
+                                                                                            name="travellersClass.infants"
+                                                                                            id="travellersClass.infants"
+                                                                                            checked={values.travellersClass.infants===value.name? "checked": ""}
+                                                                                            value={value.name}
+                                                                                            onChange={(e) => {
+                                                                                                handleChangeTravellersValue(e, setFieldValue,"travellersClass.infants");
+                                                                                            }} 
+                                                                                        />
+                                                                                        <label class="btn" for="btnradio3">{value.name}</label>
+                                                                                    </div>        
+                                                                                ))
+                                                                            }
+                                                                        </div>
+                                                                    </div>    
+                                                                </div>
+
+                                                                <div class="mb-2">
+                                                                    <span class="small">Preffered Class</span>
+                                                                    <select  
+                                                                        class="form-select" 
+                                                                        name='travellersClass.prefferedClass' 
+                                                                        id='travellersClass.prefferedClass'
+                                                                        value={values.travellersClass.prefferedClass}
+                                                                        onChange={(e) => {
+                                                                            handleChangeTravellersValue(e, setFieldValue,"travellersClass.prefferedClass");
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            prefferedClass && prefferedClass.map((value, key) => (
+                                                                                <option 
+                                                                                    key={key} 
+                                                                                    value={value.sortName} 
+                                                                                    
+                                                                                >{value.name}</option>        
+                                                                            ))
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                                <div class="mb-2">
+                                                                    <span class="small">Result Fare Type</span>
+                                                                    <select 
+                                                                        class="form-select" 
+                                                                        name='travellersClass.resultFareType' 
+                                                                        id='travellersClass.resultFareType'
+                                                                        onChange={(e) => {
+                                                                            handleChangeTravellersValue(e, setFieldValue,"travellersClass.resultFareType");
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            resultFareType && resultFareType.map((value, key) => (
+                                                                                <option 
+                                                                                    key={key} 
+                                                                                    value={value.sortName} 
+                                                                                    selected=""
+                                                                                >{value.name}</option>        
+                                                                            ))
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        
+                                                    </div>
+                                                </Grid>
+
+                                                <Grid item className='col'>
+                                                    <div className='search-flights'> 
+                                                    <button 
+                                                            className='btn search-flights' 
+                                                            type='submit'
+                                                        >
+                                                        SEARCH FLIGHTS</button>
+                                                    </div>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                            
                                         </Box>
-
                                     </Box> 
-                                    {/* <div className='row'>
-                                         <div className='col-2'>
-                                            <div className='card'>
-                                                <div className='card-body'>
-                                                     
-                                                </div>
-                                            </div>      
-                                         </div>   
-                                    </div>    */}
+                                        {/* <div className='row'>
+                                            <div className='col-2'>
+                                                <div className='card'>
+                                                    <div className='card-body'>
+                                                        
+                                                    </div>
+                                                </div>      
+                                            </div>   
+                                        </div>    */}
                                 </div>  
-                                
+                                    
                             </Form>
                         )}
                     </Formik>
                 </div>
-
             </div>    
-       </div>
+        </div>
     </div>                                
 
         {/* <div className='lastsearchbox'>

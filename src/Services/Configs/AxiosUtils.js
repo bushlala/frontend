@@ -1,9 +1,10 @@
 import axios from 'axios'
-//import { RM_BASE_URL } from "../../../ReactConfig";
-
-// const BASE_URL = 'http://localhost:3001/';
-const BASE_URL = 'http://13.200.209.97:3001/';
-
+let BASE_URL = '';
+if(process.env.REACT_APP_SERVER_ENV==='Local'){
+    BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
+}else if(process.env.REACT_APP_SERVER_ENV==='Live'){
+    BASE_URL = process.env.REACT_APP_LIVE_API_URL;
+}
 // Here config for response master api
 export const apiConfig = axios.create({
     baseURL: `${BASE_URL}api/`,
