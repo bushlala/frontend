@@ -28,17 +28,17 @@ export default function Header() {
                 {/* <!-- Start::header-content-left --> */}
                 <div className="header-content-left">
                     <div className='mt-3 header-icon'> 
-                    <Link to={`/agent/dashboard`}> <button className='btn btn-outline-primary btn-border'><i class="fa-solid fa-gauge"></i> Dashboard</button> </Link>
+                    <Link to={`/agent/dashboard`}> <button className='btn btn-outline-primary btn-border'><i className="fa-solid fa-gauge"></i> Dashboard</button> </Link>
                     </div>
                     <div className='mt-3 header-icon'> 
-                    {/* <Link to={ `/agent/Flightreview`}><button type="button" class="btn btn-outline-success btn-border"><i class="fa-solid fa-plane-up"></i> Flights</button></Link> */}
+                    {/* <Link to={ `/agent/Flightreview`}><button type="button" className="btn btn-outline-success btn-border"><i className="fa-solid fa-plane-up"></i> Flights</button></Link> */}
                     <Link to={`/agent/flight`}>
-                        <button type="button" class="btn btn-outline-success btn-border"><i class="fa-solid fa-plane-up"></i> Flights</button>
+                        <button type="button" className="btn btn-outline-success btn-border"><i className="fa-solid fa-plane-up"></i> Flights</button>
                     </Link>  
                     </div>
                     <div className='mt-3 header-icon'> 
                     <Link>
-                        <button type="button" class="btn btn-outline-secondary btn-border"><i class="fa-solid fa-hotel"></i> Hotels</button>
+                        <button type="button" className="btn btn-outline-secondary btn-border"><i className="fa-solid fa-hotel"></i> Hotels</button>
                     </Link>
                     </div>   
                 </div>
@@ -54,11 +54,11 @@ export default function Header() {
                         
                     <div className="header-element main-profile-user">
                         <button className='btn wallet-btn'>
-                            <span className='wallet-icon'><i class="fa-solid fa-credit-card"></i> INR</span>
+                            <span className='wallet-icon'><i className="fa-solid fa-credit-card"></i> INR</span>
                             <span className='wallet-text'>0</span>
                         </button>
-                        <a href="" class="header-link">
-                            <i class="fa-solid fa-bell header-link-icon"></i>
+                        <a href="" className="header-link">
+                            <i className="fa-solid fa-bell header-link-icon"></i>
                         </a>
                         <a href={() => false} className="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             <div className="d-flex align-items-center">
@@ -67,7 +67,7 @@ export default function Header() {
                                 </div>
                                 <div className="d-xxl-block my-auto">
                                     <h6 className="user-text mb-0 lh-1 text-dark text-uppercase">{`${userData.data.firstName} ${userData.data.lastName}`}</h6>
-                                    <button class="agent-button bg-primary text-light mt-1">Agent</button>
+                                    <button className="agent-button bg-primary text-light mt-1">Agent</button>
                                 </div>
                             </div>
                         </a>

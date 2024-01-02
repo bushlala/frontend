@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Icon from '../../../../assets/icon/setting.svg'
+//import Icon from '../../../../assets/icon/setting.svg'
 export default function Sidebar() {
   return (
     <>
@@ -53,62 +53,62 @@ export default function Sidebar() {
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/Queries' class="side-menu__item">
                         <i class="fa-solid fa-clipboard-question side-menu__icon"></i>
                         <span class="side-menu__label"> Queries</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-box side-menu__icon"></i>
                         <span class="side-menu__label">My Packages</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-hotel side-menu__icon"></i>
                         <span class="side-menu__label">Mannual Hotel</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-list-check side-menu__icon"></i>
                         <span class="side-menu__label">Manage Markup</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-file side-menu__icon"></i>
                         <span class="side-menu__label">Web Check-in</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-file side-menu__icon"></i>
                         <span class="side-menu__label">Reminder Web Checkin</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-globe side-menu__icon"></i>
                         <span class="side-menu__label">Online Recharge</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-file-invoice side-menu__icon"></i>
                         <span class="side-menu__label">Invoice</span>
                     </Link>
                 </li>  
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-file-invoice side-menu__icon"></i>
                         <span class="side-menu__label">Generate Invoice</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='*' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <i class="fa-solid fa-gear side-menu__icon"></i>
                         <span class="side-menu__label">Setting</span>
                     </Link>
                 </li>

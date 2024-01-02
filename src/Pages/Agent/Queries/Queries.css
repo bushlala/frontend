@@ -1,0 +1,66 @@
+.queries .Qu-box{
+    background-color: #655be6;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    width: 23%;
+}
+.queries .Qu-box2{
+    background-color: #0cb5b5;
+    color: white;
+    border-radius: 10px;
+    margin-left: 20px;
+    padding: 10px;
+    width: 23%;
+}
+.queries .Qu-box3{
+    background-color: #0d388a;
+    color: white;
+    border-radius: 10px;
+    margin-left: 20px;
+    padding: 10px;
+    width: 23%;
+}
+.queries .Qu-box4{
+    background-color: #cc00a9;
+    color: white;
+    border-radius: 10px;
+    margin-left: 20px;
+    padding: 10px;
+    width: 23%;
+}
+.queries .Qu-box5{
+    background-color: #ff6600;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 23%;
+}
+.queries .Qu-box6{
+    background-color: #46cd93;
+    color: white;
+    border-radius: 10px;
+    margin-left: 20px;
+    padding: 10px;
+    width: 23%;
+}
+.queries .Qu-box7{
+    background-color: #6c757d;
+    color: white;
+    border-radius: 10px;
+    margin-left: 20px;
+    padding: 10px;
+    width: 23%;
+}
+.queries .Qu-box8{
+    background-color: #f9392f;
+    color: white;
+    border-radius: 10px;
+    margin-left: 20px;
+    padding: 10px;
+    width: 23%;
+}
+.queries .add-btn{
+    background-color: #6c757d;
+    color: white;
+}

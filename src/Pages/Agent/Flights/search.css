@@ -1,8 +1,12 @@
+.agent-flight-search {
+    margin-bottom: 54px;
+}
 .agent-flight-search  .homeflightsearchouterbox .search-flights .btn{
     position: relative;
     bottom:initial;
-    padding: 17px 29px !important;
+    padding: 17px 13px !important;
     width: 100%;
+    font-size: 14px;
 }
 .agent-flight-search  .homeflightsearchouterbox {
     background-color: #d1d1d1;
@@ -14,6 +18,9 @@
     margin-top: 0;
     margin-bottom: 20px;
     color: #545454 !important;
+}
+.agent-flight-search .react-datepicker-popper {
+    z-index: 99;
 }
 .searchdestinationboxclass {
     padding: 5px;
@@ -56,6 +63,10 @@
     right: 0;
     border: 1px solid #b7b7b7;
     border-radius: 8px;
+    z-index: 9;
+}
+.travellersshow .cross {
+    cursor: pointer;
 }
 .boxselectpax {
     padding: 4px;
@@ -77,4 +88,7 @@
 .boxselectpax  .btn-check:checked + .btn {
     background-color: #e52b30;
     color: #fff;
+}
+.search-check-box{
+    position: relative !important;
 }

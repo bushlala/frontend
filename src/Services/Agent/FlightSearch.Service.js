@@ -8,7 +8,7 @@ export const FlightSearchService = {
       // var requestParam = {
       //     params: request
       // };
-      const response = await apiConfig.request({
+      return await apiConfig.request({
         url: `flight/oneWay`,
         method: "POST",
         data: request,
@@ -19,7 +19,7 @@ export const FlightSearchService = {
         //signal: cancel ? apiConfig[this.get.name].handleRequestCancellation().signal : undefined,
       })
       // returning the product returned by the API
-      return response.data
+      //return response
     },
 
     

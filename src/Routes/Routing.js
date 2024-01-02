@@ -44,9 +44,14 @@ import MyBooking from "../Pages/Agent/MyBooking/Booking.jsx";
 // Agent Flight Booking
 import Flightreview from "../Pages/Agent/Flights/FlightReview/Flightreview.jsx";
 import FlightBook from "../Pages/Agent/Flights/FlightBook/FlightBook.jsx"
+import FlightSearchList from "../Pages/Agent/Flights/Component/FlightSearchList.jsx"
+
+// Agent Queries 
+import AgentQueries from "../Pages/Agent/Queries/Queries.jsx" 
+import AgentQueriesAdd from "../Pages/Agent/Queries/QueriesAdd/QueriesAdd.jsx";
 
 import Nopage from "./NoPage.jsx";
-import Flight from "@mui/icons-material/Flight.js";
+//import Flight from "@mui/icons-material/Flight.js";
 
 
 /// Calling Arrow Routing Function
@@ -100,7 +105,6 @@ const Routing = () => {
                 element={
                     <PrivateRoute>
                         <AgentFlightSearch />
-                       
                     </PrivateRoute>
                 }
             />
@@ -112,11 +116,35 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
+            <Route
+                path="agent/FlightSearchList"
+                element={
+                    <PrivateRoute>
+                        <FlightSearchList />
+                    </PrivateRoute>
+                }
+            />
              <Route
                 path="agent/FlightBook"
                 element={
                     <PrivateRoute>
                         <FlightBook />
+                    </PrivateRoute>
+                }
+            />
+              <Route
+                path="agent/Queries"
+                element={
+                    <PrivateRoute>
+                        <AgentQueries />
+                    </PrivateRoute>
+                }
+            />
+             <Route
+                path="agent/QueriesAdd"
+                element={
+                    <PrivateRoute>
+                        <AgentQueriesAdd />
                     </PrivateRoute>
                 }
             />

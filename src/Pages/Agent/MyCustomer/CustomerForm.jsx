@@ -12,15 +12,15 @@ export default function CustomerForm() {
             <div className="container-fluid">
                     {/* <!-- PAGE-HEADER --> */}
                     <div className="page-header">
-                    <h1 className="page-title my-auto">Add Customer</h1>
-                    <div>
-                        <ol className="breadcrumb mb-0">
-                        <li className="breadcrumb-item">
-                        <Link to={`/`}>Dashboard</Link>
-                        </li>
-                        <li className="breadcrumb-item active" aria-current="page">Add Customer</li>
-                        </ol>
-                    </div>
+                        <h1 className="page-title my-auto">Add Customer</h1>
+                        <div>
+                            <ol className="breadcrumb mb-0">
+                            <li className="breadcrumb-item">
+                            <Link to={`/`}>Dashboard</Link>
+                            </li>
+                            <li className="breadcrumb-item active" aria-current="page">Add Customer</li>
+                            </ol>
+                        </div>
                     </div>
                     <div className='row'>
                         <div class="col-xl-12">
