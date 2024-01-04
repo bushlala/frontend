@@ -1,0 +1,41 @@
+.addpackages .header-box{
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+    padding: 10px;
+}
+.addpackages .banner-img{
+    width: 102px;
+    border-radius: 5px;
+}
+.addpackages .hedding-text{
+    margin-left: 50px;
+    font-size: 23px;
+}
+.addpackages .hedding-text2{
+    margin-left: 50px;
+    font-size: 13px;
+}
+
+.addpackages .middle-box{
+   background-color: #f0f0f0;
+   padding: 10px;
+}
+.addpackages .card-box{
+    border: 1px solid #f0f0f0;
+}
+.addpackages .card-box-day{
+    background-color: #26a69a;
+    color: white;
+    padding: 15px;
+}
+.addpackages .card-box-Write{
+    background-color: #f1f9ff;
+    padding: 30px;
+}
+.addpackages .edit-btn{
+        margin-left: 56px;
+}
+.addpackages .pop-model{
+    width: 25%;
+
+}

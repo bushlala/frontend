@@ -41,6 +41,38 @@ export default function FlightSearchList({tripList}) {
                                 </div>
                             </div>
                             <div className='col-9'>
+                                {/* <div className='flight-search-calouter'>
+                                    <div className='btn-group'>
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox" value="1" />
+                                            <label class="btn search-check-box" for="datesbox">04-01-2024</label>
+                                        </div>
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox2" value="2" />
+                                            <label class="btn search-check-box" for="datesbox2">05-01-2024</label>
+                                        </div>
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox3" value="3" />
+                                            <label class="btn search-check-box" for="datesbox3">06-01-2024</label>
+                                        </div>
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox4" value="4" />
+                                            <label class="btn search-check-box" for="datesbox4">07-01-2024</label>
+                                        </div>
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox5" value="5" />
+                                            <label class="btn search-check-box" for="datesbox5">08-01-2024</label>
+                                        </div>
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox6" value="6" />
+                                            <label class="btn search-check-box" for="datesbox6">09-01-2024</label>
+                                        </div>
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox7" value="7" />
+                                            <label class="btn search-check-box" for="datesbox7">10-01-2024</label>
+                                        </div>
+                                    </div>
+                                </div> */}
                                 <div className='flight-item-list'>
                                     {
                                         tripList && tripList.map((value, key) => (

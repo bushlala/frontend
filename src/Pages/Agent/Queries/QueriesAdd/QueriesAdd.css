@@ -1,0 +1,8 @@
+.queriesadd .save-btn{
+    float: right;
+}
+.queriesadd .cancel-btn{
+    float: right;
+    background-color: #ced4da;
+    margin-right: 10px;
+}

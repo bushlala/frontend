@@ -59,19 +59,19 @@ export default function Sidebar() {
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/Packages' class="side-menu__item">
                         <i class="fa-solid fa-box side-menu__icon"></i>
                         <span class="side-menu__label">My Packages</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/MannualHotel' class="side-menu__item">
                         <i class="fa-solid fa-hotel side-menu__icon"></i>
                         <span class="side-menu__label">Mannual Hotel</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/ManageMarkup' class="side-menu__item">
                         <i class="fa-solid fa-list-check side-menu__icon"></i>
                         <span class="side-menu__label">Manage Markup</span>
                     </Link>

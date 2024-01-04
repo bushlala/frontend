@@ -50,6 +50,16 @@ import FlightSearchList from "../Pages/Agent/Flights/Component/FlightSearchList.
 import AgentQueries from "../Pages/Agent/Queries/Queries.jsx" 
 import AgentQueriesAdd from "../Pages/Agent/Queries/QueriesAdd/QueriesAdd.jsx";
 
+// My Packages
+import AgentPackages from "../Pages/Agent/MyPackages/Packages.jsx";
+import AgentAddPackages from "../Pages/Agent/MyPackages/AddPackages/AddPackages.jsx";
+
+// Mannual Hotel Booking
+import AgentMannualHotel from "../Pages/Agent/HotelBooking/HotelBooking.jsx"
+
+// Manage Markup
+import AgentManageMarkup from "../Pages/Agent/ManageMarkup/ManageMarkup.jsx"
+
 import Nopage from "./NoPage.jsx";
 //import Flight from "@mui/icons-material/Flight.js";
 
@@ -61,8 +71,9 @@ const Routing = () => {
         <Provider store={StoreData}>
             {/* <BrowserRouter> */}
             <Routes>
-            
-            
+
+            {/* Home */}
+
             <Route exact path='/Home' element={<Home />}></Route>
             <Route
                 path="/login"
@@ -80,8 +91,16 @@ const Routing = () => {
                     </GuestRoute>
                 }
             />
+
+             {/* Error page */}  
+
             <Route exact path='*' element={<Nopage />} />
+
+
+
             <Route exact path='/register' element={<Register />}></Route>
+
+
             {/* Here route for agent */}
             <Route
                 path="agent/dashboard"
@@ -148,14 +167,38 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-            {/* <Route
-                path="/agent/mycustomer"
+            <Route
+                path="agent/Packages"
                 element={
                     <PrivateRoute>
-                        < MyCustomer />
+                        <AgentPackages />
                     </PrivateRoute>
                 }
-            /> */}
+            />
+            <Route
+                path="agent/AddPackages"
+                element={
+                    <PrivateRoute>
+                        <AgentAddPackages />
+                    </PrivateRoute>
+                }
+            />
+             <Route
+                path="agent/MannualHotel"
+                element={
+                    <PrivateRoute>
+                        <AgentMannualHotel />
+                    </PrivateRoute>
+                }
+            />
+             <Route
+                path="agent/ManageMarkup"
+                element={
+                    <PrivateRoute>
+                        <AgentManageMarkup />
+                    </PrivateRoute>
+                }
+            />
             <Route
                 path="agent/customer/add"
                 element={
@@ -172,6 +215,8 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
+
+            
             {/* <Route exact path='/dashboard' element={<Dashboard />}></Route> */}
             
             <Route exact path='admin/agent' element={<Agent />}></Route>
