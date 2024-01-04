@@ -3,8 +3,8 @@ import toast from 'react-hot-toast';
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 //import AgentLayout from '../../../Component/Layout/Agent/AgentLayout';
-import AgentLayout from '../../../Component/Layout/Agent/AgentLayout';
-//import auFlag from '../../../assets/images/au.svg'
+import Header from '../../../Component/Layout/Agent/Header/Header';
+import auFlag from '../../../assets/images/au.svg'
 import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
 import { Box, Grid, InputLabel, Link } from '@mui/material';
 import DatePicker from "react-datepicker";
@@ -23,13 +23,13 @@ export default function AgentFlightSearch() {
 
     const initialValues = {
         tripType: "1",
-        fromcitydesti: "DEL - NEW DELHI",
-        fromDestinationFlight: "DEL-India",
-        tocitydesti: "BOM - MUMBAI",
-        toDestinationFlight: "BOM-India",
+        fromCityDestination: "",
+        fromDestinationFlight: "",
+        toCityDestination: "",
+        toDestinationFlight: "",
         journeyDateOne: departureDate,
         journeyDateRound:"",
-        travellersshow: "1 Pax, Economy",
+        travellersShow: "1 Pax, Economy",
         ADULT: "1",
         CHILD: "0",
         INFANT: "0",
@@ -122,10 +122,10 @@ export default function AgentFlightSearch() {
     ];
 
     const validationSchema = Yup.object().shape({
-        fromcitydesti: Yup.string()
+        fromCityDestination: Yup.string()
             .required("Title is required"),
             //.max(60, 'First name maximum length is 60'),
-        tocitydesti: Yup.string()
+        toCityDestination: Yup.string()
             .required("First name is required")
     });
 
@@ -173,17 +173,20 @@ export default function AgentFlightSearch() {
         || fieldNamme === "travellersClass.infants"){
             console.log("reInitialValues",reInitialValues);
             let seatCount = 0;
-            let travellersShowArr   =  reInitialValues.travellersshow.split(',');
+            let travellersShowArr   =  reInitialValues.travellersShow.split(',');
             if(fieldNamme === "travellersClass.prefferedClass"){
                 travellersShowArr[1]    =  event.target.value;
             }else if(fieldNamme === "travellersClass.adults"){
                 reInitialValues.travellersClass.adults = event.target.value;
+                reInitialValues.ADULT = event.target.value;
                 setReInitialValues(reInitialValues);
             }else if(fieldNamme === "travellersClass.childrens") {
                 reInitialValues.travellersClass.childrens = event.target.value;
+                reInitialValues.CHILD = event.target.value;
                 setReInitialValues(reInitialValues);
             }else if(fieldNamme === "travellersClass.infants") {
                 reInitialValues.travellersClass.infants = event.target.value;
+                reInitialValues.INFANT = event.target.value;
                 setReInitialValues(reInitialValues);
             }
             let adultCount = parseInt(reInitialValues.travellersClass.adults);
@@ -205,33 +208,35 @@ export default function AgentFlightSearch() {
                 // Retain the existing values
                 ...prevState,
                 // update value
-                travellersshow: travellersShowArr[0]+","+travellersShowArr[1],
+                travellersShow: travellersShowArr[0]+","+travellersShowArr[1],
             }))
         }
     }
 
     const handleOnSubmit = async (values, { resetForm }) => {
+        console.log("set form");
         // For Destinations 
-        setLoading(true);
-        const checkFromDestinationFlight = cityList.find(obj => {
-            return obj.city === values.fromDestinationFlight;
+        //setLoading(true);
+        const checkFromCityDestination = cityList.find(obj => {
+            return obj.city === values.fromCityDestination;
         });
-        if(checkFromDestinationFlight){
-            values.fromcitydesti = checkFromDestinationFlight.destinationFlight
+        if(checkFromCityDestination){
+            values.fromDestinationFlight = checkFromCityDestination.destinationFlight
         }
 
         // For To 
-        const checkToCityDesti = cityList.find(obj => {
-            return obj.city === values.tocitydesti;
+        const checkToCityDestination = cityList.find(obj => {
+            return obj.city === values.toCityDestination;
         });
-        if(checkToCityDesti){
-            values.toDestinationFlight = checkToCityDesti.destinationFlight
+        if(checkToCityDestination){
+            values.toDestinationFlight = checkToCityDestination.destinationFlight
         }
         if(values.journeyDateOne){
             values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
         }
         
-        //console.log("values",values);
+        console.log("values",values);
+        //return false;
         FlightSearchService.Search(values).then(async (response) => {
             setLoading(false);
             console.log("loading",loading);
@@ -239,17 +244,8 @@ export default function AgentFlightSearch() {
             if(response.status === 200){
                 if(response.data.status){
                     console.log("result",response.data.data);
-                    if(response.data.data.searchResult){
-                        if(response.data.data.status.httpStatus){
-                            if(response.data.data.searchResult){
-                                console.log("result",response.data.data.searchResult);
-                                if(response.data.data.searchResult && response.data.data.searchResult.tripInfos){
-                                    console.log("Onward",response.data.data.searchResult.tripInfos.ONWARD);
-                                    setTripList(response.data.data.searchResult.tripInfos.ONWARD)  
-                                }
-                            }
-                        }
-                    }
+                    setTripList(response.data.data)
+                    
                 }else{
                     toast.error(response.data.message);
                 }
@@ -284,9 +280,9 @@ export default function AgentFlightSearch() {
   return (
     <>
     
-    <AgentLayout />
+    <Header />
     
-    <div className="main-content app-content p-0">
+    <div className="main-content p-0">
         <div className="">
             <div className='agent-flight-search'>
                 <div className='homeflightsearchouterbox'>
@@ -317,14 +313,17 @@ export default function AgentFlightSearch() {
                                                 
                                                 <Grid item className='col'>
                                                     <div className='form-group field-label'>
-                                                        <InputLabel className=''>From</InputLabel>
+                                                        <InputLabel className=''>From</InputLabel> 
+                                                        <div class="swapbtn down"><i class="fa fa-exchange" aria-hidden="true"></i></div>
+                                                   
                                                         <select 
                                                             className='form-control' 
-                                                            name='fromDestinationFlight'
-                                                            id='fromDestinationFlight'
-                                                            value={values.fromDestinationFlight}
+                                                            name='fromCityDestination'
+                                                            id='fromCityDestination'
+                                                            value={values.fromCityDestination}
                                                             onChange={handleChange}
                                                         >
+                                                            <option value="" >Select From City</option>
                                                             {
                                                                 cityList && cityList.map((value, key) => (
                                                                     <option key={key} value={value.city} >{value.city}</option>
@@ -371,11 +370,12 @@ export default function AgentFlightSearch() {
                                                         <InputLabel className=''>To</InputLabel>
                                                         <select 
                                                             className='form-control'
-                                                            name='tocitydesti'
-                                                            id='tocitydesti'
-                                                            value={values.tocitydesti}
+                                                            name='toCityDestination'
+                                                            id='toCityDestination'
+                                                            value={values.toCityDestination}
                                                             onChange={handleChange}
                                                          >
+                                                            <option value="" >Select To City</option>
                                                             {
                                                                 cityList && cityList.map((value, key) => (
                                                                     <option key={key} value={value.city} >{value.city}</option>
@@ -389,7 +389,7 @@ export default function AgentFlightSearch() {
                                                     <div className='form-group field-label'>
                                                         <InputLabel className=''>Departure</InputLabel>
                                                         <DatePicker 
-                                                            className='form-control'
+                                                            className='form-control w-100'
                                                             selected={departureDate}
                                                             //dateFormat="DD/MM/YYYY"
                                                             //startDate={startDate}
@@ -418,7 +418,7 @@ export default function AgentFlightSearch() {
                                                 <Grid item className='col'>
                                                     <div className='form-group field-label'>
                                                         <InputLabel className=''>Travellers & Class</InputLabel>
-                                                        <input className='form-control' name='travellersshow' id='travellersshow' type='text' value={values.travellersshow} onClick={()=>onChangeTravellersShow()}  />
+                                                        <input className='form-control' name='travellersShow' id='travellersShow' type='text' value={values.travellersShow} onClick={()=>onChangeTravellersShow()}  />
                                                         {
                                                             travellersModelShow && 
                                                             <div className='travellersshow'>
@@ -587,11 +587,14 @@ export default function AgentFlightSearch() {
                 </div>
             </div>  
             {
-            loading ? <TailSpin color="red" radius={"8px"} />
-            :
-            <FlightSearchList
-                searchListData = {tripList}
-            /> 
+                //console.log("loading",loading)
+            // loading === true ? <TailSpin color="red" radius={"8px"} />
+            // :
+            <div className='container'>
+                <FlightSearchList
+                    tripList = {tripList}
+                /> 
+            </div>    
             }   
         </div>
     </div>

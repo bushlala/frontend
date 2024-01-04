@@ -1,32 +1,32 @@
-.card-body{
+.flightreview .card-body{
     background-color: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 5px ;
 }
-.re-layover{
+.flightreview .re-layover{
     background-color: aquamarine;
     border-radius: 50px;
 }
-.re-card{
+.flightreview .re-card{
     border-radius: 20px;
     box-shadow: 5px ;
     
 }
-.re-butoon{
+.flightreview .re-butoon{
     margin-right: 10px;
 }
-.btn-coupan{
+.flightreview .btn-coupan{
   margin-left: 5px;
 }
-.re-card-mib{
+.flightreview .re-card-mib{
     background-color: #f4f4f4;
     margin-top: 10px;
 }
-.re-seat{
+.flightreview .re-seat{
     margin-top: 13px;
 }
-.open-button {
+.flightreview .open-button {
     background-color: red;
     color: white;
     padding-top: 13px;

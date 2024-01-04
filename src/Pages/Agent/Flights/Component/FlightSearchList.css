@@ -99,7 +99,33 @@
 }
 
 
-
+.sharefooterbox {
+    width: 430px;
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    background-color: #FFFFFF;
+    z-index: 999;
+    box-shadow: 0px 0px 100px #000000a1;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 15px;
+    font-size: 13px;
+    /* display: none; */
+}
+.sharefooterbox .heading {
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    background-color: #eee;
+    padding: 5px 10px;
+    position: relative;
+    border-radius: 4px;
+}
+.sharefooterbox .loadshareflightbox {
+    max-height: 265px;
+    overflow: auto;
+}
 /****Flight-Fillter****/
 
 .btn-check:checked + .btn-outline-light {

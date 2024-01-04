@@ -54,8 +54,8 @@ export default function Header() {
                         
                     <div className="header-element main-profile-user">
                         <button className='btn wallet-btn'>
-                            <span className='wallet-icon'><i className="fa-solid fa-credit-card"></i> INR</span>
-                            <span className='wallet-text'>0</span>
+                            <span className='wallet-icon'><i class="fa-solid fa-credit-card"></i> INR</span>
+                            <span className='wallet-text fw-bold'>0</span>
                         </button>
                         <a href="" className="header-link">
                             <i className="fa-solid fa-bell header-link-icon"></i>
