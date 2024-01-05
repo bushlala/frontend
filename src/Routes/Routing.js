@@ -60,6 +60,12 @@ import AgentMannualHotel from "../Pages/Agent/HotelBooking/HotelBooking.jsx"
 // Manage Markup
 import AgentManageMarkup from "../Pages/Agent/ManageMarkup/ManageMarkup.jsx"
 
+// Web Check-in
+import AgentWebCheck from "../Pages/Agent/WebCheck-in/WebCheck.jsx"
+
+// Reminder Web Checkin
+import AgentReminderWebCheckin from "../Pages/Agent/ReminderWebCheck/ReminderWebCheck.jsx"
+
 import Nopage from "./NoPage.jsx";
 //import Flight from "@mui/icons-material/Flight.js";
 
@@ -191,7 +197,7 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-             <Route
+            <Route
                 path="agent/ManageMarkup"
                 element={
                     <PrivateRoute>
@@ -199,6 +205,23 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
+             <Route
+                path="agent/WebCheck-In"
+                element={
+                    <PrivateRoute>
+                        <AgentWebCheck />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="agent/ReminderWebCheck-in"
+                element={
+                    <PrivateRoute>
+                        <AgentReminderWebCheckin />
+                    </PrivateRoute>
+                }
+            />
+            
             <Route
                 path="agent/customer/add"
                 element={

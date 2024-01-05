@@ -19,6 +19,7 @@ export default function AgentFlightSearch() {
     const [minDate] = React.useState(new Date());
     const [returnDate, setReturnDate] = React.useState();
     const [loading, setLoading] = React.useState(false);
+    const [citySwapArrowStatus,setCitySwapArrowStatus] = React.useState(true);
 
 
     const initialValues = {
@@ -123,10 +124,10 @@ export default function AgentFlightSearch() {
 
     const validationSchema = Yup.object().shape({
         fromCityDestination: Yup.string()
-            .required("Title is required"),
+            .required("Form city is required"),
             //.max(60, 'First name maximum length is 60'),
         toCityDestination: Yup.string()
-            .required("First name is required")
+            .required("To city is required")
     });
 
     const nameForm = React.useRef(null)
@@ -213,10 +214,21 @@ export default function AgentFlightSearch() {
         }
     }
 
+    const handleClickCitySwap=(fromCityDestination,toCityDestination,setFieldValue) => {
+        if(fromCityDestination && toCityDestination){
+            if(citySwapArrowStatus){
+                setCitySwapArrowStatus(false);
+            }else{
+                setCitySwapArrowStatus(true);
+            }
+            setFieldValue("fromCityDestination",toCityDestination);
+            setFieldValue("toCityDestination",fromCityDestination);
+        }   
+    }
     const handleOnSubmit = async (values, { resetForm }) => {
         console.log("set form");
         // For Destinations 
-        //setLoading(true);
+        setLoading(true);
         const checkFromCityDestination = cityList.find(obj => {
             return obj.city === values.fromCityDestination;
         });
@@ -234,11 +246,19 @@ export default function AgentFlightSearch() {
         if(values.journeyDateOne){
             values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
         }
+
+        // const currentMoment = Moment(values.journeyDateOne).subtract(4, 'days');
+        // const endMoment = Moment().add(1, 'days');
+        // while (currentMoment.isBefore(endMoment, 'day')) {
+        //     console.log(`Loop at ${currentMoment.format('YYYY-MM-DD')}`);
+        //     currentMoment.add(1, 'days');
+        // }
         
         console.log("values",values);
-        //return false;
+        setLoading(false);
+        return false;
         FlightSearchService.Search(values).then(async (response) => {
-            setLoading(false);
+            setLoading(true);
             console.log("loading",loading);
             //console.log("result",response);
             if(response.status === 200){
@@ -247,7 +267,7 @@ export default function AgentFlightSearch() {
                     setTripList(response.data.data)
                     
                 }else{
-                    toast.error(response.data.message);
+                    toast.error(response.data.message.message);
                 }
             }else{
                 toast.error("Something went wrong");
@@ -269,7 +289,7 @@ export default function AgentFlightSearch() {
             // }else{
             //     toast.error(response.data.message);
             // }
-            setLoading(true);
+            setLoading(false);
         }).catch((e) => {
             console.log(e);
             toast.error('Something went wrong');
@@ -314,7 +334,9 @@ export default function AgentFlightSearch() {
                                                 <Grid item className='col'>
                                                     <div className='form-group field-label'>
                                                         <InputLabel className=''>From</InputLabel> 
-                                                        <div class="swapbtn down"><i class="fa fa-exchange" aria-hidden="true"></i></div>
+                                                        <div class={`swapbtn ${citySwapArrowStatus ? 'down':''}`} onClick={()=>handleClickCitySwap(values.fromCityDestination,values.toCityDestination,setFieldValue)}>
+                                                            <i class="fa fa-exchange" aria-hidden="true"></i>
+                                                        </div>
                                                    
                                                         <select 
                                                             className='form-control' 
@@ -330,6 +352,9 @@ export default function AgentFlightSearch() {
                                                                 ))
                                                             }
                                                         </select>
+                                                        {
+                                                            errors.fromCityDestination && <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.fromCityDestination}</Box>
+                                                        }
                                                         {/* <div className='searchdestinationboxclass'>
                                                             <div className='list'>
                                                                 DDN - Delta Downs, Australia
@@ -374,6 +399,7 @@ export default function AgentFlightSearch() {
                                                             id='toCityDestination'
                                                             value={values.toCityDestination}
                                                             onChange={handleChange}
+                                                            //isInvalid={!!errors.toCityDestination}
                                                          >
                                                             <option value="" >Select To City</option>
                                                             {
@@ -382,6 +408,9 @@ export default function AgentFlightSearch() {
                                                                 ))
                                                             }
                                                         </select>
+                                                        {
+                                                            errors.toCityDestination && <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.toCityDestination}</Box>
+                                                        }
                                                     </div>
                                                 </Grid>
 
@@ -560,11 +589,24 @@ export default function AgentFlightSearch() {
                                                 </Grid>
                                                 <Grid item className='col'>
                                                     <div className='search-flights'> 
-                                                    <button 
-                                                            className='btn search-flights' 
-                                                            type='submit'
-                                                        >
-                                                        SEARCH FLIGHTS</button>
+                                                    {
+                                                        loading ?
+                                                            <button 
+                                                                className='btn search-flights' 
+                                                                type='button'
+                                                                disabled ='disabled'
+                                                            >Please wait</button>
+                                                            
+                                                            :
+                                                            <button 
+                                                                className='btn search-flights' 
+                                                                type='submit'
+                                                                disabled = {loading? 'disabled' : ''}
+                                                            > SEARCH FLIGHTS</button>
+                                                            
+
+                                                    }
+                                                    
                                                     </div>
                                                 </Grid>
                                             </Grid>
@@ -587,9 +629,8 @@ export default function AgentFlightSearch() {
                 </div>
             </div>  
             {
-                //console.log("loading",loading)
-            // loading === true ? <TailSpin color="red" radius={"8px"} />
-            // :
+            loading ? <TailSpin color="red" radius={"8px"} />
+            :
             <div className='container'>
                 <FlightSearchList
                     tripList = {tripList}

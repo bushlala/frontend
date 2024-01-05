@@ -7,7 +7,7 @@ export default function ManageMarkup() {
     <>
       <Header />
       <Sidebar />
-      <div className="main-content app-content Packages">
+      <div className="main-content app-content">
             <div className="container-fluid">
                 <div className='row'>
                      <div class="col-xl-12">

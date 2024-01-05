@@ -1,14 +1,16 @@
-import React from 'react'
-import Button from '@mui/material/Button';
-import HomeIcon from '@mui/icons-material/Home';
-import HotelIcon from '@mui/icons-material/Hotel';
-import FlightIcon from '@mui/icons-material/Flight';
-import Badge from '@mui/material/Badge';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import React from 'react';
+import { Toaster } from 'react-hot-toast';
+// import Button from '@mui/material/Button';
+// import HomeIcon from '@mui/icons-material/Home';
+// import HotelIcon from '@mui/icons-material/Hotel';
+// import FlightIcon from '@mui/icons-material/Flight';
+// import Badge from '@mui/material/Badge';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
 import './Header.css';
 import { Link } from 'react-router-dom';
 import { AuthAPI } from '../../../../Services/Auth.Service';
 const profile =require('../../../../assets/images/profile.jpg');
+
 
 
 export default function Header() {
@@ -21,6 +23,10 @@ export default function Header() {
     const jwtToken = userData.data.token;
   return (
     <>
+        <Toaster
+            position="top-right"
+            reverseOrder={false}
+        />
        {/* <!-- app-header --> */}
        <header className="app-header">
             {/* <!-- Start::main-header-container --> */}
