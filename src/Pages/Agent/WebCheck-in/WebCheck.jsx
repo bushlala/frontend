@@ -42,7 +42,7 @@ export default function WebCheck() {
         <div className="main-content app-content WebCheck">
             <div className="container-fluid">
                 <div className="page-header">
-                    <h4 className="my-auto mt-4">Web Check-in</h4>
+                    <h4 className="my-auto mt-4 fw-bold">Web Check-in</h4>
                 </div>
                 <div className='row'>
                     <div class="col-xl-3">

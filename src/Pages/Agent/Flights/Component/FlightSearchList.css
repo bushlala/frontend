@@ -153,7 +153,13 @@
     background-color: #e52b30;
     color: #fff;
 }
-
+.flight-item-flight-moodal .nav-pills .nav-link.active, .flight-item-flight-moodal .nav-pills .show > .nav-link {
+    color: #ffffff;
+    background-color: #6c5ffc !important;
+}
+.flight-item-flight-moodal .nav-pills .nav-link {
+    color: #464647;
+}
 /****Flight-Fillter****/
 
 .btn-check:checked + .btn-outline-light {

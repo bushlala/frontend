@@ -1,16 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Header from '../../../Component/Layout/Agent/Header/Header'
-import Sidebar from '../../../Component/Layout/Agent/Sidebar/Sidebar'
+import Layout from '../../../Component/Layout/Agent/AgentLayout'
 import './Booking.css';
 
   export default function Index() {
 
   return (
     <>
-       <Header />
-       <Sidebar />
-       <div className="main-content app-content">
+       <Layout />
+       <div className="main-content app-content booking">
             <div className="container-fluid">
       {/* <!-- PAGE-HEADER --> */}
                 <div className="page-header">

@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 //import AgentLayout from '../../../Component/Layout/Agent/AgentLayout';
-import Header from '../../../Component/Layout/Agent/Header/Header';
+import Header from '../../../Component/Layout/Agent/Header/SearchHeader';
 import auFlag from '../../../assets/images/au.svg'
 import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
 import { Box, Grid, InputLabel, Link } from '@mui/material';
@@ -150,7 +150,7 @@ export default function AgentFlightSearch() {
     };
 
     const changeTripType = async (tripType) => {
-        console.log(tripType);
+        //console.log(tripType);
         setTripType(tripType);
     }
 
@@ -162,11 +162,7 @@ export default function AgentFlightSearch() {
         }
     }
 
-    const handleChangeTravellersValue = (event,setFieldValue,fieldNamme) => {
-        
-        //console.log("fieldNamme",fieldNamme);
-        //console.log("event",event.target.value);
-        //console.log("initialValues",initialValues);
+    const handleChangeTravellersValue = (event,setFieldValue,values,fieldNamme) => {
         setFieldValue(fieldNamme,event.target.value);
         if(fieldNamme === "travellersClass.prefferedClass" 
         || fieldNamme === "travellersClass.adults"
@@ -178,39 +174,63 @@ export default function AgentFlightSearch() {
             if(fieldNamme === "travellersClass.prefferedClass"){
                 travellersShowArr[1]    =  event.target.value;
             }else if(fieldNamme === "travellersClass.adults"){
-                reInitialValues.travellersClass.adults = event.target.value;
-                reInitialValues.ADULT = event.target.value;
-                setReInitialValues(reInitialValues);
+
+                setFieldValue("travellersClass.adults",event.target.value);
+                setFieldValue("ADULT",event.target.value);
+                console.log("values",values);
+
+                let adultCount = parseInt(event.target.value);
+                if(adultCount){
+                    seatCount+=adultCount;
+                }
+                let childrenCount = parseInt(values.travellersClass.childrens);
+                if(childrenCount){
+                    seatCount+=childrenCount;
+                }
+                let infantCount = parseInt(values.travellersClass.infants);
+                if(infantCount){
+                    seatCount+=infantCount;
+                }
+                
+                
             }else if(fieldNamme === "travellersClass.childrens") {
-                reInitialValues.travellersClass.childrens = event.target.value;
-                reInitialValues.CHILD = event.target.value;
-                setReInitialValues(reInitialValues);
+                setFieldValue("travellersClass.childrens",event.target.value);
+                setFieldValue("CHILD",event.target.value);
+
+                let adultCount = parseInt(values.travellersClass.adults);
+                if(adultCount){
+                    seatCount+=adultCount;
+                }
+                
+                let childrenCount = parseInt(event.target.value);
+                if(childrenCount){
+                    seatCount+=childrenCount;
+                }
+                let infantCount = parseInt(values.travellersClass.infants);
+                if(infantCount){
+                    seatCount+=infantCount;
+                }
             }else if(fieldNamme === "travellersClass.infants") {
-                reInitialValues.travellersClass.infants = event.target.value;
-                reInitialValues.INFANT = event.target.value;
-                setReInitialValues(reInitialValues);
-            }
-            let adultCount = parseInt(reInitialValues.travellersClass.adults);
-            if(adultCount){
-                seatCount+=adultCount;
-            }
-            //console.log("reInitialValues.travellersClass.childrens",reInitialValues.travellersClass.childrens);
-            let childrenCount = parseInt(reInitialValues.travellersClass.childrens);
-            //console.log("childrenCount",childrenCount);
-            if(childrenCount){
-                seatCount+=childrenCount;
-            }
-            let infantCount = parseInt(reInitialValues.travellersClass.infants);
-            if(infantCount){
-                seatCount+=infantCount;
+                setFieldValue("travellersClass.infants",event.target.value);
+                setFieldValue("INFANT",event.target.value);
+
+                let adultCount = parseInt(values.travellersClass.adults);
+                if(adultCount){
+                    seatCount+=adultCount;
+                }
+                
+                let childrenCount = parseInt(values.travellersClass.childrens);
+
+                if(childrenCount){
+                    seatCount+=childrenCount;
+                }
+                let infantCount = parseInt(event.target.value);
+                if(infantCount){
+                    seatCount+=infantCount;
+                }
             }
             travellersShowArr[0] = seatCount+" Pax";
-            setReInitialValues(prevState => ({
-                // Retain the existing values
-                ...prevState,
-                // update value
-                travellersShow: travellersShowArr[0]+","+travellersShowArr[1],
-            }))
+            setFieldValue("travellersShow",travellersShowArr[0]+","+travellersShowArr[1]);
         }
     }
 
@@ -225,10 +245,39 @@ export default function AgentFlightSearch() {
             setFieldValue("toCityDestination",fromCityDestination);
         }   
     }
+    const handleChangeDate = (date) => {
+        reInitialValues.departureDate = date;
+        //console.log("reInitialValues",reInitialValues);
+        setReInitialValues(reInitialValues);
+        setLoading(true);
+        FlightSearchService.Search(reInitialValues).then(async (response) => {
+            setLoading(true);
+            console.log("loading",loading);
+            //console.log("result",response);
+            if(response.status === 200){
+                if(response.data.status){
+                    console.log("result",response.data.data);
+                    setTripList(response.data.data)
+                    
+                }else{
+                    toast.error(response.data.message.message);
+                }
+            }else{
+                toast.error("Something went wrong");
+            }
+            setLoading(false);
+        }).catch((e) => {
+            console.log(e);
+            toast.error('Something went wrong');
+            setLoading(false);
+        });
+    
+    }
     const handleOnSubmit = async (values, { resetForm }) => {
         console.log("set form");
         // For Destinations 
         setLoading(true);
+        setTravellersModelShow(false);
         const checkFromCityDestination = cityList.find(obj => {
             return obj.city === values.fromCityDestination;
         });
@@ -243,20 +292,31 @@ export default function AgentFlightSearch() {
         if(checkToCityDestination){
             values.toDestinationFlight = checkToCityDestination.destinationFlight
         }
+        let startDate;
+        let endDate;
         if(values.journeyDateOne){
+            startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD');
+            endDate = Moment(startDate, "YYYY-MM-DD").add(5, 'days').format('YYYY-MM-DD');
             values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
+            
+        }
+        var dates = [];
+        //const startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD')
+        console.log("startDate", startDate);
+        console.log("endDate", endDate);
+        const start = Moment(startDate);
+        const end = Moment(endDate);
+
+        while(!start.isSame(end)) {
+            dates.push(start.format("MM-DD-YYYY"));
+            start.add(1, 'day');
         }
 
-        // const currentMoment = Moment(values.journeyDateOne).subtract(4, 'days');
-        // const endMoment = Moment().add(1, 'days');
-        // while (currentMoment.isBefore(endMoment, 'day')) {
-        //     console.log(`Loop at ${currentMoment.format('YYYY-MM-DD')}`);
-        //     currentMoment.add(1, 'days');
-        // }
-        
+        values.dateArr = dates;
         console.log("values",values);
-        setLoading(false);
-        return false;
+        setReInitialValues(values);
+        //setLoading(false);
+        //return false;
         FlightSearchService.Search(values).then(async (response) => {
             setLoading(true);
             console.log("loading",loading);
@@ -472,7 +532,7 @@ export default function AgentFlightSearch() {
                                                                                             checked={values.travellersClass.adults===value.name? "checked": ""}
                                                                                             value={value.name}
                                                                                             onChange={(e) => {
-                                                                                                handleChangeTravellersValue(e, setFieldValue,"travellersClass.adults");
+                                                                                                handleChangeTravellersValue(e, setFieldValue,values,"travellersClass.adults");
                                                                                             }} 
                                                                                         />
                                                                                         <label className="btn search-check-box" htmlFor={`travellersClass.adults${key}`}>{value.name}</label>
@@ -500,7 +560,7 @@ export default function AgentFlightSearch() {
                                                                                             checked={values.travellersClass.childrens===value.name? "checked": ""}
                                                                                             value={value.name}
                                                                                             onChange={(e) => {
-                                                                                                handleChangeTravellersValue(e, setFieldValue,"travellersClass.childrens");
+                                                                                                handleChangeTravellersValue(e, setFieldValue,values,"travellersClass.childrens");
                                                                                             }} 
                                                                                         />
                                                                                         <label className="btn search-check-box" htmlFor={`travellersClass.childrens${key}`}>{value.name}</label>
@@ -526,7 +586,7 @@ export default function AgentFlightSearch() {
                                                                                             checked={values.travellersClass.infants===value.name? "checked": ""}
                                                                                             value={value.name}
                                                                                             onChange={(e) => {
-                                                                                                handleChangeTravellersValue(e, setFieldValue,"travellersClass.infants");
+                                                                                                handleChangeTravellersValue(e, setFieldValue,values,"travellersClass.infants");
                                                                                             }} 
                                                                                         />
                                                                                         <label className="btn search-check-box" htmlFor={`travellersClass.infants${key}`}>{value.name}</label>
@@ -545,7 +605,7 @@ export default function AgentFlightSearch() {
                                                                         value={values.travellersClass.prefferedClass}
                                                                         defaultValue ={values.travellersClass.prefferedClass}
                                                                         onChange={(e) => {
-                                                                            handleChangeTravellersValue(e, setFieldValue,"travellersClass.prefferedClass");
+                                                                            handleChangeTravellersValue(e, setFieldValue,values,"travellersClass.prefferedClass");
                                                                         }}
                                                                     >
                                                                         {
@@ -568,7 +628,7 @@ export default function AgentFlightSearch() {
                                                                         value={values.travellersClass.resultFareType}
                                                                         defaultValue ={values.travellersClass.resultFareType}
                                                                         onChange={(e) => {
-                                                                            handleChangeTravellersValue(e, setFieldValue,"travellersClass.resultFareType");
+                                                                            handleChangeTravellersValue(e, setFieldValue,values,"travellersClass.resultFareType");
                                                                         }}
                                                                     >
                                                                         {
@@ -631,9 +691,12 @@ export default function AgentFlightSearch() {
             {
             loading ? <TailSpin color="red" radius={"8px"} />
             :
+            tripList && tripList.length !=0 &&
             <div className='container'>
                 <FlightSearchList
                     tripList = {tripList}
+                    reInitialValues={reInitialValues}
+                    handleChangeDate ={handleChangeDate}
                 /> 
             </div>    
             }   

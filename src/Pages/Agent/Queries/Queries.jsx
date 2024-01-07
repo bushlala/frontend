@@ -1,18 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Header from '../../../Component/Layout/Agent/Header/Header';
-import Sidebar from '../../../Component/Layout/Agent/Sidebar/Sidebar';
+import Layout from '../../../Component/Layout/Agent/AgentLayout';
 import './Queries.css';
 
 export default function Queries() {
   return (
     <>
-      <Header />
-      <Sidebar />
+      <Layout />
         <div className="main-content app-content queries">
             <div className="container-fluid">
                 <div className="page-header">
-                    <h4 className="my-auto mt-4">Queries</h4>
+                    <h4 className="my-auto mt-4 fw-bold">Queries</h4>
                     <div>
                         <Link to={'/agent/QueriesAdd'}><button className='btn add-btn mt-4'>+ Add New Query</button></Link>
                     </div>

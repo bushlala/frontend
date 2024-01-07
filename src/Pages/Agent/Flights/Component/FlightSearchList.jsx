@@ -1,12 +1,20 @@
-import React from 'react';
+import React, {useState } from 'react';
 import { Link } from 'react-router-dom';
 import Indigo from '../../../../assets/images/indigo.png';
 import './FlightSearchList.css';
 import ShareFlightPop from './ShareFlightPop';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-export default function FlightSearchList({tripList}) {
-    console.log("tripList",tripList)
+import Moment from 'moment';
+
+export default function FlightSearchList({tripList,reInitialValues,handleChangeDate}) {
+    console.log("tripList",tripList);
+    console.log("reInitialValues",reInitialValues);
+    
+
     const [shareTrips, setShareTrips] = React.useState([]);
+    
     const handleChnageShareTrip = (checkedStatus,tripDetail) => {
         console.log("checked",checkedStatus);
         if (checkedStatus) {
@@ -29,12 +37,22 @@ export default function FlightSearchList({tripList}) {
             );
           }
         console.log("shareTrips",shareTrips);
+        
+       
     }
+
+     //****/
+
+     const [show, setShow] = useState(false);
+
+     const handleClose = () => setShow(false);
+     const handleShow = () => setShow(true);
+
     return (
         <>
             <div className="flightreview col-sm-12 container-fluid">
                 <div className='row'>
-                    <div className='col-3'>
+                    {/* <div className='col-3'>
                         <div className='card'>
                             <div className=''>
                                 <div className='list-group list-group-flush'>
@@ -65,40 +83,22 @@ export default function FlightSearchList({tripList}) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='col-9'>
-                        <div className='flight-search-calouter'>
+                    </div> */}
+                    <div className='col-9 m-auto'>
+                        <div className='flight-search-calouter mb-4'>
                             <div className='btn-group'>
-                                <div className=''>
-                                    <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox" value="1" />
-                                    <label class="btn search-check-box" for="datesbox">04-01-2024</label>
-                                </div>
-                                <div className=''>
-                                    <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox2" value="2" />
-                                    <label class="btn search-check-box" for="datesbox2">05-01-2024</label>
-                                </div>
-                                <div className=''>
-                                    <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox3" value="3" />
-                                    <label class="btn search-check-box" for="datesbox3">06-01-2024</label>
-                                </div>
-                                <div className=''>
-                                    <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox4" value="4" />
-                                    <label class="btn search-check-box" for="datesbox4">07-01-2024</label>
-                                </div>
-                                <div className=''>
-                                    <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox5" value="5" />
-                                    <label class="btn search-check-box" for="datesbox5">08-01-2024</label>
-                                </div>
-                                <div className=''>
-                                    <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox6" value="6" />
-                                    <label class="btn search-check-box" for="datesbox6">09-01-2024</label>
-                                </div>
-                                <div className=''>
-                                    <input type="radio" class="btn-check" autocomplete="off" name="travellersClass.adults" id="datesbox7" value="7" />
-                                    <label class="btn search-check-box" for="datesbox7">10-01-2024</label>
-                                </div>
+
+                                {
+                                    reInitialValues.dateArr && reInitialValues.dateArr.map((value, key) => (
+                                        <div className=''>
+                                            <input type="radio" class="btn-check" onChange={()=>handleChangeDate(value)} autocomplete="off" name="travellersClass.adults" id={`datesbox${key}`} value="1" />
+                                            <label class="btn search-check-box"  for={`datesbox${key}`}>{value}</label>
+                                        </div>
+                                    ))
+                                }
                             </div>
                         </div>
+
                         
                         <div className='flight-item-list'>
                             {
@@ -142,7 +142,7 @@ export default function FlightSearchList({tripList}) {
                                                     </div>
                                                     <div className='row mt-3'>
                                                         <div className='col-6'>
-                                                        <button type="button" className="btn btn-outline-secondary btn-sm">View Details</button>
+                                                             <Button variant='outline-secondary' onClick={handleShow} className="btn-sm">View Details</Button>
                                                         </div>
                                                         <div className="col-6 text-center text-danger fw-normal h6 small"> Seats left: <span id="seatleft5310">{value?.fareDetail?.seatRemains ? value?.fareDetail?.seatRemains : 'Not Available'}</span> </div>
                                                     </div>
@@ -604,10 +604,219 @@ export default function FlightSearchList({tripList}) {
                     </div>
                 </div>
                 {
-                    shareTrips && shareTrips.length && <ShareFlightPop shareFlights={shareTrips}/>
+                    shareTrips && shareTrips.length !=0 && <ShareFlightPop shareFlights={shareTrips}/>
                 }
                 
             </div>
+
+            
+                                                             
+            <Modal className='flight-item-flight-moodal' show={show} size='lg' onHide={handleClose} animation={true} aria-labelledby="contained-modal-title-vcenter"  centered>
+                                                                <Modal.Header closeButton>
+                                                                <Modal.Title>Flight Details </Modal.Title>
+                                                                </Modal.Header>
+                                                                <Modal.Body>
+                                                                    <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                                                        <li className="nav-item" role="presentation">
+                                                                            <button className="nav-link active" id="nav-flight-details-tab" data-bs-toggle="tab" data-bs-target="#nav-flight-details" type="button" role="tab" aria-controls="nav-flight-details" aria-selected="true">Flight Details</button>
+                                                                        </li>
+                                                                        <li className="nav-item" role="presentation">
+                                                                            <button className="nav-link" id="nav-fare-deatils-tab" data-bs-toggle="tab" data-bs-target="#nav-fare-deatils" type="button" role="tab" aria-controls="nav-fare-deatils" aria-selected="false">Fare Details</button>
+                                                                        </li>
+                                                                        <li className="nav-item" role="presentation">
+                                                                            <button className="nav-link" id="nav-baggage-tab" data-bs-toggle="tab" data-bs-target="#nav-baggage" type="button" role="tab" aria-controls="nav-baggage" aria-selected="false">Baggage Info</button>
+                                                                        </li>
+                                                                        <li className="nav-item" role="presentation">
+                                                                            <button className="nav-link" id="nav-fare-rules-tab" data-bs-toggle="tab" data-bs-target="#nav-fare-rules" type="button" role="tab" aria-controls="nav-fare-rules" aria-selected="false">Fare Rules</button>
+                                                                        </li>
+                                                                        <li className="nav-item" role="presentation">
+                                                                            <button className="nav-link" id="nav-cancellation-tab" data-bs-toggle="tab" data-bs-target="#nav-cancellation" type="button" role="tab" aria-controls="nav-cancellation" aria-selected="false">Cancellation Charges</button>
+                                                                        </li>
+                                                                    </ul>
+                                                                    <div className="tab-content" id="nav-tabContent">
+                                                                    <div className="tab-pane fade show active" id="nav-flight-details" role="tabpanel" aria-labelledby="nav-flight-details-tab">
+                                                                        <div className=''>
+                                                                            <div className='row'>
+                                                                                <div className='col-sm-2'>
+                                                                                    <div className='d-flex'>
+                                                                                        <img className='flight-flag' src={Indigo} alt=''/>
+                                                                                        <div className=''>
+                                                                                            <div className="flightname" id="">IndiGo</div>
+                                                                                            <div className="flightnumber" id="">6E-6114</div>
+                                                                                        </div>
+                                                                                    </div>  
+                                                                                </div>
+                                                                                <div className='col-10 d-flex'>
+                                                                                    <div className="text-center" style={{width:"50%"}}>
+                                                                                    <div className="coltime"> 22:15</div>
+                                                                                    <div className="graysmalltext"> DEL</div>
+                                                                                    <div className="graysmalltext"> Terminal 1</div>
+                                                                                    </div>
+                                                                                    <div className="text-center" style={{width:"50%"}}>
+                                                                                    <div className="nostops small">0d:2h:10m</div>
+                                                                                    <div className="graysmalltext text-danger"> Non Stop</div>
+                                                                                    </div>
+                                                                                    <div className="text-center" style={{width:"50%"}}>
+                                                                                    <div className="coltime"> 00:25</div>
+                                                                                    <div className="graysmalltext"> BOM</div>
+                                                                                    <div className="graysmalltext"> Terminal 2</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className='re-layover' style={{backgroundColor:"#e1dff7", padding:"4px 0", fontSize:"13px", borderRadius:"15px", marginTop:"8px"}}>
+                                                                                <p className='text-center mb-0'>Layover 02H 05M</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="tab-pane fade" id="nav-fare-deatils" role="tabpanel" aria-labelledby="nav-fare-deatils-tab">
+                                                                    <div className="row">
+                                                                        <div className="col-6">
+                                                                            <div style={{marginBottom:"10px", fontSize:"16px"}}><strong>Fare Breakup</strong></div>
+                                                                            <table border="0" cellpadding="0" cellspacing="0" className="table text-nowrap table-bordered">
+                                                                            
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td width="33%" align="left"><strong>Base Fare</strong></td>
+                                                                                        <td width="33%" align="left">₹ 9761</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td align="left"><strong>Surcharges &amp; Taxes</strong></td>
+                                                                                        <td align="left">₹ 1170</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td align="left"><strong>Pay Amount</strong></td>
+                                                                                        <td align="left">₹ 10931</td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="tab-pane fade" id="nav-baggage" role="tabpanel" aria-labelledby="nav-baggage-tab">
+                                                                        <div className='table-responsive'>
+                                                                            <table className='table text-nowrap table-bordered'>
+                                                                                <thead>
+                                                                                        <tr>
+                                                                                            <td>Airline</td>
+                                                                                            <td>Check-in Baggage</td>
+                                                                                            <td>Cabin Baggage</td>
+                                                                                        </tr>
+                                                                                </thead> 
+                                                                                <tbody>
+                                                                                        <tr>
+                                                                                            <th>
+                                                                                                <div className='d-flex'>
+                                                                                                    <img className='flight-flag' src={Indigo} alt=''/>
+                                                                                                    <div className=''>
+                                                                                                        <div 
+                                                                                                            className="flightname" 
+                                                                                                            id=""
+                                                                                                        >15 KG</div>
+                                                                                                        <div 
+                                                                                                            className="flightnumber" 
+                                                                                                            id=""
+                                                                                                        >Included</div>
+                                                                                                    </div>
+                                                                                                </div>  
+                                                                                            </th>
+                                                                                            <th>15 KG</th>
+                                                                                            <th>Included</th>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td colspan="3" align="left">
+                                                                                                <ul>
+                                                                                                    <li>Baggage information mentioned above is obtained from airline's reservation system, WIZOTRIP LLP does <br/> not guarantee the accuracy of this information.</li>
+                                                                                                    <li>The baggage allowance may vary according to stop-overs, connecting flights. changes in airline rules. etc.</li>
+                                                                                                </ul>
+                                                                                            </td>
+                                                                                        </tr>    
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>    
+                                                                    <div className="tab-pane fade" id="nav-fare-rules" role="tabpanel" aria-labelledby="nav-fare-rules-tab">
+                                                                        <div className='table-responsive'>
+                                                                            <table className='table text-nowrap table-bordered'>
+                                                                                <thead>
+                                                                                        <tr>
+                                                                                            <td>Journey Points</td>
+                                                                                            <td>Type</td>
+                                                                                            <td>From</td>
+                                                                                            <td>To</td>
+                                                                                            <td>Unit</td>
+                                                                                            <td>Details</td>
+                                                                                        </tr>
+                                                                                </thead> 
+                                                                                <tbody>
+                                                                                        <tr>
+                                                                                            <th>
+                                                                                                DEL-MAA-BOM
+                                                                                            </th>
+                                                                                            <th>Reissue</th>
+                                                                                            <th></th>
+                                                                                            <th></th>
+                                                                                            <th></th>
+                                                                                            <th>INR 499*</th>
+                                                                                        </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                    <div className="tab-pane fade" id="nav-cancellation" role="tabpanel" aria-labelledby="nav-cancellation-tab">
+                                                                        <div className="row">
+                                                                            <div className="col-md-6">
+                                                                                <table className="table table-hover table-bordered bg-light">
+                                                                                    <thead>
+                                                                                    <tr>
+                                                                                        
+                                                                                        <td className="text-center">Cancellation</td>
+                                                                                        
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        
+                                                                        
+                                                                                                                            <tr>
+                                                                                    
+                                                                                        <td className="text-center">INR 1998* </td>
+                                                                                        </tr>
+                                                                                                                            
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                            <div className="col-md-6">
+                                                                                    <table className="table table-hover table-bordered bg-light">
+                                                                                        <thead>
+                                                                                        <tr>
+                                                                                            
+                                                                                            <td className="text-center">Reissue</td>
+                                                                                            
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            
+                                                                                        
+                                                                                                                                <tr>
+                                                                                        <td className="text-center">INR 499* </td>
+                                                                                            </tr>
+                                                                                                                                
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                </Modal.Body>
+                                                                {/* <Modal.Footer>
+                                                                    <Button variant="secondary" onClick={handleClose}>
+                                                                        Close
+                                                                    </Button>
+                                                                    <Button variant="primary" onClick={handleClose}>
+                                                                        Save Changes
+                                                                    </Button>
+                                                                </Modal.Footer> */}
+                                                            </Modal>
         </>
     )
 }

@@ -14,7 +14,7 @@ import Agent from '../Pages/Agent/Index';
 import AddEditAgent from '../Pages/Agent/Add';
 import Agentedit from '../Pages/Agent/Edit';
 import Agentview from '../Pages/Agent/View';
-//import Profileview from '../Pages/Profile/Profileview';
+// import Profileview from '../Pages/Agent/Profile/Profileview.jsx';
 // import AdminDash from '../Pages/Admin/Dashboard';
 // import AdList from '../Pages/Admin/List';
 // import AdEdit from '../Pages/Admin/Edit';
@@ -65,6 +65,18 @@ import AgentWebCheck from "../Pages/Agent/WebCheck-in/WebCheck.jsx"
 
 // Reminder Web Checkin
 import AgentReminderWebCheckin from "../Pages/Agent/ReminderWebCheck/ReminderWebCheck.jsx"
+
+// Online-Recharge
+import AgentOnlineRecharge from "../Pages/Agent/OnlineRecharge/OnlineRecharge.jsx"
+
+// Invoice
+import AgentInvoice from "../Pages/Agent/Invoice/Invoice.jsx"
+
+// Generate-Invoice 
+import AgentGenerateInvoice from "../Pages/Agent/Generate-Invoice/GenerateInvoice.jsx"
+
+// Agent Profile
+import AgentProfile from "../Pages/Agent/Agent-Profile/AgentProfile.jsx"
 
 import Nopage from "./NoPage.jsx";
 //import Flight from "@mui/icons-material/Flight.js";
@@ -221,7 +233,38 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-            
+            <Route
+                path="agent/Online-Recharge"
+                element={
+                    <PrivateRoute>
+                        <AgentOnlineRecharge />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="agent/Agent-Invoice"
+                element={
+                    <PrivateRoute>
+                        <AgentInvoice />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="agent/Generate-Invoice"
+                element={
+                    <PrivateRoute>
+                        <AgentGenerateInvoice />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="agent/My-Profile"
+                element={
+                    <PrivateRoute>
+                        <AgentProfile/>
+                    </PrivateRoute>
+                }
+            />
             <Route
                 path="agent/customer/add"
                 element={

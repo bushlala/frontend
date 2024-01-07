@@ -16,7 +16,7 @@ export default function Sidebar() {
         <img src="../assets/images/brand-logos/desktop-white.png" alt="logo" class="desktop-white" />
         <img src="../assets/images/brand-logos/toggle-white.png" alt="logo" class="toggle-white" />
     </a> */}
-    <h3 style={{fontSize:"23px"}}>B2B</h3>
+    <h3 style={{fontSize:"23px"}}>Agent</h3>
 </div>
 {/* <!-- End::main-sidebar-header --> */}
 
@@ -89,25 +89,25 @@ export default function Sidebar() {
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/Online-Recharge' class="side-menu__item">
                         <i class="fa-solid fa-globe side-menu__icon"></i>
                         <span class="side-menu__label">Online Recharge</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/Agent-Invoice' class="side-menu__item">
                         <i class="fa-solid fa-file-invoice side-menu__icon"></i>
                         <span class="side-menu__label">Invoice</span>
                     </Link>
                 </li>  
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/Generate-Invoice' class="side-menu__item">
                         <i class="fa-solid fa-file-invoice side-menu__icon"></i>
                         <span class="side-menu__label">Generate Invoice</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/My-Profile' class="side-menu__item">
                         <i class="fa-solid fa-gear side-menu__icon"></i>
                         <span class="side-menu__label">Setting</span>
                     </Link>

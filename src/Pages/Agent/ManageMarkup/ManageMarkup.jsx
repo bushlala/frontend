@@ -1,12 +1,11 @@
 import React from 'react'
-import Header from '../../../Component/Layout/Agent/Header/Header'
-import Sidebar from '../../../Component/Layout/Agent/Sidebar/Sidebar'
+import Layout from '../../../Component/Layout/Agent/AgentLayout'
+
 
 export default function ManageMarkup() {
   return (
     <>
-      <Header />
-      <Sidebar />
+      <Layout />
       <div className="main-content app-content">
             <div className="container-fluid">
                 <div className='row'>
@@ -14,7 +13,7 @@ export default function ManageMarkup() {
                      <div className='card mt-5'>
                         <div class="card-body">
                            <div className='header-title'>
-                            <h4>Manage Markup</h4>
+                            <h4 className='fw-bold'>Manage Markup</h4>
                            </div>
                            <div className='row w-50 mt-5'>
                               <div className='col-3'>

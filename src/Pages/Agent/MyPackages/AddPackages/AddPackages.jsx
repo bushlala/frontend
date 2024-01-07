@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import Header from '../../../../Component/Layout/Agent/Header/Header'
-import Sidebar from '../../../../Component/Layout/Agent/Sidebar/Sidebar'
+import Layout from '../../../../Component/Layout/Agent/AgentLayout'
 import banner from '../../../../assets/images/nobannerblue.png'
 import {Modal, Button} from 'react-bootstrap';
 import { Link } from 'react-router-dom'
@@ -19,13 +18,12 @@ export default function AddPackages() {
     const handleShow3 = () => setShowModal3(true);
   return (
     <>
-      <Header />
-      <Sidebar />
+      <Layout />
         <div className="main-content app-content addpackages">
             <div className="container-fluid">
                 {/* <!-- PAGE-HEADER --> */}
                 <div className="page-header">
-                    <h1 className="page-title my-auto">All Packages - Edit Package</h1>
+                    <h1 className="page-title my-auto fw-bold">All Packages - Edit Package</h1>
                     <div>
                       <Link to={'/agent/Packages'}><button className='btn btn-primary'>Back to list</button></Link>
                     </div>
@@ -47,7 +45,7 @@ export default function AddPackages() {
 
                                     {/* Edit Button */}
 
-                                    <Button className="nextButton btn-primary float-end" onClick={handleShow3}>
+                                    <Button className="nextButton btn-success float-end" onClick={handleShow3}>
                                         <i class="fa-solid fa-pen-to-square"></i> Package Price Setting
                                     </Button>
                                     <Modal size="lg" show={showModal3} onHide={handleClose3} centered>
@@ -79,7 +77,7 @@ export default function AddPackages() {
 
                                     {/* Edit Button 2 */}
 
-                                    <Button className="nextButton btn-primary float-end me-2" onClick={handleShow2}>
+                                    <Button className="nextButton btn-info float-end me-2" onClick={handleShow2}>
                                     <i class="fa-solid fa-pen-to-square"></i> Edit Title / Banner / Itinerary
                                     </Button>
                                     <Modal size="xl" show={showModal2} onHide={handleClose2} centered>
@@ -211,7 +209,7 @@ export default function AddPackages() {
                                       <div className='d-flex'>
                                         <img className='banner-img' src={ banner } />
                                         <div className=''>
-                                            <div className="hedding-text" id="">Untitl</div>
+                                            <div className="hedding-text " id="">Untitl</div>
                                             <div className="hedding-text2" id="">2 Nights: / 3 Days: - Theme: Adventure Trips</div>
                                         </div>
                                       </div>  
@@ -251,7 +249,7 @@ export default function AddPackages() {
                                             <div className="hedding-text" id=""><i class="fa-solid fa-file text-primary" style={{ fontSize: '40px' }}></i></div>
                                             <div className="hedding-text2 mt-1" id="">Write About The Day</div>
                                             <div className='mt-1 edit-btn'>
-                                                <Button className="nextButton btn-primary" onClick={handleShow}>
+                                                <Button className="nextButton btn-info" onClick={handleShow}>
                                                     <i class="fa-solid fa-pen-to-square"></i>Edit
                                                 </Button>
                                                 <Modal size="lg" show={showModal} onHide={handleClose} centered>

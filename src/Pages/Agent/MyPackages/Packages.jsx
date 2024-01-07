@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import Header from '../../../Component/Layout/Agent/Header/Header'
-import Sidebar from '../../../Component/Layout/Agent/Sidebar/Sidebar'
+import Layout from '../../../Component/Layout/Agent/AgentLayout'
 import banner from '../../../assets/images/nobannerblue.png'
 import {Modal, Button} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
@@ -12,8 +11,7 @@ export default function Packages() {
     const handleShow = () => setShowModal(true);
   return (
     <>
-      <Header />
-      <Sidebar />
+      <Layout />
         <div className="main-content app-content Packages">
             <div className="container-fluid">
                 <div className='row'>
@@ -23,7 +21,7 @@ export default function Packages() {
                                 <div className='row'>
                                     <div className='col-6'>
                                         <div className="card-title">
-                                            <h5 className=''>My Packages</h5>
+                                            <h5 className='fw-bold'><i class="fa-solid fa-suitcase me-2"></i> My Packages</h5>
                                         </div>
                                     </div>
                                     <div className='col-6'>
@@ -33,7 +31,7 @@ export default function Packages() {
                                 </div>
                                 <div className='col-4 d-flex'>
                                     <input type='search' className="form-control me-2" placeholder='Enter Package Name' />
-                                    <button className='btn btn-primary'><i class="fa-solid fa-magnifying-glass"></i></button>
+                                    <button className='btn btn-success'><i class="fa-solid fa-magnifying-glass"></i></button>
                                 </div> 
                                 <hr></hr>
                                 <div className="card-body">
@@ -76,12 +74,12 @@ export default function Packages() {
                                                     <td>--</td>
                                                     <td>2 Nights: / 3 Days</td>
                                                     <td>0 INR / PP</td>
-                                                    <td><button className='btn btn-info'>Active</button></td>
+                                                    <td><button className='btn btn-success'>Active</button></td>
                                                     <td>26/12/2023</td>
                                                     <td>
                                                         <button className='btn btn-info me-1'><i class="fa-solid fa-eye"></i></button>
-                                                        <Link to={'/agent/AddPackages'}><button className='btn btn-info me-1'><i class="fa-solid fa-pen-to-square"></i></button></Link>
-                                                        <button className='btn btn-info'><i class="fa-brands fa-whatsapp"></i></button>
+                                                        <Link to={'/agent/AddPackages'}><button className='btn btn-primary me-1'><i class="fa-solid fa-pen-to-square"></i></button></Link>
+                                                        <button className='btn btn-success'><i class="fa-brands fa-whatsapp"></i></button>
                                                     </td>
                                                 </tr>
                                                 

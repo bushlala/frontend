@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import Header from '../../../Component/Layout/Agent/Header/Header';
-import Sidebar from '../../../Component/Layout/Agent/Sidebar/Sidebar';
+import Layout from '../../../Component/Layout/Agent/AgentLayout';
 import banner from '../../../assets/images/nobannerblue.png'
 import {Modal, Button} from 'react-bootstrap'
 import { Typography } from "@mui/material";
@@ -16,8 +15,7 @@ export default function HotelBooking() {
     const handleShow1 = () => setShowModal1(true);
   return (
     <>
-      <Header />
-      <Sidebar />
+      <Layout />
       <div className="main-content app-content HotelBooking">
             <div className="container-fluid">
                 <div className='row'>
@@ -27,7 +25,7 @@ export default function HotelBooking() {
                             <div className='row'>
                                 <div className='col-6'>
                                     <div className="card-title">
-                                        <h6 className=''><i class="fa-solid fa-hotel me-1"></i>Hotel</h6>
+                                        <h6 className='fw-bold'><i class="fa-solid fa-hotel me-2"></i>Hotel</h6>
                                     </div>
                                 </div>
                                 <div className='col-6'>
@@ -334,7 +332,7 @@ export default function HotelBooking() {
                             </div>
                             <div className='col-4 d-flex'>
                                 <input type='search' className="form-control me-2" placeholder='Enter Keyword' />
-                                <button className='btn btn-primary'><i class="fa-solid fa-magnifying-glass"></i></button>
+                                <button className='btn btn-success'><i class="fa-solid fa-magnifying-glass"></i></button>
                             </div> 
                             <div className="card-body mt-3">
                                 <div className="table-responsive">
@@ -363,7 +361,7 @@ export default function HotelBooking() {
                                                 <td>Query</td>
                                                 <td><button className='btn btn-danger'>In-Active</button></td>
                                                 <td>
-                                                    <button className='btn btn-info me-1'><i class="fa-solid fa-pen-to-square"></i></button>
+                                                    <button className='btn btn-primary me-1'><i class="fa-solid fa-pen-to-square"></i></button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -375,7 +373,7 @@ export default function HotelBooking() {
                                                 <div className='d-flex'>
                                                     <div className=''>
                                                         <div className="fs-13" id="">room1 (1 INR)</div>
-                                                        <div className="mt-1" id=""><button className="btn btn-primary addroom-btn">+ Add Room Type</button></div>
+                                                        <div className="mt-1" id=""><button className="btn btn-info addroom-btn">+ Add Room Type</button></div>
                                                     </div>
                                                 </div> 
                                                 </Typography>

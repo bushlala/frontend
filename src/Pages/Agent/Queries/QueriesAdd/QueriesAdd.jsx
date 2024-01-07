@@ -1,17 +1,15 @@
 import React from 'react'
-import Header from '../../../../Component/Layout/Agent/Header/Header'
-import Sidebar from '../../../../Component/Layout/Agent/Sidebar/Sidebar'
+import Layout from '../../../../Component/Layout/Agent/AgentLayout'
 import './QueriesAdd.css';
 export default function QueriesAdd() {
   return (
     <>
-      <Header />
-      <Sidebar />
+      <Layout />
       <div className="main-content app-content queriesadd">
           <div className="container-fluid mb-3">
             {/* <!-- PAGE-HEADER --> */}
               <div className="page-header">
-                  <h1 className="page-title my-auto">Add Query</h1>
+                  <h1 className="page-title my-auto fw-bold">Add Query</h1>
               </div>
               <div className='row'>
                   <div class="col-xl-12">
