@@ -19,12 +19,11 @@ export default function Flightreview() {
                     <p className="my-auto text-danger">Back to Search</p> 
                   </div>
               </div>
-              <div className='flight-item-list'>
-                <div className='card-body'>
-                    <div className="card-title">
-                        <p className='flightname'>Delhi <i class="fa-solid fa-arrow-right-long"></i>  NA  <span className='flightnumber'>On Mon,Jan 01 2024</span></p>
+              <div className='flight-item-list card'>
+                    <div className="card-header">
+                        <p className='flightname mb-0'>Delhi <i class="fa-solid fa-arrow-right-long"></i>  NA  <span className='flightnumber'>On Mon,Jan 01 2024</span></p>
                     </div>
-                    <hr></hr>
+                    <div className='card-body'>
                         <div className='row'>
                           <div className='col-12'>
                               <div className='row'>
@@ -55,7 +54,7 @@ export default function Flightreview() {
                                   </div>
                               </div>
                               <div className='d-flex'>
-                                <p className="coltime"><i class="fa-solid fa-suitcase"></i> 15 KG  | <i class="fa-solid fa-suitcase"></i> 17 KG  | <i class="fa-solid fa-money-bill-1"></i> Refundable</p>
+                                <p className="small"><i class="fa-solid fa-suitcase fa-small me-1"></i> Baggage:15 KG, Cabin Baggage: Included</p>
                               </div>
                               <div className='re-layover'>
                                 <p className='text-center'>Layover 02H 05M</p>
@@ -86,9 +85,10 @@ export default function Flightreview() {
                                       <div className="graysmalltext"> Terminal 2</div>
                                     </div>
                                   </div>
+                                  
                               </div>
                               <div className='d-flex'>
-                              <p className="coltime"><i class="fa-solid fa-suitcase"></i> 15 KG  | <i class="fa-solid fa-suitcase"></i> 17 KG  | <i class="fa-solid fa-money-bill-1"></i> Refundable</p>
+                                <p className="small"><i class="fa-solid fa-suitcase fa-small me-1"></i>  Baggage:15 KG, Cabin Baggage: Included</p>
                               </div>
                                 <div className='row mt-3'>
                                   <div className='col-6'>
@@ -107,7 +107,7 @@ export default function Flightreview() {
                               </div>
                           </div>
                         </div>  
-                </div>
+                    </div>
               </div> 
               <div className="page-header">
                   <h4 className="my-auto">Passenger Details</h4>
