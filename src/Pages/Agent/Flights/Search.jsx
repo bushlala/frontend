@@ -135,6 +135,7 @@ export default function AgentFlightSearch() {
     const [tripType, setTripType] = React.useState(1);
     const [travellersModelShow, setTravellersModelShow] = React.useState(false);
     const [tripList, setTripList] = React.useState([]);
+    const [dateForHorizontal, setDateForHorizontal] = React.useState();
     
 
     const handleChangeDepartureDate = (range,setFieldValue) => {
@@ -245,20 +246,17 @@ export default function AgentFlightSearch() {
             setFieldValue("toCityDestination",fromCityDestination);
         }   
     }
+
     const handleChangeDate = (date) => {
-        reInitialValues.departureDate = date;
-        //console.log("reInitialValues",reInitialValues);
-        setReInitialValues(reInitialValues);
+        setDateForHorizontal(date);
         setLoading(true);
+        //return false;
         FlightSearchService.Search(reInitialValues).then(async (response) => {
-            setLoading(true);
             console.log("loading",loading);
-            //console.log("result",response);
             if(response.status === 200){
                 if(response.data.status){
                     console.log("result",response.data.data);
                     setTripList(response.data.data)
-                    
                 }else{
                     toast.error(response.data.message.message);
                 }
@@ -273,8 +271,9 @@ export default function AgentFlightSearch() {
         });
     
     }
+    
     const handleOnSubmit = async (values, { resetForm }) => {
-        console.log("set form");
+        //console.log("set form");
         // For Destinations 
         setLoading(true);
         setTravellersModelShow(false);
@@ -295,31 +294,25 @@ export default function AgentFlightSearch() {
         let startDate;
         let endDate;
         if(values.journeyDateOne){
-            startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD');
-            endDate = Moment(startDate, "YYYY-MM-DD").add(5, 'days').format('YYYY-MM-DD');
-            values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
             
+            startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD');
+            endDate = Moment(startDate, "YYYY-MM-DD").add(7, 'days').format('YYYY-MM-DD');
+            values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
+            var dates = [];
+            const start = Moment(startDate);
+            const end = Moment(endDate);
+            while(!start.isSame(end)) {
+                dates.push(start.format("DD-MM-YYYY"));
+                start.add(1, 'day');
+            }
+            console.log("dates",dates);
+            values.dateArr = dates;
+            setDateForHorizontal(values.journeyDateOne);
+            setReInitialValues(values);        
         }
-        var dates = [];
-        //const startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD')
-        console.log("startDate", startDate);
-        console.log("endDate", endDate);
-        const start = Moment(startDate);
-        const end = Moment(endDate);
-
-        while(!start.isSame(end)) {
-            dates.push(start.format("MM-DD-YYYY"));
-            start.add(1, 'day');
-        }
-
-        values.dateArr = dates;
-        console.log("values",values);
-        setReInitialValues(values);
-        //setLoading(false);
-        //return false;
         FlightSearchService.Search(values).then(async (response) => {
             setLoading(true);
-            console.log("loading",loading);
+            //console.log("loading",loading);
             //console.log("result",response);
             if(response.status === 200){
                 if(response.data.status){
@@ -327,7 +320,13 @@ export default function AgentFlightSearch() {
                     setTripList(response.data.data)
                     
                 }else{
-                    toast.error(response.data.message.message);
+                    let errorMessage;
+                    if(response.data.message){
+                       errorMessage =  response.data.message;
+                    }else{
+                        errorMessage = "Something went wrong";
+                    }
+                    toast.error(errorMessage);
                 }
             }else{
                 toast.error("Something went wrong");
@@ -480,6 +479,7 @@ export default function AgentFlightSearch() {
                                                         <DatePicker 
                                                             className='form-control w-100'
                                                             selected={departureDate}
+                                                            dateFormat="dd-MM-yy"
                                                             //dateFormat="DD/MM/YYYY"
                                                             //startDate={startDate}
                                                             minDate={minDate}
@@ -694,6 +694,7 @@ export default function AgentFlightSearch() {
             tripList && tripList.length !=0 &&
             <div className='container'>
                 <FlightSearchList
+                    dateForHorizontal = {dateForHorizontal}
                     tripList = {tripList}
                     reInitialValues={reInitialValues}
                     handleChangeDate ={handleChangeDate}
