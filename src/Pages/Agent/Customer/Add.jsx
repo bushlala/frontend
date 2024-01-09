@@ -176,9 +176,7 @@ export default function AgentCustomerAdd() {
                                     {/* <div className="prism-toggle">
                                         <button className="btn btn-sm btn-primary-light"><i className="ri-code-line ms-2 d-inline-block align-middle"></i></button>
                                     </div> */}
-                                </div>
-                                
-
+                                </div>      
                                 <Formik
                                     initialValues={reInitialValues}
                                     validationSchema={validationSchema}
@@ -191,80 +189,75 @@ export default function AgentCustomerAdd() {
                                                 <CardContent>
                                                     <Grid container spacing={4}>
                                                         <Grid item xs={4}>
-                                                            <InputLabel>Title</InputLabel>
-                                                            <TextField
-                                                                type="text"
-                                                                id="title"
-                                                                placeholder="Enter First Name"
-                                                                fullWidth
-                                                                onChange={handleChange}
-                                                                value={values.title}
-                                                                helperText={touched.title ? errors.title : ""}
-                                                                error={touched.title && Boolean(errors.title)} 
-                                                            />
-                                                            
+                                                            <label className="form-label" >Title</label>
+                                                            <div class="input-group">
+                                                                <input
+                                                                    type="text"
+                                                                    id="title"
+                                                                    placeholder="Enter First Name"
+                                                                    className='form-control'
+                                                                    onChange={handleChange}
+                                                                    value={values.title}
+                                                                    helperText={touched.title ? errors.title : ""}
+                                                                    error={touched.title && Boolean(errors.title)} 
+                                                                />
+                                                            </div>
                                                         </Grid>
-
                                                         <Grid item xs={4}>
-                                                            <InputLabel>First Name</InputLabel>
-                                                            <TextField
+                                                            <label className="form-label">First Name</label>
+                                                            <input
                                                                 type="text"
                                                                 id="firstName"
                                                                 placeholder="Enter First Name"
-                                                                fullWidth
+                                                                className='form-control'
                                                                 onChange={handleChange}
                                                                 value={values.firstName}
                                                                 helperText={touched.firstName ? errors.firstName : ""}
                                                                 error={touched.firstName && Boolean(errors.firstName)} 
                                                             />
-                                                            
                                                         </Grid>
-
                                                         <Grid item xs={4}>
-                                                            <InputLabel>Last Name</InputLabel>
-                                                            <TextField
+                                                            <label className="form-label">Last Name</label>
+                                                            <input
                                                                 id="lastName"
                                                                 type="text"
                                                                 placeholder="Enter Last Name"
-                                                                fullWidth
+                                                                className='form-control'
                                                                 onChange={handleChange}
                                                                 value={values.lastName}
                                                                 helperText={touched.lastName ? errors.lastName : ""}
                                                                 error={touched.lastName && Boolean(errors.lastName)}
                                                             />
                                                         </Grid>
-
                                                         <Grid item xs={6}>
-                                                            <InputLabel>Mobile Number</InputLabel>
-                                                            <TextField
+                                                            <label className="form-label">Mobile Number</label>
+                                                            <input
                                                                 id="mobileNumber"
                                                                 type="text"
                                                                 placeholder="Enter Mobile Number"
-                                                                fullWidth
+                                                                className='form-control'
                                                                 onChange={handleChange}
                                                                 value={values.mobileNumber}
                                                                 helperText={touched.mobileNumber ? errors.lastName : ""}
                                                                 error={touched.mobileNumber && Boolean(errors.mobileNumber)}
                                                             />
                                                         </Grid>
-
                                                         <Grid item xs={6}>
-                                                            <InputLabel>Email</InputLabel>
-                                                            <TextField
+                                                            <label className="form-label">Email</label>
+                                                            <input
                                                                 id="email"
                                                                 type="text"
                                                                 placeholder="Enter Email"
-                                                                fullWidth
+                                                                className='form-control'
                                                                 onChange={handleChange}
                                                                 value={values.email}
                                                                 helperText={touched.email ? errors.lastName : ""}
                                                                 error={touched.email && Boolean(errors.email)}
                                                             />
                                                         </Grid>
-
                                                         <Grid item xs={6}>
                                                             <FormControl>
-                                                            <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+                                                            <label id="demo-row-radio-buttons-group-label" className="form-label">Gender</label>
                                                                 <RadioGroup
                                                                 aria-labelledby="demo-row-radio-buttons-group-label"
                                                                 //defaultValue="male"
@@ -276,21 +269,22 @@ export default function AgentCustomerAdd() {
                                                                 error={touched.gender && Boolean(errors.gender)}
                                                                 onChange={handleChange}
                                                                 >
-                                                                    <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                                                    <FormControlLabel value="male" control={<Radio />} label="Male" />
+                                                                <div className='d-flex'>
+                                                                    <FormControlLabel value="female" class="form-check-label" control={<Radio />} label="Female" />
+                                                                    <FormControlLabel value="male" class="form-check-label"  control={<Radio />} label="Male" />
+                                                                </div>
                                                                 
                                                                 </RadioGroup>
                                                             </FormControl>
                                                         </Grid>
-
                                                         <Grid item xs={6}>
-                                                            <InputLabel>Date Of Birth</InputLabel>
-                                                            <TextField
+                                                            <label className="form-label">Date Of Birth</label>
+                                                            <input
                                                                 id="dob"
                                                                 name='dob'
                                                                 type="date"
                                                                 placeholder="Enter Passport Number"
-                                                                fullWidth
+                                                                className='form-control'
                                                                 onChange={handleChange}
                                                                 value={values.dob}
                                                                 helperText={touched.dob ? errors.dob : ""}
@@ -298,28 +292,27 @@ export default function AgentCustomerAdd() {
                                                             />
                                                         </Grid>
                                                         <Grid item xs={6}>
-                                                            <InputLabel>Passport Number</InputLabel>
-                                                            <TextField
+                                                            <label className="form-label">Passport Number</label>
+                                                            <input
                                                                 id="passport"
                                                                 name='passport'
                                                                 type="text"
                                                                 placeholder="Enter Passport Number"
-                                                                fullWidth
+                                                                className='form-control'
                                                                 onChange={handleChange}
                                                                 value={values.passport}
                                                                 helperText={touched.passport ? errors.passport : ""}
                                                                 error={touched.passport && Boolean(errors.passport)}
                                                             />
                                                         </Grid>
-
                                                         <Grid item xs={6}>
-                                                            <InputLabel>Passport Expiry</InputLabel>
-                                                            <TextField
+                                                            <label className="form-label">Passport Expiry</label>
+                                                            <input
                                                                 id="passportExp"
                                                                 name='passportExp'
                                                                 type="date"
                                                                 placeholder="Enter Passport Number"
-                                                                fullWidth
+                                                                className='form-control'
                                                                 onChange={handleChange}
                                                                 value={values.passportExp}
                                                                 helperText={touched.passportExp ? errors.passportExp : ""}
@@ -328,10 +321,9 @@ export default function AgentCustomerAdd() {
                                                         </Grid>
                                                         <Grid item xs={12}>
                                                             <Button 
-                                                            variant="contained"
+                                                            className='btn btn-primary'
                                                             type="submit"
                                                             >Submit</Button>
-
                                                         </Grid>
                                                     </Grid>
                                                 </CardContent>

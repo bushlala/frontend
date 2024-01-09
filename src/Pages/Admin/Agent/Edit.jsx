@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from '../../Component/Header'
-import Sidebar from '../../Component/Sidebar'
+import Header from '../../../Component/Header'
+import Sidebar from '../../../Component/Sidebar'
 import { Form, Formik } from "formik";
 import {
     Grid,

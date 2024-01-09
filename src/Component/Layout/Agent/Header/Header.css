@@ -2,9 +2,7 @@
     color: blueviolet;
     background-color: red;
 }
-.header-icon{
-    margin-right: 20px !important;
-}
+
 .notification-bell{
     margin-top: 20px;
     margin-right: 20px;
@@ -17,10 +15,6 @@
 .user-text{
         font-size: 13px;
         font-weight: 700;
-}
-
-.btn-border{
-    border-radius: 50px;
 }
 .wallet-text{
     margin: 5px;
@@ -38,4 +32,10 @@
     padding: 0px;
     margin-top: 15px;
     border: 1px solid #cbcbcb;
+}
+.app-header .icon-size{
+        font-size: 15px !important;
+}
+.app-header .profile-icon{
+    color: #6c5ffc;
 }

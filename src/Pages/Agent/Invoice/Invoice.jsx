@@ -13,10 +13,10 @@ export default function Invoice() {
                             <div class="card-body">
                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link active border" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true"><i class="fa-solid fa-plane-up me-1"></i> Flight Invoice </button>
+                                        <button class="nav-link active border btn-primary" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true"><i class="fa-solid fa-plane-up me-1"></i> Flight Invoice </button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link border" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false"><i class="fa-solid fa-hotel me-1"></i> Hotel Invoice </button>
+                                        <button class="nav-link border btn-info" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false"><i class="fa-solid fa-hotel me-1"></i> Hotel Invoice </button>
                                     </li>
                                 </ul>
                                 <hr></hr>

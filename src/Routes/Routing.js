@@ -4,16 +4,17 @@ import { Provider } from "react-redux";
 import GuestRoute from "../Component/Common/GuestRoute/GuestRoute.js";
 import PrivateRoute from "../Component/Common/PrivateRoute/PrivateRoute.js";
 //import store from "../components/Store"
-
 import StoreData from "../Component/Store/index.js";
-
 import React from 'react'
 import { Routes, Route } from 'react-router-dom';
+
+
+// Admin 
 //import Dashboard from '../Pages/Dashboard/Dashboard';
-import Agent from '../Pages/Agent/Index';
-import AddEditAgent from '../Pages/Agent/Add';
-import Agentedit from '../Pages/Agent/Edit';
-import Agentview from '../Pages/Agent/View';
+import Agent from '../Pages/Admin/Agent/Index.jsx';
+import AddEditAgent from '../Pages/Admin/Agent/Add.jsx';
+import Agentedit from '../Pages/Admin/Agent/Edit.jsx';
+import Agentview from '../Pages/Admin/Agent/View.jsx';
 // import Profileview from '../Pages/Agent/Profile/Profileview.jsx';
 // import AdminDash from '../Pages/Admin/Dashboard';
 // import AdList from '../Pages/Admin/List';
@@ -30,7 +31,9 @@ import CityList from '../Pages/Admin/City/Index.jsx';
 import Home from "../Pages/Index.jsx";
 import Login from "../Pages/Auth/Login/Login.jsx";
 import Register from "../Pages/Auth/Register/Register.jsx";
-// Import for agen
+
+
+// Import for agent
 import AgentDashboard from "../Pages/Agent/Dashboard/Dashboard.jsx";
 import AgentCustomerList from "../Pages/Agent/Customer/Index.jsx";
 import AgentCustomerAdd from "../Pages/Agent/Customer/Add.jsx";
@@ -281,8 +284,6 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-
-            
             {/* <Route exact path='/dashboard' element={<Dashboard />}></Route> */}
             
             <Route exact path='admin/agent' element={<Agent />}></Route>
@@ -304,13 +305,6 @@ const Routing = () => {
             <Route exact path='/agentedit' element={<Agentedit />}></Route>
             <Route exact path='/agentview' element={<Agentview />}></Route>
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}
-
-            {/* MyCustomer */}
-            <Route exact path='/agent/customerform' element={<CustomerForm />}></Route>
-            <Route exact path='/agent/booking' element={<MyBooking />}></Route>
-
-            
-
             {/* <Route exact path='/' element={<AdminDash />}></Route>
             <Route exact path='/adlist' element={<AdList />}></Route>
             <Route exact path='/profile' element={<Profileview />}></Route>

@@ -305,7 +305,7 @@ export default function AgentFlightSearch() {
                 dates.push(start.format("DD-MM-YYYY"));
                 start.add(1, 'day');
             }
-            console.log("dates",dates);
+            //console.log("dates",dates);
             values.dateArr = dates;
             setDateForHorizontal(values.journeyDateOne);
             setReInitialValues(values);        
@@ -313,20 +313,21 @@ export default function AgentFlightSearch() {
         FlightSearchService.Search(values).then(async (response) => {
             setLoading(true);
             //console.log("loading",loading);
-            //console.log("result",response);
+            console.log("result",response);
             if(response.status === 200){
+                console.log("data",response.data);
                 if(response.data.status){
                     console.log("result",response.data.data);
                     setTripList(response.data.data)
                     
                 }else{
-                    let errorMessage;
-                    if(response.data.message){
-                       errorMessage =  response.data.message;
-                    }else{
-                        errorMessage = "Something went wrong";
-                    }
-                    toast.error(errorMessage);
+                    // let errorMessage;
+                    // if(response.data.message){
+                    //    errorMessage =  response.data.message;
+                    // }else{
+                    //     errorMessage = "Something went wrong";
+                    // }
+                    toast.error("Something.wwww");
                 }
             }else{
                 toast.error("Something went wrong");
@@ -693,6 +694,7 @@ export default function AgentFlightSearch() {
             :
             tripList && tripList.length !=0 &&
             <div className='container'>
+                {/* <h1>Ganeshs</h1> */}
                 <FlightSearchList
                     dateForHorizontal = {dateForHorizontal}
                     tripList = {tripList}

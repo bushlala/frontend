@@ -1,7 +1,23 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 //import Icon from '../../../../assets/icon/setting.svg'
+import SidebarIcon from '../../../../assets/icon/Icon.svg'
+import SidebarIcon2 from '../../../../assets/icon/Icon2.svg'
+import SidebarIcon3 from '../../../../assets/icon/Icon3.svg'
+import SidebarIcon4 from '../../../../assets/icon/Icon4.svg'
+import SidebarIcon5 from '../../../../assets/icon/Icon5.svg'
+import SidebarIcon6 from '../../../../assets/icon/Icon6.svg'
+import SidebarIcon7 from '../../../../assets/icon/Icon7.svg'
+import SidebarIcon8 from '../../../../assets/icon/Icon8.svg'
+import SidebarIcon9 from '../../../../assets/icon/Icon9.svg'
+import SidebarIcon10 from '../../../../assets/icon/Icon10.svg'
+import SidebarIcon11 from '../../../../assets/icon/Icon11.svg'
+import SidebarIcon12 from '../../../../assets/icon/Icon11.svg'
+import SidebarIcon13 from '../../../../assets/icon/Icon13.svg'
+
+
 export default function Sidebar() {
+    const myStyle = { width: '16%' };
   return (
     <>
       <aside class="app-sidebar sticky" id="sidebar">
@@ -36,79 +52,79 @@ export default function Sidebar() {
             {/* <!-- Start::slide --> */}
                 <li class="slide">
                     <Link to='/agent/dashboard' class="side-menu__item">
-                        <i class="fa-solid fa-house side-menu__icon"></i>
+                        <img src={SidebarIcon8} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Dashboard</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='/agent/customer' class="side-menu__item">
-                        <i class="fa-solid fa-user side-menu__icon"></i>
+                        <img src={SidebarIcon2} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">My Customers</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='/agent/booking' class="side-menu__item">
-                        <i class="fa-solid fa-book side-menu__icon"></i>
+                        <img src={SidebarIcon3} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">My Bookings</span>
                     </Link>
                 </li>
                 <li class="slide">
                     <Link to='/agent/Queries' class="side-menu__item">
-                        <i class="fa-solid fa-clipboard-question side-menu__icon"></i>
+                        <img src={SidebarIcon4} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label"> Queries</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/Packages' class="side-menu__item">
-                        <i class="fa-solid fa-box side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon5} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">My Packages</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/MannualHotel' class="side-menu__item">
-                        <i class="fa-solid fa-hotel side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon6} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Mannual Hotel</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/ManageMarkup' class="side-menu__item">
-                        <i class="fa-solid fa-list-check side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon7} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Manage Markup</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/WebCheck-In' class="side-menu__item">
-                        <i class="fa-solid fa-file side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon8} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Web Check-in</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/ReminderWebCheck-in' class="side-menu__item">
-                        <i class="fa-solid fa-file side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon9} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Reminder Web Checkin</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/Online-Recharge' class="side-menu__item">
-                        <i class="fa-solid fa-globe side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon10} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Online Recharge</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/Agent-Invoice' class="side-menu__item">
-                        <i class="fa-solid fa-file-invoice side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon11} className='side-menu__icon' style={myStyle}  alt="" />   
                         <span class="side-menu__label">Invoice</span>
                     </Link>
                 </li>  
                 <li class="slide">
-                    <Link to='/agent/Generate-Invoice' class="side-menu__item">
-                        <i class="fa-solid fa-file-invoice side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon12} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Generate Invoice</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/My-Profile' class="side-menu__item">
-                        <i class="fa-solid fa-gear side-menu__icon"></i>
+                    <Link to='*' class="side-menu__item">
+                        <img src={SidebarIcon13} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Setting</span>
                     </Link>
                 </li>

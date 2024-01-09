@@ -5,6 +5,8 @@ import Moment from 'moment';
 import Indigo from '../../../../assets/images/indigo.png';
 export default function FlightDetailModel({show,handleClose,tripDetail}) {
     console.log('tripDetail',tripDetail);
+    var fareDetail = tripDetail.fareDetail[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0];
+    console.log("fareDetail",fareDetail);
     return (
         <>
             <Modal className='flight-item-flight-moodal' show={show} size='lg' onHide={handleClose} animation={true} aria-labelledby="contained-modal-title-vcenter"  centered>
@@ -62,9 +64,9 @@ export default function FlightDetailModel({show,handleClose,tripDetail}) {
                                     </div>
                                 </div>
                             </div>
-                            <div className='re-layover' style={{backgroundColor:"#e1dff7", padding:"4px 0", fontSize:"13px", borderRadius:"15px", marginTop:"8px"}}>
+                            {/* <div className='re-layover' style={{backgroundColor:"#e1dff7", padding:"4px 0", fontSize:"13px", borderRadius:"15px", marginTop:"8px"}}>
                                 <p className='text-center mb-0'>Layover 02H 05M</p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
@@ -77,15 +79,15 @@ export default function FlightDetailModel({show,handleClose,tripDetail}) {
                                     <tbody>
                                         <tr>
                                             <td width="33%" align="left"><strong>Base Fare</strong></td>
-                                            <td width="33%" align="left">₹ 9761</td>
+                                            <td width="33%" align="left">{`₹ ${fareDetail.baseFare}`}</td>
                                         </tr>
                                         <tr>
                                             <td align="left"><strong>Surcharges &amp; Taxes</strong></td>
-                                            <td align="left">₹ 1170</td>
+                                            <td align="left">{`₹ ${fareDetail.taxesAndFees}`}</td>
                                         </tr>
                                         <tr>
                                             <td align="left"><strong>Pay Amount</strong></td>
-                                            <td align="left">₹ 10931</td>
+                                            <td align="left">{`₹ ${fareDetail.payAmount}`}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -112,7 +114,7 @@ export default function FlightDetailModel({show,handleClose,tripDetail}) {
                                                         <div 
                                                             className="flightname" 
                                                             id=""
-                                                        >{tripDetail?.fareDetail?.baggageInformation?.checkInBaggage}</div>
+                                                        >{fareDetail?.baggageInformation?.checkInBaggage}</div>
                                                         <div 
                                                             className="flightnumber" 
                                                             id=""
@@ -120,8 +122,8 @@ export default function FlightDetailModel({show,handleClose,tripDetail}) {
                                                     </div>
                                                 </div>  
                                             </th>
-                                            <th>{tripDetail?.fareDetail?.baggageInformation?.checkInBaggage}</th>
-                                            <th>{tripDetail?.fareDetail?.baggageInformation?.cabinBaggage}</th>
+                                            <th>{fareDetail?.baggageInformation?.checkInBaggage}</th>
+                                            <th>{fareDetail?.baggageInformation?.cabinBaggage}</th>
                                         </tr>
                                         <tr>
                                             <td colspan="3" align="left">

@@ -479,7 +479,7 @@ export default function HotelBooking() {
                                     <div className="col-sm-12 col-md-7">
                                         <div className="dataTables_info" id="datatable-basic_info" role="status" aria-live="polite">Total Records: 1-0 of 0</div>
                                         </div>
-                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -9,7 +9,7 @@ import { Toaster } from 'react-hot-toast';
 import './Header.css';
 import { Link } from 'react-router-dom';
 import { AuthAPI } from '../../../../Services/Auth.Service';
-const profile =require('../../../../assets/images/profile.jpg');
+const profile =require('../../../../assets/images/user.png');
 
 
 
@@ -33,18 +33,20 @@ export default function Header() {
             <div className="main-header-container container-fluid">
                 {/* <!-- Start::header-content-left --> */}
                 <div className="header-content-left">
-                    <div className='mt-3 header-icon'> 
-                    <Link to={`/agent/dashboard`}> <button className='btn btn-outline-primary btn-border'><i className="fa-solid fa-gauge"></i> Dashboard</button> </Link>
+                    <div className='mt-3 me-3 header-icon'> 
+                        <Link to={`/agent/dashboard`}> 
+                            <button className='btn btn-primary btn-border'><i className="fa-solid fa-gauge icon-size"></i> Dashboard</button> 
+                        </Link>
                     </div>
-                    <div className='mt-3 header-icon'> 
+                    <div className='mt-3 me-3 header-icon'> 
                     {/* <Link to={ `/agent/Flightreview`}><button type="button" className="btn btn-outline-success btn-border"><i className="fa-solid fa-plane-up"></i> Flights</button></Link> */}
                     <Link to={`/agent/flight`}>
-                        <button type="button" className="btn btn-outline-success btn-border"><i className="fa-solid fa-plane-up"></i> Flights</button>
+                        <button type="button" className="btn btn-success btn-border"><i className="fa-solid fa-plane-up icon-size"></i> Flights</button>
                     </Link>  
                     </div>
                     <div className='mt-3 header-icon'> 
                     <Link>
-                        <button type="button" className="btn btn-outline-secondary btn-border"><i className="fa-solid fa-hotel"></i> Hotels</button>
+                        <button type="button" className="btn btn-info btn-border"><i className="fa-solid fa-hotel icon-size"></i> Hotels</button>
                     </Link>
                     </div>   
                 </div>
@@ -85,9 +87,17 @@ export default function Header() {
                                     <small className="text-muted">Role:Agent</small>
                                 </div>
                             </li>
-                            <li className="dropdown-item"><Link className="d-flex w-100" to='/profile'><i className="fa fa-user fs-18 me-2 text-primary"></i>Profile</Link></li>
+                            <li className="dropdown-item">
+                                <Link className="d-flex w-100 text-black fw-bold" to='*'>
+                                    <i className="fa fa-user fs-18 me-2 side-menu__icon profile-icon"></i>Profile
+                                </Link>
+                            </li>
                             
-                            <li className="dropdown-item" onClick={logout}><Link className="d-flex w-100" to='/'><i className="fa fa-info fs-18 me-2 text-primary"></i>Log Out</Link></li>
+                            <li className="dropdown-item" onClick={logout}>
+                                <Link className="d-flex w-100 text-black fw-bold" to='/'>
+                                    <i class="fa-solid fa-right-from-bracket fs-18 me-2 side-menu__icon profile-icon"></i>Log Out
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     {/* <!-- End::header-element --> */}

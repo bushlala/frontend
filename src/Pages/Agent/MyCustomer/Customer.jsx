@@ -1,29 +1,11 @@
 import React from 'react'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import styled from '@emotion/styled';
-import tableCellClasses from '@mui/material/TableCell';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import { Link } from 'react-router-dom'
 // import { UserAPI } from '../../../Services/Agent.Service';
-import Header from '../../../Component/Layout/Agent/Header/Header'
-import Sidebar from '../../../Component/Layout/Agent/Sidebar/Sidebar'
-
-
-
-
+import Layout from '../../../Component/Layout/Agent/AgentLayout'
   export default function Index() {
-
-
   return (
     <>
-       <Header />
-       <Sidebar />
+       <Layout />
        <div className="main-content app-content">
             <div className="container-fluid">
       {/* <!-- PAGE-HEADER --> */}

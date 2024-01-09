@@ -1,7 +1,5 @@
 import React from 'react';
-
-
-
+import { Link } from 'react-router-dom'
 const Nopage = () => {
     return (
         <>
@@ -16,6 +14,7 @@ const Nopage = () => {
                                 </h1>
                                 <div class="m-4">
                                     <p class="fs-16">Sorry, an error has occured, Requested page not found!</p>
+                                    <Link to={'/agent/dashboard'}><button className='btn btn-primary'> Back To Dashboard</button></Link>
                                 </div>
                                
                             </div>
