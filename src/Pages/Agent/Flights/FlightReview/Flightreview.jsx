@@ -56,8 +56,8 @@ export default function Flightreview() {
                               <div className='d-flex'>
                                 <p className="small"><i class="fa-solid fa-suitcase fa-small me-1"></i> Baggage:15 KG, Cabin Baggage: Included</p>
                               </div>
-                              <div className='re-layover'>
-                                <p className='text-center'>Layover 02H 05M</p>
+                              <div className='re-layover mb-3' style={{backgroundColor:"#e1dff7", padding:"4px 0", fontSize:"13px", borderRadius:"15px", marginTop:"8px"}}>
+                                  <p className='text-center mb-0'>Layover 02H 05M</p>
                               </div>
                               <div className='row'>
                                   <div className='col-sm-2'>
@@ -117,92 +117,94 @@ export default function Flightreview() {
                   </div>
               </div>
               <div className='flight-item-list'>
-                <div className='card-body'>
-                    <div className="card-title">
-                        <p className='flightname'>Adult 1 (12 + yrs)</p>
-                    </div>
-                    <hr></hr>
-                    <div className="row gy-4">
-                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                            <label for="input-label" class="form-label">Title*</label> 
-                            <select class="form-select" aria-label="Default select example">
-                                    <option selected="">Select
-                                    </option>
-                                    <option value="1">Mr.</option>
-                                    <option value="2">Mrs.</option>
-                                    <option value="3">Ms.</option>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                            <label for="input-label" class="form-label">First Name*</label>
-                            <input type="text" class="form-control" id="input-label" />
-                        </div>
-                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                            <label for="input-placeholder" class="form-label">Last Name*</label>
-                            <input type="text" class="form-control" id="input-label" />
-                        </div>
-                    </div>
-                    <div className="card-title re-card-mib">
-                        <p className='flightname p-3'>Onward - SSR Details (Optional)</p>
-                    </div>
-                    <div className="row gy-4">
-                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                            <label for="input-label" class="form-label">Select Excess Baggage <span className='font-weight-bold fs-10'>(DEL - BOM)</span></label> 
-                            <select class="form-select" aria-label="Default select example">
-                                    <option selected="">--Select Baggage--
-                                    </option>
-                                    <option value="1">Mr.</option>
-                                    <option value="2">Mrs.</option>
-                                    <option value="3">Ms.</option>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                            <label for="input-label" class="form-label">Meal <span className='font-weight-bold fs-10'>(DEL - BOM)</span></label>
-                            <select class="form-select" aria-label="Default select example">
-                                    <option selected="">--Meal Preferences--
-                                    </option>
-                                    <option value="1">Mr.</option>
-                                    <option value="2">Mrs.</option>
-                                    <option value="3">Ms.</option>
-                            </select>
-                        </div>
-                        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12">
-                            <label  class="fs-12 from-label d-flex">Seat</label>
-                            <button className='btn btn-danger re-seat'>View Seat</button>
-                        </div>
-                        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12">
-                            <label  class="fs-12 from-label d-flex">Seat</label>
-                            <button className='btn btn-danger re-seat'>View Seat</button>
-                        </div>
-                    </div>
-                </div>
+                <div className='card'> 
+                  <div className="card-header">
+                      <p className='flightname mb-0'>Adult 1 (12 + yrs)</p>
+                  </div>
+                  <div className='card-body'>
+                      <div className="row gy-4">
+                          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                              <label for="input-label" class="form-label">Title*</label> 
+                              <select class="form-select" aria-label="Default select example">
+                                      <option selected="">Select
+                                      </option>
+                                      <option value="1">Mr.</option>
+                                      <option value="2">Mrs.</option>
+                                      <option value="3">Ms.</option>
+                              </select>
+                          </div>
+                          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                              <label for="input-label" class="form-label">First Name*</label>
+                              <input type="text" class="form-control" id="input-label" />
+                          </div>
+                          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                              <label for="input-placeholder" class="form-label">Last Name*</label>
+                              <input type="text" class="form-control" id="input-label" />
+                          </div>
+                      </div>
+                      <div className="card-title re-card-mib">
+                          <p className='flightname p-3'>Onward - SSR Details (Optional)</p>
+                      </div>
+                      <div className="row gy-4">
+                          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                              <label for="input-label" class="form-label">Select Excess Baggage <span className='font-weight-bold fs-10'>(DEL - BOM)</span></label> 
+                              <select class="form-select" aria-label="Default select example">
+                                      <option selected="">--Select Baggage--
+                                      </option>
+                                      <option value="1">Mr.</option>
+                                      <option value="2">Mrs.</option>
+                                      <option value="3">Ms.</option>
+                              </select>
+                          </div>
+                          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                              <label for="input-label" class="form-label">Meal <span className='font-weight-bold fs-10'>(DEL - BOM)</span></label>
+                              <select class="form-select" aria-label="Default select example">
+                                      <option selected="">--Meal Preferences--
+                                      </option>
+                                      <option value="1">Mr.</option>
+                                      <option value="2">Mrs.</option>
+                                      <option value="3">Ms.</option>
+                              </select>
+                          </div>
+                          <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12">
+                              <label  class="fs-12 from-label d-flex">Seat</label>
+                              <button className='btn btn-danger re-seat'>View Seat</button>
+                          </div>
+                          <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12">
+                              <label  class="fs-12 from-label d-flex">Seat</label>
+                              <button className='btn btn-danger re-seat'>View Seat</button>
+                          </div>
+                      </div>
+                  </div>
+                </div>  
               </div>
               <div className='flight-item-list mt-3'>
-                <div className='card-body'>
-                    <div className="card-title">
-                        <p className='flightname'>Contact Details</p>
+                <div className='card'>
+                    <div className="card-header">
+                        <p className='flightname mb-0'>Contact Details</p>
                     </div>
-                    <hr></hr>
-                    <div className="row gy-4">
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                            <label for="input-label" class="form-label">Email*</label> 
-                            <input type="email" class="form-control" id="input-label" placeholder='demo@gmail.com' />
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                            <label for="input-label" class="form-label">Phone*</label>
-                            <input type="text" class="form-control" id="input-label" placeholder='7845120369' />
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="checkebox-sm" checked="" />
-                                <label class="form-check-label" for="checkebox-sm">
-                                    I have a GST Number
-                                </label>
-                        </div>
-                    </div>
-                    <hr></hr>
-                    <div className='card-title'>
-                        <button className='btn btn-danger'>Proceed To Pay</button>
-                    </div>
+                    <div className='card-body'>
+                      <div className="row gy-4">
+                          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                              <label for="input-label" class="form-label">Email*</label> 
+                              <input type="email" class="form-control" id="input-label" placeholder='demo@gmail.com' />
+                          </div>
+                          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                              <label for="input-label" class="form-label">Phone*</label>
+                              <input type="text" class="form-control" id="input-label" placeholder='7845120369' />
+                          </div>
+                          <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="checkebox-sm" checked="" />
+                                  <label class="form-check-label" for="checkebox-sm">
+                                      I have a GST Number
+                                  </label>
+                          </div>
+                      </div>
+                      <hr></hr>
+                      <div className='card-title'>
+                          <button className='btn btn-danger'>Proceed To Pay</button>
+                      </div>
+                    </div>  
                 </div>
               </div>
                                  

@@ -3,10 +3,37 @@ import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import Moment from 'moment';
 import Indigo from '../../../../assets/images/indigo.png';
+import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service'; 
+import toast from 'react-hot-toast';
 export default function FlightDetailModel({show,handleClose,tripDetail}) {
+
+    
     console.log('tripDetail',tripDetail);
     var fareDetail = tripDetail.fareDetail[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0];
-    console.log("fareDetail",fareDetail);
+    //console.log("fareDetail",fareDetail);
+    const [searchRule, setSearchRule] = React.useState();
+    const handleClickGetSearchRule=(fareDetailRule) => {
+        console.log("fareDetail",fareDetail);
+        const requestParam= {
+            id:fareDetail.fareRuleId,
+            flowType:fareDetail.flowType
+        }
+        FlightSearchService.SearchRule(requestParam).then(async (response) => {
+            if(response.status === 200){
+                if(response.data.status){
+                    //console.log("result",response.data.data);
+                    setSearchRule(response.data.data)
+                }else{
+                    toast.error("Something went wrong");
+                }
+            }else{
+                toast.error("Something went wrong");
+            }
+        }).catch((e) => {
+            //console.log(e);
+            toast.error('Something went wrong');
+        });
+    }
     return (
         <>
             <Modal className='flight-item-flight-moodal' show={show} size='lg' onHide={handleClose} animation={true} aria-labelledby="contained-modal-title-vcenter"  centered>
@@ -25,10 +52,10 @@ export default function FlightDetailModel({show,handleClose,tripDetail}) {
                             <button className="nav-link" id="nav-baggage-tab" data-bs-toggle="tab" data-bs-target="#nav-baggage" type="button" role="tab" aria-controls="nav-baggage" aria-selected="false">Baggage Info</button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button className="nav-link" id="nav-fare-rules-tab" data-bs-toggle="tab" data-bs-target="#nav-fare-rules" type="button" role="tab" aria-controls="nav-fare-rules" aria-selected="false">Fare Rules</button>
+                            <button className="nav-link" id="nav-fare-rules-tab" data-bs-toggle="tab" data-bs-target="#nav-fare-rules" type="button" role="tab" aria-controls="nav-fare-rules" aria-selected="false" onClick={()=>handleClickGetSearchRule(fareDetail)}>Fare Rules</button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button className="nav-link" id="nav-cancellation-tab" data-bs-toggle="tab" data-bs-target="#nav-cancellation" type="button" role="tab" aria-controls="nav-cancellation" aria-selected="false">Cancellation Charges</button>
+                            <button className="nav-link" id="nav-cancellation-tab" data-bs-toggle="tab" data-bs-target="#nav-cancellation" type="button" role="tab" aria-controls="nav-cancellation" aria-selected="false" onClick={()=>handleClickGetSearchRule(fareDetail)}>Cancellation Charges</button>
                         </li>
                     </ul>
 

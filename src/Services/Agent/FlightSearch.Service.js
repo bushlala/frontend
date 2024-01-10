@@ -22,5 +22,14 @@ export const FlightSearchService = {
       //return response
     },
 
-    
+    SearchRule: async function (request, cancel = false) {
+      return await apiConfig.request({
+        url: `flightRules/serchRules`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+      })
+    },
 }
