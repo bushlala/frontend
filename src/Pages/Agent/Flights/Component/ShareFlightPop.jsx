@@ -17,7 +17,7 @@ export default function ShareFlightPop({shareFlights}) {
                             <div className=''>
                                 <div className="flightname" id="">{shareFlight.flightName}</div>
                                 <div className="flightnumber" id="">
-                                    <span> {`${shareFlight.flightCode} - ${shareFlight.flightId}`} </span><br/> <span>({`${shareFlight.flightDepartureTime}, ${shareFlight.flightDepartureDate} - ${shareFlight.flightArrivalTime}, ${shareFlight.flightArrivalDate}`})</span> 
+                                    <span> {`${shareFlight.flightCode} - ${shareFlight.flightNumber}`} </span><br/> <span>({`${shareFlight.flightDepartureTime}, ${shareFlight.flightDepartureDate} - ${shareFlight.flightArrivalTime}, ${shareFlight.flightArrivalDate}`})</span> 
                                     <div className='d-flex mt-2'>
                                         <div style={{width:"100px"}} className='me-'> Price - Rs.</div>
                                         <div contenteditable="true" style={{width: "100%",  borderBottom:"1px solid #ddd", height:"28px", lineHeight: "35px", fontWeight:"600"}}></div>    

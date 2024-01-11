@@ -45,7 +45,7 @@ import CustomerForm from "../Pages/Agent/MyCustomer/CustomerForm.jsx";
 import MyBooking from "../Pages/Agent/MyBooking/Booking.jsx";
 
 // Agent Flight Booking
-import Flightreview from "../Pages/Agent/Flights/FlightReview/Flightreview.jsx";
+import AgentFlightReviewBook from "../Pages/Agent/Flights/FlightReviewBook/FlightReviewBook.jsx";
 import FlightBook from "../Pages/Agent/Flights/FlightBook/FlightBook.jsx"
 import FlightSearchList from "../Pages/Agent/Flights/Component/FlightSearchList.jsx"
 
@@ -116,9 +116,6 @@ const Routing = () => {
              {/* Error page */}  
 
             <Route exact path='*' element={<Nopage />} />
-
-
-
             <Route exact path='/register' element={<Register />}></Route>
 
 
@@ -139,6 +136,7 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
+            {/* Here is flight routes */}
             <Route
                 path="agent/flight"
                
@@ -148,14 +146,15 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-             <Route
-                path="agent/Flightreview"
+            <Route
+                path="agent/flight-review-book/:flightId/:ruleId"
                 element={
                     <PrivateRoute>
-                        <Flightreview />
+                        <AgentFlightReviewBook />
                     </PrivateRoute>
                 }
             />
+
             <Route
                 path="agent/FlightSearchList"
                 element={
@@ -292,7 +291,7 @@ const Routing = () => {
 
             <Route exact path='admin/country' element={<CountryList />}></Route>
             <Route exact path='admin/country/add' element={<CreateCountry />}></Route>
-            <Route exact path='admin/country/edit/:slug' element={<CreateCountry />}></Route>
+            <Route exact path='admin/country/editc' element={<CreateCountry />}></Route>
 
             <Route exact path='admin/state' element={<StateList />}></Route>
             <Route exact path='admin/state/add' element={<CreateState />}></Route>

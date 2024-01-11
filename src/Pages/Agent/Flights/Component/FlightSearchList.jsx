@@ -29,6 +29,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
               {
                 flightId            : tripDetail?.flightDatails.flightId,
                 flightCode          : tripDetail?.flightDatails?.flightDescription?.code,
+                flightNumber          : tripDetail?.flightDatails?.flightNumber,
                 flightName          : tripDetail?.flightDatails?.flightDescription?.name,
                 flightArrivalDate   : tripDetail?.flightDatails?.arrivalDate,
                 flightArrivalTime   : tripDetail?.flightDatails?.arrivalTime,
@@ -124,7 +125,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                                 <div 
                                                                     className="flightnumber" 
                                                                     id=""
-                                                                >{value?.flightDatails?.flightDescription?.code}</div>
+                                                                >{`${value?.flightDatails?.flightDescription?.code}-${value?.flightDatails?.flightNumber}`}</div>
                                                             </div>
                                                             </div>  
                                                         </div>
@@ -155,7 +156,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                 <div className='col-6 pricelisttable d-flex flex-column'>
                                                 <div className='' style={{overflow:"hidden"}}>
                                                     {
-                                                        value.fareDetail && value.fareDetail.length!==0 && value.fareDetail.map((fdValue, fdKey) => (
+                                                        value.fareDetail.fareDetails && value.fareDetail.fareDetails.length!==0 && value.fareDetail.fareDetails.map((fdValue, fdKey) => (
                                                             <div key={fdKey} className='d-flex py-1 border-bottom'>
                                                                 <div className='me-4' style={{width:"2%"}}>
                                                                     <div className="form-check">
@@ -199,13 +200,13 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                                     </div>    
                                                                 </div>
                                                                 <div className='ms-4' style={{width:"34%"}}>
-                                                                    <Link className='btn btn-danger w-100'>Booking</Link>
+                                                                    <Link to={`/agent/flight-review-book/${value?.flightDatails?.flightId}/${fdKey}`} className='btn btn-danger w-100'>Booking</Link>
                                                                 </div>
                                                             </div>
                                                         ))  
                                                     }
                                                     {
-                                                        value.fareDetail && value.fareDetail.length>1 &&
+                                                        value.fareDetail.fareDetails && value.fareDetail.fareDetails.length>1 &&
                                                             <div className='morefrebtnouter'>
                                                                 <Link className='morefrebt'>+ More Fare</Link> 
                                                             </div>

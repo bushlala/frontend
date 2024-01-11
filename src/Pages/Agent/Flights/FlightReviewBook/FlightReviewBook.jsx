@@ -3,8 +3,8 @@ import React from 'react'
 import Header from '../../../../Component/Layout/Agent/Header/Header'
 import Sidebar from '../../../../Component/Layout/Agent/Sidebar/Sidebar'
 import Indigo from '../../../../assets/images/indigo.png'
-import './Flightreview.css'
-export default function Flightreview() {
+import './FlightReviewBook.css'
+export default function AgentFlightReviewBook() {
   return (
     <>
     <Header />
