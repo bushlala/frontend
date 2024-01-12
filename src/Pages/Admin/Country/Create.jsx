@@ -98,107 +98,102 @@ export default function CreateCountry() {
   return (
     <>  {/* <AdminLayout /> */}
     <Header />
-   <Sidebar />
-            <div className="main-content app-content">
-                <div className="container-fluid">
-                    {/* <!-- PAGE-HEADER --> */}
-                    <div className="page-header">
-                      <h1 className="page-title my-auto">{`${action} ${formTitle}`}</h1>
-                      <div>
-                        <ol className="breadcrumb mb-0">
-                          <li className="breadcrumb-item">
-                            <Link to={`/`}>Dashboard</Link>
-                          </li>
-                          <li className="breadcrumb-item">
-                            <Link to={`/country/`}>{`${formTitle} List`}</Link>
-                          </li>
-                          <li className="breadcrumb-item active" aria-current="page">{formTitle}</li>
-                        </ol>
-                      </div>
-                    </div>
-                    {/* <!-- PAGE-HEADER END --> */}
-
-                    {/* <!-- Start:: row-1 --> */}
-                    <div className="row">
-                        <div className="col-xl-12">
-                            <div className="card custom-card">
-                                <div className="card-header justify-content-between">
-                                    <div className="card-title">
-                                    {formTitle} Information
-                                    </div>
-                                </div>
-
-                                <Formik
-                                    initialValues={countryInitialValues}
-                                    validationSchema={countryValidationSchema}
-                                    onSubmit={handleOnSubmit}
-                                    enableReinitialize={true}
-                                >
-                                    {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
-                                        <Form ref={nameForm}>
-                                            <Card>
-                                                <CardContent>
-                                                        <Grid container spacing={4}>
-                                                            <Grid item xs={6}>
-                                                                <InputLabel>Country Name</InputLabel>
-                                                                <TextField
-                                                                    type="text"
-                                                                    id="name"
-                                                                    placeholder="Enter Country Name"
-                                                                    fullWidth
-                                                                    onChange={handleChange}
-                                                                    value={values.name}
-                                                                    helperText={touched.name ? errors.name : ""}
-                                                                    error={touched.name && Boolean(errors.name)} 
-                                                                />
-                                                                
-                                                            </Grid>
-
-                                                            <Grid item xs={6}>
-                                                                <InputLabel>Country Sort Name</InputLabel>
-                                                                <TextField
-                                                                    id="sortName"
-                                                                    type="text"
-                                                                    placeholder="Enter Sort Name"
-                                                                    fullWidth
-                                                                    onChange={handleChange}
-                                                                    value={values.sortName}
-                                                                    helperText={touched.sortName ? errors.sortName : ""}
-                                                                    error={touched.sortName && Boolean(errors.sortName)}
-                                                                />
-                                                            </Grid>
-
-                                                            <Grid item xs={6}>
-                                                                <InputLabel>Country Code</InputLabel>
-                                                                <TextField
-                                                                    id="code"
-                                                                    type="text"
-                                                                    placeholder="Enter Country Code"
-                                                                    fullWidth
-                                                                    onChange={handleChange}
-                                                                    value={values.code}
-                                                                    helperText={touched.code ? errors.code : ""}
-                                                                    error={touched.code && Boolean(errors.code)}
-                                                                />
-                                                            </Grid>
-
-                                                            <Grid item xs={12}>
-                                                                <Button 
-                                                                    type="submit" 
-                                                                    variant="contained"
-                                                                >Submit</Button>
-                                                            </Grid>
-                                                        </Grid>
-                                                </CardContent>
-                                            </Card>
-                                        </Form>
-                                    )}
-                                </Formik> 
+    <Sidebar />
+    <div className="main-content app-content">
+        <div className="container-fluid">
+        {/* <!-- PAGE-HEADER --> */}
+            <div className="page-header">
+                <h1 className="page-title my-auto">{`${action} ${formTitle}`}</h1>
+                <div>
+                    <ol className="breadcrumb mb-0">
+                        <li className="breadcrumb-item">
+                        <Link to={`/`}>Dashboard</Link>
+                        </li>
+                        <li className="breadcrumb-item">
+                        <Link to={`/country/`}>{`${formTitle} List`}</Link>
+                        </li>
+                        <li className="breadcrumb-item active" aria-current="page">{formTitle}</li>
+                    </ol>
+                </div>
+            </div>
+            {/* <!-- PAGE-HEADER END --> */}
+            {/* <!-- Start:: row-1 --> */}
+            <div className="row">
+                <div className="col-xl-12">
+                    <div className="card custom-card">
+                        <div className="card-header justify-content-between">
+                            <div className="card-title">
+                                {formTitle} Information
                             </div>
                         </div>
+                        <Formik
+                            initialValues={countryInitialValues}
+                            validationSchema={countryValidationSchema}
+                            onSubmit={handleOnSubmit}
+                            enableReinitialize={true}
+                        >
+                        {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
+                        <Form ref={nameForm}>
+                            <Card>
+                                <CardContent>
+                                    <Grid container spacing={4}>
+                                        <Grid item xs={6}>
+                                            <label className='form-label'>Country Name</label>
+                                                <div class="input-group">
+                                                    <input
+                                                        type="text"
+                                                        id="name"
+                                                        placeholder="Enter Country Name"
+                                                        className='form-control'
+                                                        onChange={handleChange}
+                                                        value={values.name}
+                                                        helperText={touched.name ? errors.name : ""}
+                                                        error={touched.name && Boolean(errors.name)} 
+                                                    />   
+                                                </div> 
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <label className='form-label'>Country Sort Name</label>
+                                                <div class="input-group">
+                                                    <input
+                                                        id="sortName"
+                                                        type="text"
+                                                        placeholder="Enter Sort Name"
+                                                        className='form-control'
+                                                        onChange={handleChange}
+                                                        value={values.sortName}
+                                                        helperText={touched.sortName ? errors.sortName : ""}
+                                                        error={touched.sortName && Boolean(errors.sortName)}
+                                                    />
+                                                </div>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <label className='form-label'>Country Code</label>
+                                            <input
+                                                id="code"
+                                                type="text"
+                                                placeholder="Enter Country Code"
+                                                className='form-control'
+                                                onChange={handleChange}
+                                                value={values.code}
+                                                helperText={touched.code ? errors.code : ""}
+                                                error={touched.code && Boolean(errors.code)}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <button  type="submit"  className='btn btn-primary'>Submit</button>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Form>
+                        )}
+                        </Formik> 
                     </div>
                 </div>
+            </div>
         </div>
+    </div>
     </>
   )
 }

@@ -9,12 +9,43 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom';
 
 
-// Admin 
-//import Dashboard from '../Pages/Dashboard/Dashboard';
-import Agent from '../Pages/Admin/Agent/Index.jsx';
-import AddEditAgent from '../Pages/Admin/Agent/Add.jsx';
-import Agentedit from '../Pages/Admin/Agent/Edit.jsx';
-import Agentview from '../Pages/Admin/Agent/View.jsx';
+// import Admin 
+
+// Admin Dashboard
+    import AdDashboard from '../Pages/Admin/Dashboard/Dashboard.jsx';
+
+// Admin Agent List and add List
+    import AdAgentList from '../Pages/Admin/Agent/Index.jsx';
+    import AdAgentAdd from '../Pages/Admin/Agent/Add.jsx';
+    import AdAgentedit from '../Pages/Admin/Agent/Edit.jsx';
+    import AdAgentview from '../Pages/Admin/Agent/View.jsx';
+
+/* Admin Country List and Add Country */
+    import CountryList from '../Pages/Admin/Country/Index';
+    import CreateCountry from '../Pages/Admin/Country/Create.jsx';
+
+/* Admin State List and Add State */
+    import CreateState from '../Pages/Admin/State/Create.jsx';
+    import StateList from '../Pages/Admin/State/Index.jsx';
+
+/* Admin City List and Add City */
+    import CreateCity from '../Pages/Admin/City/Create.jsx';
+    import CityList from '../Pages/Admin/City/Index.jsx';
+
+/* Admin Booking List  */
+    import AdFlightOnlineBooking from '../Pages/Admin/AllBooking/FlightOnlineBookings/FlightBooking.jsx';
+    import AdFlightOfflineBooking from '../Pages/Admin/AllBooking/OfflineFlightBooking/OfflineFlightBooking.jsx'
+    import AdHotelBooking from '../Pages/Admin/AllBooking/HotelBooking/HotelBooking.jsx'
+    import AdActivityBooking from '../Pages/Admin/AllBooking/ActivityBooking/ActivityBooking.jsx'
+
+/* Admin Accounts Details  */
+    import AdFlightInvoice from '../Pages/Admin/Accounts/FlightInvoice/FlightInvoice.jsx'
+    import AdHotelInvoice from '../Pages/Admin/Accounts/HotelInvoice/HotelInvoice.jsx'
+    import AdBalanceSheet from '../Pages/Admin/Accounts/AdminBalanceSheet/BalanceSheet.jsx'
+    import AdAgentCreditDebit from "../Pages/Admin/Accounts/AgentCreditDebit/AgentCreditDebit.jsx";
+
+
+
 // import Profileview from '../Pages/Agent/Profile/Profileview.jsx';
 // import AdminDash from '../Pages/Admin/Dashboard';
 // import AdList from '../Pages/Admin/List';
@@ -22,12 +53,6 @@ import Agentview from '../Pages/Admin/Agent/View.jsx';
 // import AdForm from '../Pages/Admin/Adform';
 // import Bookinglist from '../Pages/Admin/booking/Index';
 // import CancellationList from '../Pages/Admin/Cancellation/Index';
-import CountryList from '../Pages/Admin/Country/Index';
-import CreateCountry from '../Pages/Admin/Country/Create.jsx';
-import CreateState from '../Pages/Admin/State/Create.jsx';
-import StateList from '../Pages/Admin/State/Index.jsx';
-import CreateCity from '../Pages/Admin/City/Create.jsx';
-import CityList from '../Pages/Admin/City/Index.jsx';
 import Home from "../Pages/Index.jsx";
 import Login from "../Pages/Auth/Login/Login.jsx";
 import Register from "../Pages/Auth/Register/Register.jsx";
@@ -39,17 +64,23 @@ import AgentCustomerList from "../Pages/Agent/Customer/Index.jsx";
 import AgentCustomerAdd from "../Pages/Agent/Customer/Add.jsx";
 import AgentFlightSearch from "../Pages/Agent/Flights/Search.jsx";
 
+
+import PaymentSuccess from "../Pages/Agent/PaymentVerification/PaymentSuccess.jsx";
 // import my customer
+
+// My Booking
+import MyBooking from "../Pages/Agent/MyBooking/Booking.jsx";
+
 // import MyCustomer from "../Pages/Agent/MyCustomer/Customer.jsx";
 import CustomerForm from "../Pages/Agent/MyCustomer/CustomerForm.jsx";
-import MyBooking from "../Pages/Agent/MyBooking/Booking.jsx";
+
 
 // Agent Flight Booking
 import AgentFlightReviewBook from "../Pages/Agent/Flights/FlightReviewBook/FlightReviewBook.jsx";
 import FlightBook from "../Pages/Agent/Flights/FlightBook/FlightBook.jsx"
 import FlightSearchList from "../Pages/Agent/Flights/Component/FlightSearchList.jsx"
 
-// Agent Queries 
+/*Agent Queries */
 import AgentQueries from "../Pages/Agent/Queries/Queries.jsx" 
 import AgentQueriesAdd from "../Pages/Agent/Queries/QueriesAdd/QueriesAdd.jsx";
 
@@ -147,7 +178,7 @@ const Routing = () => {
                 }
             />
             <Route
-                path="agent/flight-review-book/:flightId/:ruleId"
+                path="agent/flight-review-book/:ruleId"
                 element={
                     <PrivateRoute>
                         <AgentFlightReviewBook />
@@ -268,6 +299,14 @@ const Routing = () => {
                 }
             />
             <Route
+                path="agent/My-booking"
+                element={
+                    <PrivateRoute>
+                        <MyBooking/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
                 path="agent/customer/add"
                 element={
                     <PrivateRoute>
@@ -283,26 +322,48 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
-            {/* <Route exact path='/dashboard' element={<Dashboard />}></Route> */}
-            
-            <Route exact path='admin/agent' element={<Agent />}></Route>
-            <Route exact path='admin/agent/add' element={<AddEditAgent />}></Route>
-            <Route exact path='admin/agent/edit/:slug' element={<AddEditAgent />}></Route>
 
-            <Route exact path='admin/country' element={<CountryList />}></Route>
-            <Route exact path='admin/country/add' element={<CreateCountry />}></Route>
-            <Route exact path='admin/country/editc' element={<CreateCountry />}></Route>
 
-            <Route exact path='admin/state' element={<StateList />}></Route>
-            <Route exact path='admin/state/add' element={<CreateState />}></Route>
-            <Route exact path='admin/state/edit/:slug' element={<CreateState />}></Route>
+{/* Admin section Route */}
 
-            <Route exact path='admin/city' element={<CityList />}></Route>
-            <Route exact path='admin/city/add' element={<CreateCity />}></Route>
-            <Route exact path='admin/city/edit/:slug' element={<CreateCity />}></Route>
+{/* Admin Dashboard */}
+    <Route exact path='ad/dashboard' element={<AdDashboard />}></Route>
 
-            <Route exact path='/agentedit' element={<Agentedit />}></Route>
-            <Route exact path='/agentview' element={<Agentview />}></Route>
+{/* Admin Agent List And Add List  */}
+    <Route exact path='admin/agentlist' element={<AdAgentList />}></Route>
+    <Route exact path='admin/agent/add' element={<AdAgentAdd />}></Route>
+    <Route exact path='admin/agent/edit/:slug' element={<AdAgentedit />}></Route>
+    <Route exact path='admin/agent/review' element={<AdAgentAdd />}></Route>
+
+{/* Admin Country List And Add Country  */}
+    <Route exact path='admin/country' element={<CountryList />}></Route>
+    <Route exact path='admin/country/add' element={<CreateCountry />}></Route>
+    <Route exact path='admin/country/edit/:slug' element={<CreateCountry />}></Route>
+
+{/* Admin State List And Add State */}
+    <Route exact path='admin/state' element={<StateList />}></Route>
+    <Route exact path='admin/state/add' element={<CreateState />}></Route>
+    <Route exact path='admin/state/edit/:slug' element={<CreateState />}></Route>
+
+{/* Admin City List And Add City  */}
+    <Route exact path='admin/city' element={<CityList />}></Route>
+    <Route exact path='admin/city/add' element={<CreateCity />}></Route>
+    <Route exact path='admin/city/edit/:slug' element={<CreateCity />}></Route>
+
+ {/* Admin Booking List  */}
+    <Route exact path="admin/FlightOnlineBooking" element={<AdFlightOnlineBooking />}></Route>
+    <Route exact path="admin/FlightOfflineBooking" element={<AdFlightOfflineBooking />}></Route>
+    <Route exact path="admin/HotelBooking" element={<AdHotelBooking />}></Route> 
+    <Route exact path="admin/ActivityBooking" element={<AdActivityBooking />}></Route>          
+
+    {/* Admin Accounts Details */}
+    <Route exact path="admin/FlightInvoice" element={<AdFlightInvoice />}></Route>
+    <Route exact path="admin/HotelInvoice" element={<AdHotelInvoice />}></Route>
+    <Route exact path="admin/BalanceSheet" element={<AdBalanceSheet />}></Route> 
+    <Route exact path="admin/AgentCredit-Debit" element={<AdAgentCreditDebit />}></Route> 
+
+    <Route exact path="PaymentSuccess" element={<PaymentSuccess />}></Route>   
+          
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}
             {/* <Route exact path='/' element={<AdminDash />}></Route>
             <Route exact path='/adlist' element={<AdList />}></Route>
@@ -317,5 +378,4 @@ const Routing = () => {
         </Provider>
     );
 };
-
 export default Routing;

@@ -92,7 +92,6 @@ export default function Header() {
                                     <i className="fa fa-user fs-18 me-2 side-menu__icon profile-icon"></i>Profile
                                 </Link>
                             </li>
-                            
                             <li className="dropdown-item" onClick={logout}>
                                 <Link className="d-flex w-100 text-black fw-bold" to='/'>
                                     <i class="fa-solid fa-right-from-bracket fs-18 me-2 side-menu__icon profile-icon"></i>Log Out

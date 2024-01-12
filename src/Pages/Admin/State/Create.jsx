@@ -1,6 +1,5 @@
 import React from 'react'
-import Header from '../../../Component/Header'
-import Sidebar from '../../../Component/Admin/Sidebar'
+import Layout from '../../../Component/Layout/Admin/AdminLayout'
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { CountryAPI } from '../../../Services/Country.Service';
@@ -96,114 +95,107 @@ export default function CreateState() {
     };
   return (
     <>   {/* <AdminLayout /> */}
-    <Header />
-   <Sidebar />
+    <Layout />
         <div className="main-content app-content">
-                <div className="container-fluid">
-                    {/* <!-- PAGE-HEADER --> */}
-                    <div className="page-header">
-                      <h1 className="page-title my-auto">{`${action} ${formTitle}`}</h1>
-                      <div>
+            <div className="container-fluid">
+            {/* <!-- PAGE-HEADER --> */}
+                <div className="page-header">
+                    <h1 className="page-title my-auto">{`${action} ${formTitle}`}</h1>
+                    <div>
                         <ol className="breadcrumb mb-0">
-                          <li className="breadcrumb-item">
+                            <li className="breadcrumb-item">
                             <Link to={`/`}>Dashboard</Link>
-                          </li>
-                          <li className="breadcrumb-item">
+                            </li>
+                            <li className="breadcrumb-item">
                             <Link to={`/country/`}>{`${formTitle} List`}</Link>
-                          </li>
-                          <li className="breadcrumb-item active" aria-current="page">{formTitle}</li>
+                            </li>
+                            <li className="breadcrumb-item active" aria-current="page">{formTitle}</li>
                         </ol>
-                      </div>
                     </div>
-                    {/* <!-- PAGE-HEADER END --> */}
-
-                    {/* <!-- Start:: row-1 --> */}
-                    <div className="row">
-                        <div className="col-xl-12">
-                            <div className="card custom-card">
-                                <div className="card-header justify-content-between">
-                                    <div className="card-title">
-                                    {formTitle} Information
-                                    </div>
-                                </div>
-
-                                <Formik
-                                    initialValues={countryInitialValues}
-                                    validationSchema={countryValidationSchema}
-                                    onSubmit={handleOnSubmit}
-                                    enableReinitialize={true}
-                                >
-                                    {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
-                                        <Form ref={nameForm}>
-                                            <Card>
-                                                <CardContent>
-                                                        <Grid container spacing={4}>
-                                                            <Grid item xs={6}>
-                                                                <InputLabel>Country</InputLabel>
-                                                                <Select
-                                                                    id="countryId"
-                                                                    name="countryId"
-                                                                    fullWidth
-                                                                    onChange={handleChange}
-                                                                    value={values.countryId}
-                                                                    helperText={touched.countryId ? errors.countryId : ""}
-                                                                    error={touched.countryId && Boolean(errors.countryId)}
-                                                                >
-                                                                    <MenuItem  value="">Select Country</MenuItem>
-                                                                    <MenuItem  value="1">India</MenuItem>
-                                                                    <MenuItem  value="2">US</MenuItem>
-                                                                    {
-                                                                        // country && genders.map((value, key) => (
-                                                                        //     <MenuItem key={key} value={value.NEMSISCode}>{value.Name}</MenuItem>
-                                                                        // ))
-                                                                    }
-                                                                </Select>
-                                                            </Grid>
-                                                            <Grid item xs={6}>
-                                                                <InputLabel>State Name</InputLabel>
-                                                                <TextField
-                                                                    type="text"
-                                                                    id="name"
-                                                                    placeholder="Enter State Name"
-                                                                    fullWidth
-                                                                    onChange={handleChange}
-                                                                    value={values.name}
-                                                                    helperText={touched.name ? errors.name : ""}
-                                                                    error={touched.name && Boolean(errors.name)} 
-                                                                />
-                                                                
-                                                            </Grid>
-
-                                                            <Grid item xs={6}>
-                                                                <InputLabel>State Sort Name</InputLabel>
-                                                                <TextField
-                                                                    id="sortName"
-                                                                    type="text"
-                                                                    placeholder="Enter Sort State Name"
-                                                                    fullWidth
-                                                                    onChange={handleChange}
-                                                                    value={values.sortName}
-                                                                    helperText={touched.sortName ? errors.sortName : ""}
-                                                                    error={touched.sortName && Boolean(errors.sortName)}
-                                                                />
-                                                            </Grid>
-
-                                                            <Grid item xs={12}>
-                                                                <Button 
-                                                                    type="submit" 
-                                                                    variant="contained"
-                                                                >Submit</Button>
-                                                            </Grid>
-                                                        </Grid>
-                                                </CardContent>
-                                            </Card>
-                                        </Form>
-                                    )}
-                                </Formik> 
+                </div>
+                {/* <!-- PAGE-HEADER END --> */}
+                {/* <!-- Start:: row-1 --> */}
+                <div className="row">
+                    <div className="col-xl-12">
+                        <div className="card custom-card">
+                            <div className="card-header justify-content-between">
+                                <div className="card-title"> {formTitle} Information</div>
                             </div>
+                            <Formik
+                                initialValues={countryInitialValues}
+                                validationSchema={countryValidationSchema}
+                                onSubmit={handleOnSubmit}
+                                enableReinitialize={true}
+                            >
+                            {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
+                            <Form ref={nameForm}>
+                                <Card>
+                                    <CardContent>
+                                        <Grid container spacing={4}>
+                                            <Grid item xs={6}>
+                                                <label className='form-label'>Country</label>
+                                                    <select
+                                                        id="countryId"
+                                                        name="countryId"
+                                                        className='form-select'
+                                                        onChange={handleChange}
+                                                        value={values.countryId}
+                                                        helperText={touched.countryId ? errors.countryId : ""}
+                                                        error={touched.countryId && Boolean(errors.countryId)}
+                                                    >
+                                                        <option  value="">Select Country</option>
+                                                        <option  value="1">India</option>
+                                                        <option  value="2">US</option>
+                                                        {
+                                                            // country && genders.map((value, key) => (
+                                                            //     <MenuItem key={key} value={value.NEMSISCode}>{value.Name}</MenuItem>
+                                                            // ))
+                                                        }
+                                                    </select>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <label className='form-label'>State Name</label>
+                                                    <div class="input-group">
+                                                        <input
+                                                        type="text"
+                                                        id="name"
+                                                        placeholder="Enter State Name"
+                                                        className='form-control'
+                                                        onChange={handleChange}
+                                                        value={values.name}
+                                                        helperText={touched.name ? errors.name : ""}
+                                                        error={touched.name && Boolean(errors.name)} 
+                                                        />
+                                                    </div>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <label className='form-label'>State Sort Name</label>
+                                                    <div class="input-group">
+                                                        <input
+                                                        id="sortName"
+                                                        type="text"
+                                                        placeholder="Enter Sort State Name"
+                                                        className='form-control'
+                                                        onChange={handleChange}
+                                                        value={values.sortName}
+                                                        helperText={touched.sortName ? errors.sortName : ""}
+                                                        error={touched.sortName && Boolean(errors.sortName)}
+                                                        />
+                                                    </div>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <button  type="submit" className='btn btn-primary' >Submit</button>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                            </Form>
+                            )}
+                            </Formik> 
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
     </>
   )

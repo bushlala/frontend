@@ -14,12 +14,9 @@ import {
     Stack,
     Tooltip,
 } from "@mui/material";
-
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-import Header from '../../../Component/Header'
-import Sidebar from '../../../Component/Admin/Sidebar'
+import Layout from '../../../Component/Layout/Admin/AdminLayout'
 import { Link } from 'react-router-dom'
 import { AgentAPI } from '../../../Services/Agent.Service';
 import { RequestPagination } from "../../../Services/RequestPagination"
@@ -120,8 +117,7 @@ export default function Index() {
     
   return (
     <>
-    <Header />
-    <Sidebar />
+    <Layout />
     <div className="main-content app-content">
         <div className="container-fluid">
         {/* <!-- PAGE-HEADER --> */}
@@ -139,14 +135,14 @@ export default function Index() {
             {/* <!-- PAGE-HEADER END --> */}
             <div className='row'>
                 <div class="col-xl-12">
-                    <div className='card mt-4'>
+                    <div className='card'>
                         <div class="card-body">
                             <div className='row'>
                                 <div className='col-6'>
                                     <div className="card-title">
                                         <Box sx={{ '& > :not(style)': { width: '200px', float: "left" } }}>
                                             <input id="outlined-basic" className="form-control" placeholder="Search"
-                                                value={request.search} onChange={e => { handleSearch(e.target.value); setRequest({ ...request, search: e.target.value }); }} />
+                                            value={request.search} onChange={e => { handleSearch(e.target.value); setRequest({ ...request, search: e.target.value }); }} />
                                         </Box>
                                     </div>
                                 </div>

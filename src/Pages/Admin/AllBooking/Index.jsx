@@ -1,16 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Layout from '../../../Component/Layout/Agent/AgentLayout'
+import Layout from '../../../Component/Layout/Admin/AdminLayout'
 
-  export default function Index() {
+export default function Index() {
   return (
     <>
-       <Layout />
-       <div className="main-content app-content booking">
+    <Layout />
+      <div className="main-content app-content booking">
             <div className="container-fluid">
       {/* <!-- PAGE-HEADER --> */}
                 <div className="page-header">
-                  <h1 className="page-title my-auto">My Booking</h1>
+                  <h1 className="page-title fw-bold  my-auto">All Booking</h1>
                   <div>
                     <ol className="breadcrumb mb-0">
                       <li className="breadcrumb-item">
@@ -24,7 +24,7 @@ import Layout from '../../../Component/Layout/Agent/AgentLayout'
 
                 <div className='row'>
                     <div class="col-xl-12">
-                        <div className='card mt-4'>
+                        <div className='card'>
                             <div class="card-body">
                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                     <li class="nav-item" role="presentation">
@@ -110,7 +110,7 @@ import Layout from '../../../Component/Layout/Agent/AgentLayout'
                                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                 <div className="col-sm-12 col-lg-12">
                                         <div id="responsiveDataTable_filter" className="dataTables_filter row d-flex">
-                                                <div className='col-6 text-start'>
+                                                <div className='col-4 text-start'>
                                                     <h5 className='fw-bold mt-3'> Hotel Booking </h5>
                                                 </div>
                                                 <div className='col-2 text-start'>
@@ -122,6 +122,16 @@ import Layout from '../../../Component/Layout/Agent/AgentLayout'
                                                     <label>To Date</label>
                                                     <input type="date" className="form-control"
                                                         aria-label="date" />
+                                                </div>
+                                                <div className='col-2 text-start'>
+                                                    <label>Status</label>
+                                                   <select className='form-control'>
+                                                        <option>Select Status</option>
+                                                        <option>Pandding</option>
+                                                        <option>Confirm</option>
+                                                        <option>Cancelled</option>
+                                                        <option>Rejected</option>
+                                                    </select>
                                                 </div>
                                                 <div className='col-2 text-start float-end'>
                                                     <label>Search</label>
@@ -135,11 +145,14 @@ import Layout from '../../../Component/Layout/Agent/AgentLayout'
                                         <thead>
                                             <tr>
                                                 <th>Booking ID</th>
+                                                <th>Agent</th>
                                                 <th>Hotel</th>
                                                 <th>Date</th>
                                                 <th>Room Type</th>
                                                 <th>Pax</th>
-                                                <th>Amount</th>
+                                                <th>Buying</th>
+                                                <th>Selling</th>
+                                                <th>Profit</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
@@ -152,6 +165,10 @@ import Layout from '../../../Component/Layout/Agent/AgentLayout'
                                                 <td>--</td>
                                                 <td>--</td>
                                                 <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                <td>--</td>
+
                                             </tr>
                                         </tbody>
                                     </table>
@@ -169,10 +186,6 @@ import Layout from '../../../Component/Layout/Agent/AgentLayout'
                 </div>
             </div>
             </div>
-            
-       
     </>
-
   )
-
 }

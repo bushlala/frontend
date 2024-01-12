@@ -32,4 +32,15 @@ export const FlightSearchService = {
         }
       })
     },
+
+    BookingReview: async function (request, cancel = false) {
+      return await apiConfig.request({
+        url: `booking/review`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+      })
+    },
 }

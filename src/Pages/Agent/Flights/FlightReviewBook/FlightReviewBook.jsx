@@ -1,10 +1,121 @@
-import React from 'react'
+import React,{useState} from 'react'
 //import { Link } from 'react-router-dom'
 import Header from '../../../../Component/Layout/Agent/Header/Header'
 import Sidebar from '../../../../Component/Layout/Agent/Sidebar/Sidebar'
 import Indigo from '../../../../assets/images/indigo.png'
 import './FlightReviewBook.css'
+import {Link,useNavigate,useParams } from 'react-router-dom';
+import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service'
+import toast, { Toaster } from 'react-hot-toast';
+import FlightDetail from './Component/FlightDetails'
+import { Button } from 'react-bootstrap'
+import axios from "axios";
+
 export default function AgentFlightReviewBook() {
+  let BASE_URL = '';
+if(process.env.REACT_APP_SERVER_ENV==='Local'){
+    BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
+}else if(process.env.REACT_APP_SERVER_ENV==='Live'){
+    BASE_URL = process.env.REACT_APP_LIVE_API_URL;
+}
+
+   let amount=5000
+  const checkoutHandler = async (amount) => {
+    console.log('######################',amount)
+
+
+    let getapiurl=`${BASE_URL}api/payment/getkey`
+    let checkoutapiurl=`${BASE_URL}api/payment/checkout`
+
+    const { data: { data } } = await axios.get(getapiurl)
+    const { data: { order } } = await axios.post(checkoutapiurl, {
+        amount 
+    })
+    console.log(data)
+
+    const options = {
+        key:data.RAZORPAY_API_KEY,
+        amount: order.amount,
+        currency: "INR",
+        name: "wizotrip booking",
+        description: "Air Ticket Booking",
+        image: "https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png",
+        order_id: order.id,
+        callback_url: `${BASE_URL}api/payment/paymentVerification/`,
+        prefill: {
+            name: "Nishit",
+            email: "nishitengineer0@gmail.com",
+            contact: "9662989748"
+        },
+        notes: {
+            "address": "Iswarkrupa Society, Hatkeshwar"
+        },
+        theme: {
+            "color": "#121212"
+        }
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+ }
+
+  const navigate = useNavigate();
+  const { ruleId } = useParams();
+  console.log('ruleIds',ruleId);
+  const [bookingReviewData, setBookingReviewData] = useState();
+  // for timers
+  const [countdown, setcountdown] = React.useState(60 * 5);
+  const [runtimer, setruntimer] = React.useState(true);
+
+  React.useEffect(() => {
+    let timerid;
+
+    if (runtimer) {
+      setcountdown(60 * 5);
+      timerid = setInterval(() => {
+        setcountdown((countdown) => countdown - 1);
+      }, 1000);
+    } else {
+      clearInterval(timerid);
+    }
+
+    return () => clearInterval(timerid);
+  }, [runtimer]);
+
+  React.useEffect(() => {
+    if (countdown < 0 && runtimer) {
+      console.log("expired");
+      setruntimer(false);
+      setcountdown(0);
+    }
+  }, [countdown, runtimer]);
+  
+  //const seconds = (countdown % 60).String().padstart(2, 0);
+  //const minutes = string(math.floor(countdown / 60)).padstart(2, 0);
+
+  React.useEffect(() => {
+    if(ruleId){
+      getBookingReviewData(ruleId);
+    }
+  }, [ruleId])
+  
+
+  const getBookingReviewData = async (ruleId) => {
+    console.log("ruleId",ruleId);
+    var requestData = {
+      priceIds : [ruleId]
+    }
+    FlightSearchService.BookingReview(requestData).then(async (response) => {
+        if(response.data.status){
+          console.log("response",response.data.data);
+          setBookingReviewData(response.data.data);
+        }else{
+          toast.error('Something went wrong');
+        }
+    }).catch((e) => {
+        console.log(e);
+        toast.error('Something went wrong');
+    });
+  };
   return (
     <>
     <Header />
@@ -16,99 +127,18 @@ export default function AgentFlightReviewBook() {
               <div className="page-header">
                   <h4 className="my-auto">Flight Details</h4>
                   <div>
-                    <p className="my-auto text-danger">Back to Search</p> 
+                    <Link onClick={() => navigate(-1)} className="my-auto text-danger" >Back to Search</Link>
+                    
                   </div>
               </div>
-              <div className='flight-item-list card'>
-                    <div className="card-header">
-                        <p className='flightname mb-0'>Delhi <i class="fa-solid fa-arrow-right-long"></i>  NA  <span className='flightnumber'>On Mon,Jan 01 2024</span></p>
-                    </div>
-                    <div className='card-body'>
-                        <div className='row'>
-                          <div className='col-12'>
-                              <div className='row'>
-                                  <div className='col-sm-2'>
-                                      <div className='d-flex'>
-                                        <img className='flight-flag' src={Indigo} alt=''/>
-                                        <div className=''>
-                                            <div className="flightname" id="">IndiGo</div>
-                                            <div className="flightnumber" id="">6E-6114</div>
-                                        </div>
-                                      </div>  
-                                  </div>
-                                  <div className='col-10 d-flex'>
-                                    <div className="text-center" style={{width:"50%"}}>
-                                      <div className="coltime"> 22:15</div>
-                                      <div className="graysmalltext"> DEL</div>
-                                      <div className="graysmalltext"> Terminal 1</div>
-                                    </div>
-                                    <div className="text-center" style={{width:"50%"}}>
-                                      <div className="nostops small">0d:2h:10m</div>
-                                      <div className="graysmalltext text-danger"> Non Stop</div>
-                                    </div>
-                                    <div className="text-center" style={{width:"50%"}}>
-                                      <div className="coltime"> 00:25</div>
-                                      <div className="graysmalltext"> BOM</div>
-                                      <div className="graysmalltext"> Terminal 2</div>
-                                    </div>
-                                  </div>
-                              </div>
-                              <div className='d-flex'>
-                                <p className="small"><i class="fa-solid fa-suitcase fa-small me-1"></i> Baggage:15 KG, Cabin Baggage: Included</p>
-                              </div>
-                              <div className='re-layover mb-3' style={{backgroundColor:"#e1dff7", padding:"4px 0", fontSize:"13px", borderRadius:"15px", marginTop:"8px"}}>
-                                  <p className='text-center mb-0'>Layover 02H 05M</p>
-                              </div>
-                              <div className='row'>
-                                  <div className='col-sm-2'>
-                                      <div className='d-flex'>
-                                        <img className='flight-flag' src={Indigo} alt='' />
-                                        <div className=''>
-                                            <div className="flightname" id="">IndiGo</div>
-                                            <div className="flightnumber" id="">6E-6114</div>
-                                        </div>
-                                      </div>  
-                                  </div>
-                                  <div className='col-10 d-flex'>
-                                    <div className="text-center" style={{width:"50%"}}>
-                                      <div className="coltime"> 22:15</div>
-                                      <div className="graysmalltext"> DEL</div>
-                                      <div className="graysmalltext"> Terminal 1</div>
-                                    </div>
-                                    <div className="text-center" style={{width:"50%"}}>
-                                      <div className="nostops small">0d:2h:10m</div>
-                                      <div className="graysmalltext text-danger"> Non Stop</div>
-                                    </div>
-                                    <div className="text-center" style={{width:"50%"}}>
-                                      <div className="coltime"> 00:25</div>
-                                      <div className="graysmalltext"> BOM</div>
-                                      <div className="graysmalltext"> Terminal 2</div>
-                                    </div>
-                                  </div>
-                                  
-                              </div>
-                              <div className='d-flex'>
-                                <p className="small"><i class="fa-solid fa-suitcase fa-small me-1"></i>  Baggage:15 KG, Cabin Baggage: Included</p>
-                              </div>
-                                <div className='row mt-3'>
-                                  <div className='col-6'>
-                                    {/* <button type="button" className="btn btn-outline-secondary btn-md">Show Fare Rules</button> */}
-                                    <p>
-                                        <a class="btn btn-outline-secondary btn-md" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                            Show Fare Rules
-                                        </a>
-                                    </p>
-                                    <div class="collapse" id="collapseExample">
-                                      <div class="card card-body">
-                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                                      </div>
-                                    </div>
-                                  </div>
-                              </div>
-                          </div>
-                        </div>  
-                    </div>
-              </div> 
+              {
+                bookingReviewData &&
+                bookingReviewData.listOfFlight &&
+                bookingReviewData.listOfFlight.length !=0 &&
+                <FlightDetail
+                  listOfFlight={bookingReviewData.listOfFlight}
+                />
+              }
               <div className="page-header">
                   <h4 className="my-auto">Passenger Details</h4>
                   <div className=''>
@@ -202,7 +232,7 @@ export default function AgentFlightReviewBook() {
                       </div>
                       <hr></hr>
                       <div className='card-title'>
-                          <button className='btn btn-danger'>Proceed To Pay</button>
+                          <Button className='btn btn-danger' onClick={() => checkoutHandler(amount)}>5000 Pay Now</Button>
                       </div>
                     </div>  
                 </div>
@@ -269,10 +299,11 @@ export default function AgentFlightReviewBook() {
         </div>
         <div className="open-button text-center">
         Your session will expire in
-        <p>00:00 min</p>
+        <p>{`${countdown}`} min</p>
         </div>
       </div>
     </div>
+    
     </>
   )
 }

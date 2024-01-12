@@ -1,25 +1,17 @@
 import React from 'react'
-import Header from '../../Component/Header'
-import Sidebar from '../../Component/Admin/Sidebar'
-import Icon from '../../assets/images/icon.svg';
-import Icon2 from '../../assets/images/icon2.svg';
-// import Icon3 from '../assets/images/icon3.svg';
-// import Icon4 from '../assets/images/icon4.svg';
-import Icon5 from '../../assets/images/icon5.svg';
-// import Icon6 from '../../assets/images/icon6.svg';
-// import Icon9 from '../../assets/images/icon9.svg';
-import Icon8 from '../../assets/images/icon8.svg';
+import Layout from '../../../Component/Layout/Admin/AdminLayout'
+import Icon from '../../../assets/images/icon.svg';
+import Icon2 from '../../../assets/images/icon2.svg';
+import Icon5 from '../../../assets/images/icon5.svg';
+import Icon8 from '../../../assets/images/icon8.svg';
 export default function Dashboard() {
   return (
     <>
     <div class="page">
-        <Header />
-        <Sidebar />
+        <Layout />
         {/* <!-- Start::app-content --> */}
         <div class="main-content app-content">
             <div class="container-fluid">
-
-
                 {/* <!-- PAGE-HEADER --> */}
                 <div class="page-header">
                   <h1 class="page-title my-auto">Dashboard</h1>
@@ -33,8 +25,6 @@ export default function Dashboard() {
                   </div>
                 </div>
                 {/* <!-- PAGE-HEADER END --> */}
-
-
                 {/* <!-- ROW-1 --> */}
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xxl-4">

@@ -1,12 +1,10 @@
 import React from 'react'
 // import AdminLayout from '../../../Component/Layout/Admin/AdminLayout';
-import Header from '../../../Component/Header'
-import Sidebar from '../../../Component/Admin/Sidebar'
+import Layout from '../../../Component/Layout/Admin/AdminLayout'
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { CityAPI } from '../../../Services/City.Service';
 import toast from 'react-hot-toast';
-
 import {Link, useNavigate,useParams} from 'react-router-dom';
 import {
     Card,
@@ -102,8 +100,7 @@ export default function CreateCity() {
     <>  
         {/* <AdminLayout /> */}
         
-      <Header />
-      <Sidebar />
+      <Layout />
         <div className="main-content app-content">
             <div className="container-fluid">
                 {/* <!-- PAGE-HEADER --> */}
@@ -145,82 +142,81 @@ export default function CreateCity() {
                                             <CardContent>
                                                     <Grid container spacing={4}>
                                                         <Grid item xs={6}>
-                                                            <InputLabel>Country</InputLabel>
-                                                            <Select
+                                                            <label className='form-label'>Country</label>
+                                                            <select
                                                                 id="countryId"
                                                                 name="countryId"
-                                                                fullWidth
+                                                                className='form-select'
                                                                 onChange={handleChange}
                                                                 value={values.countryId}
                                                                 helperText={touched.countryId ? errors.countryId : ""}
                                                                 error={touched.countryId && Boolean(errors.countryId)}
                                                             >
-                                                                <MenuItem  value="">Select Country</MenuItem>
-                                                                <MenuItem  value="1">India</MenuItem>
-                                                                <MenuItem  value="2">US</MenuItem>
+                                                                <option  value="">Select Country</option>
+                                                                <option  value="1">India</option>
+                                                                <option  value="2">US</option>
                                                                 {
                                                                     // country && genders.map((value, key) => (
                                                                     //     <MenuItem key={key} value={value.NEMSISCode}>{value.Name}</MenuItem>
                                                                     // ))
                                                                 }
-                                                            </Select>
+                                                            </select>
                                                         </Grid>
 
                                                         <Grid item xs={6}>
-                                                            <InputLabel>State</InputLabel>
-                                                            <Select
+                                                            <label className='form-label'>State</label>
+                                                            <select
                                                                 id="stateId"
                                                                 name="stateId"
-                                                                fullWidth
+                                                                className='form-select'
                                                                 onChange={handleChange}
                                                                 value={values.stateId}
                                                                 helperText={touched.stateId ? errors.stateId : ""}
                                                                 error={touched.stateId && Boolean(errors.stateId)}
                                                             >
-                                                                <MenuItem  value="">Select State</MenuItem>
-                                                                <MenuItem  value="1">Mp</MenuItem>
-                                                                <MenuItem  value="2">UP</MenuItem>
+                                                                <option  value="">Select State</option>
+                                                                <option  value="1">Mp</option>
+                                                                <option  value="2">UP</option>
                                                                 {
                                                                     // country && genders.map((value, key) => (
                                                                     //     <MenuItem key={key} value={value.NEMSISCode}>{value.Name}</MenuItem>
                                                                     // ))
                                                                 }
-                                                            </Select>
+                                                            </select>
                                                         </Grid>
                                                         <Grid item xs={6}>
-                                                            <InputLabel>City Name</InputLabel>
-                                                            <TextField
-                                                                type="text"
-                                                                id="name"
-                                                                placeholder="Enter City Name"
-                                                                fullWidth
-                                                                onChange={handleChange}
-                                                                value={values.name}
-                                                                helperText={touched.name ? errors.name : ""}
-                                                                error={touched.name && Boolean(errors.name)} 
-                                                            />
-                                                            
+                                                            <label className='form-label'>City Name</label>
+                                                                <div class="input-group">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="name"
+                                                                        placeholder="Enter City Name"
+                                                                        className='form-control'
+                                                                        onChange={handleChange}
+                                                                        value={values.name}
+                                                                        helperText={touched.name ? errors.name : ""}
+                                                                        error={touched.name && Boolean(errors.name)} 
+                                                                    />
+                                                                </div>
                                                         </Grid>
 
                                                         <Grid item xs={6}>
-                                                            <InputLabel>City Sort Name</InputLabel>
-                                                            <TextField
-                                                                id="sortName"
-                                                                type="text"
-                                                                placeholder="Enter Sort City Name"
-                                                                fullWidth
-                                                                onChange={handleChange}
-                                                                value={values.sortName}
-                                                                helperText={touched.sortName ? errors.sortName : ""}
-                                                                error={touched.sortName && Boolean(errors.sortName)}
-                                                            />
+                                                            <label className='form-label'>City Sort Name</label>
+                                                                <div class="input-group">
+                                                                    <input
+                                                                        id="sortName"
+                                                                        type="text"
+                                                                        placeholder="Enter Sort City Name"
+                                                                        className='form-control'
+                                                                        onChange={handleChange}
+                                                                        value={values.sortName}
+                                                                        helperText={touched.sortName ? errors.sortName : ""}
+                                                                        error={touched.sortName && Boolean(errors.sortName)}
+                                                                    />
+                                                                </div>
                                                         </Grid>
-
                                                         <Grid item xs={12}>
-                                                            <Button 
-                                                                type="submit" 
-                                                                variant="contained"
-                                                            >Submit</Button>
+                                                            <Button type="submit" className='btn btn-primary'>Submit</Button>
                                                         </Grid>
                                                     </Grid>
                                             </CardContent>

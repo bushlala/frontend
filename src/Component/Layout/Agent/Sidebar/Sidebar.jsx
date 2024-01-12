@@ -63,7 +63,7 @@ export default function Sidebar() {
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='/agent/booking' class="side-menu__item">
+                    <Link to='/agent/My-booking' class="side-menu__item">
                         <img src={SidebarIcon3} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">My Bookings</span>
                     </Link>

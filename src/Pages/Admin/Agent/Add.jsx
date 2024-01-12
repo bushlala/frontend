@@ -1,6 +1,5 @@
 import React from 'react'
-import Header from '../../../Component/Header'
-import Sidebar from '../../../Component/Admin/Sidebar'
+import Layout from '../../../Component/Layout/Admin/AdminLayout';
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { AgentAPI } from '../../../Services/Agent.Service';
@@ -166,8 +165,7 @@ export default function Add() {
         position="top-right"
         reverseOrder={false}
     />
-    <Header />
-    <Sidebar />
+    <Layout />
     <div className="main-content app-content">
         <div className="container-fluid">
         {/* <!-- PAGE-HEADER --> */}

@@ -200,7 +200,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                                     </div>    
                                                                 </div>
                                                                 <div className='ms-4' style={{width:"34%"}}>
-                                                                    <Link to={`/agent/flight-review-book/${value?.flightDatails?.flightId}/${fdKey}`} className='btn btn-danger w-100'>Booking</Link>
+                                                                    <Link to={`/agent/flight-review-book/${fdValue.fareRuleId}`} className='btn btn-danger w-100'>Booking</Link>
                                                                 </div>
                                                             </div>
                                                         ))  
