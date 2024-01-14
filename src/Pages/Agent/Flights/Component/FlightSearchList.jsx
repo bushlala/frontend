@@ -231,7 +231,8 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                 show && <FlightDetailModel
                     show={show}
                     handleClose={handleClose}
-                    tripDetail={tripDetail}
+                    flightDetail={tripDetail.flightDatails}
+                    fareDetail={tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0]}
                 />
             }
         </>

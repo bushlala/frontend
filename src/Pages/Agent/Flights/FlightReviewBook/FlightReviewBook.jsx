@@ -13,17 +13,15 @@ import axios from "axios";
 
 export default function AgentFlightReviewBook() {
   let BASE_URL = '';
-if(process.env.REACT_APP_SERVER_ENV==='Local'){
-    BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
-}else if(process.env.REACT_APP_SERVER_ENV==='Live'){
-    BASE_URL = process.env.REACT_APP_LIVE_API_URL;
-}
+  if(process.env.REACT_APP_SERVER_ENV==='Local'){
+      BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
+  }else if(process.env.REACT_APP_SERVER_ENV==='Live'){
+      BASE_URL = process.env.REACT_APP_LIVE_API_URL;
+  }
 
-   let amount=5000
+  let amount=5000
   const checkoutHandler = async (amount) => {
     console.log('######################',amount)
-
-
     let getapiurl=`${BASE_URL}api/payment/getkey`
     let checkoutapiurl=`${BASE_URL}api/payment/checkout`
 
@@ -56,7 +54,7 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
     };
     const razor = new window.Razorpay(options);
     razor.open();
- }
+  }
 
   const navigate = useNavigate();
   const { ruleId } = useParams();
@@ -65,6 +63,9 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
   // for timers
   const [countdown, setcountdown] = React.useState(60 * 5);
   const [runtimer, setruntimer] = React.useState(true);
+  const [baseFarePrice, setBaseFarePrice] = React.useState(0);
+  const [taxesFee, setTaxesFee] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
 
   React.useEffect(() => {
     let timerid;
@@ -106,8 +107,12 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
     }
     FlightSearchService.BookingReview(requestData).then(async (response) => {
         if(response.data.status){
-          console.log("response",response.data.data);
-          setBookingReviewData(response.data.data);
+          const result =  response.data.data
+          console.log("result",result);
+          setBookingReviewData(result);
+          setBaseFarePrice(result?.fareDetail?.baseFare);
+          setTaxesFee(result?.fareDetail?.taxesAndFees);
+          setTotal(result?.fareDetail?.payAmount);
         }else{
           toast.error('Something went wrong');
         }
@@ -123,7 +128,7 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
     <div className="main-content app-content flightreview mb-5">
       <div className="container-fluid">
         <div className="row">
-          <div className='col-9'>
+            <div className='col-9'>
               <div className="page-header">
                   <h4 className="my-auto">Flight Details</h4>
                   <div>
@@ -137,8 +142,10 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
                 bookingReviewData.listOfFlight.length !=0 &&
                 <FlightDetail
                   listOfFlight={bookingReviewData.listOfFlight}
+                  fareDetail={bookingReviewData.fareDetail}
                 />
               }
+
               <div className="page-header">
                   <h4 className="my-auto">Passenger Details</h4>
                   <div className=''>
@@ -146,6 +153,7 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
                       <button type='button' className='btn btn-danger'>Import</button>
                   </div>
               </div>
+
               <div className='flight-item-list'>
                 <div className='card'> 
                   <div className="card-header">
@@ -208,6 +216,7 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
                   </div>
                 </div>  
               </div>
+
               <div className='flight-item-list mt-3'>
                 <div className='card'>
                     <div className="card-header">
@@ -236,9 +245,9 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
                       </div>
                     </div>  
                 </div>
-              </div>
-                                 
-        </div>
+              </div>                     
+            </div>
+
             <div className='col-3 mt-5'>
                 <div className='re-card'>
                     <div className=''>
@@ -249,28 +258,36 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
                         <div className='list-group-item'>
                             <div className='row d-flex'>
                               <div className="col">
-                              <h6 className=''>Base fare</h6>
+                                <h6 className=''>Base fare</h6>
                               </div>
                               <div className="col">
-                              <h6 className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i>35,000</h6>
+                                <h6 className='float-end'>
+                                  <i class="fa-solid fa-indian-rupee-sign"></i>{baseFarePrice}
+                                </h6>
                               </div>
                             </div>
+
                             <hr></hr>
                             <div className='row d-flex'>
                               <div className="col">
-                              <h6 className=''>Taxes and fees</h6>
+                                <h6 className=''>Taxes and fees</h6>
                               </div>
                               <div className="col">
-                              <h6 className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i>35,000</h6>
+                                <h6 className='float-end'>
+                                  <i class="fa-solid fa-indian-rupee-sign"></i>{taxesFee}
+                                </h6>
                               </div>
                             </div>
+
                             <hr></hr>
                             <div className='row d-flex'>
                               <div className="col">
-                              <h6 className=''>Amount to Pay</h6>
+                                <h6 className=''>Amount to Pay</h6>
                               </div>
                               <div className="col">
-                              <h6 className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i>35,000</h6>
+                                <h6 className='float-end'>
+                                  <i class="fa-solid fa-indian-rupee-sign"></i>{total}
+                                </h6>
                               </div>
                             </div>
                           <hr></hr>
@@ -297,9 +314,9 @@ if(process.env.REACT_APP_SERVER_ENV==='Local'){
                 </div>
             </div>
         </div>
+
         <div className="open-button text-center">
-        Your session will expire in
-        <p>{`${countdown}`} min</p>
+          Your session will expire in <p>{`${countdown}`} min</p>
         </div>
       </div>
     </div>

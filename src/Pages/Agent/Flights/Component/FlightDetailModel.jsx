@@ -5,9 +5,10 @@ import Moment from 'moment';
 import Indigo from '../../../../assets/images/indigo.png';
 import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service'; 
 import toast from 'react-hot-toast';
-export default function FlightDetailModel({show,handleClose,tripDetail}) {
-    console.log('tripDetail',tripDetail);
-    var fareDetail = tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0];
+export default function FlightDetailModel({show,handleClose,flightDetail,fareDetail}) {
+    console.log('flightDetail',flightDetail);
+    console.log('fareDetail',fareDetail);
+    //var fareDetail = tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0];
     //console.log("fareDetail",fareDetail);
     const [searchRule, setSearchRule] = React.useState();
     const handleClickGetSearchRule=(fareDetailRule) => {
@@ -73,29 +74,29 @@ export default function FlightDetailModel({show,handleClose,tripDetail}) {
                                         <div className='d-flex'>
                                             <img className='flight-flag' src={Indigo} alt=''/>
                                             <div className=''>
-                                                <div className="flightname" id="">{tripDetail?.flightDatails?.flightDescription?.name}</div>
-                                                <div className="flightnumber" id="">{`${tripDetail?.flightDatails?.flightDescription?.code} - ${tripDetail.flightDatails.flightNumber}`}</div>
+                                                <div className="flightname" id="">{flightDetail?.flightDescription?.name}</div>
+                                                <div className="flightnumber" id="">{`${flightDetail?.flightDescription?.code} - ${flightDetail?.flightNumber}`}</div>
                                             </div>
                                         </div>  
                                     </div>
                                     <div className='col-10 d-flex'>
                                         <div className="text-center" style={{width:"50%"}}>
-                                            <div className="coltime"> {tripDetail?.flightDatails?.departureTime}</div>
-                                            <div className="graysmalltext"> {tripDetail?.flightDatails?.departureAirportInformation?.code}</div>
-                                            <div className="graysmalltext"> {tripDetail?.flightDatails?.departureAirportInformation?.terminal}</div>
+                                            <div className="coltime"> {flightDetail?.departureTime}</div>
+                                            <div className="graysmalltext"> {flightDetail?.departureAirportInformation?.code}</div>
+                                            <div className="graysmalltext"> {flightDetail?.departureAirportInformation?.terminal}</div>
                                         </div>
 
                                         <div className="text-center" style={{width:"50%"}}>
-                                            <div className="nostops small">{tripDetail?.flightDatails?.flightDuration}</div>
+                                            <div className="nostops small">{flightDetail?.flightDuration}</div>
                                             <div className="graysmalltext text-danger">
-                                            {tripDetail?.flightDatails?.flightStops ? tripDetail?.flightDatails?.flightStops : "Non Stop" }
+                                            {flightDetail?.flightStops ? flightDetail?.flightStops : "Non Stop" }
                                             </div>
                                         </div>
 
                                         <div className="text-center" style={{width:"50%"}}>
-                                        <div className="coltime"> {tripDetail?.flightDatails?.arrivalTime}</div>
-                                        <div className="graysmalltext"> {tripDetail?.flightDatails?.arrivalAirportInformation?.code}</div>
-                                        <div className="graysmalltext"> {tripDetail?.flightDatails?.arrivalAirportInformation?.terminal}</div>
+                                        <div className="coltime"> {flightDetail?.arrivalTime}</div>
+                                        <div className="graysmalltext"> {flightDetail?.arrivalAirportInformation?.code}</div>
+                                        <div className="graysmalltext"> {flightDetail?.arrivalAirportInformation?.terminal}</div>
                                         </div>
                                     </div>
                                 </div>
