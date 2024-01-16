@@ -473,7 +473,6 @@ export default function AgentFlightSearch() {
                                                         }
                                                     </div>
                                                 </Grid>
-
                                                 <Grid item className='col'>
                                                     <div className='form-group field-label'>
                                                         <InputLabel className=''>Departure</InputLabel>
@@ -543,7 +542,6 @@ export default function AgentFlightSearch() {
                                                                         </div>
                                                                     </div>    
                                                                 </div>
-
                                                                 <div className='mb-2'>
                                                                     <span className='small'>Children </span>
                                                                     <div className='boxselectpax'>
@@ -689,6 +687,31 @@ export default function AgentFlightSearch() {
                     </Formik>
                 </div>
             </div>  
+            <div className='flighttopbarblk'>
+                <div className='container'>
+                    <div className='d-flex'>
+                        <div className='me-xl-5'>
+                            <div class="headtext">DEL </div>
+                            <div class="subtext"> NEW DELHI</div>
+                        </div>
+                        <div className='me-xl-5'>
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </div>
+                        <div className='me-xl-5'>
+                            <div class="headtext">BOM </div>
+                            <div class="subtext"> MUMBAI</div>
+                        </div>
+                        <div className='me-xl-5'>
+                            <div class="headtext">Departure Date </div>
+                            <div class="subtext"> Sun, Jan 14 2024</div>
+                        </div>
+                        <div className=''>
+                            <div class="headtext">Passengers & Class </div>
+                            <div class="subtext"> 1 Adult , Economy</div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
             {
             loading ? <TailSpin color="red" radius={"8px"} />
             :

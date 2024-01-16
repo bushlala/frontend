@@ -1,6 +1,3 @@
-.agent-flight-search {
-    margin-bottom: 54px;
-}
 .agent-flight-search  .homeflightsearchouterbox .search-flights .btn{
     position: relative;
     bottom:initial;
@@ -91,4 +88,18 @@
 .search-check-box{
     position: relative !important;
 }
+.flighttopbarblk  {
+    background: #181818;
+    padding: 16px;
+}
 
+.flighttopbarblk .headtext {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0px;
+}
+.flighttopbarblk .subtext {
+    color: #cacaca;
+    font-size: 12px;
+}

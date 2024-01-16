@@ -75,39 +75,33 @@ export default function Sidebar() {
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/Packages' class="side-menu__item">
                         <img src={SidebarIcon5} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">My Packages</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/MannualHotel' class="side-menu__item">
                         <img src={SidebarIcon6} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Mannual Hotel</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/ManageMarkup' class="side-menu__item">
                         <img src={SidebarIcon7} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Manage Markup</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/WebCheck-In' class="side-menu__item">
                         <img src={SidebarIcon8} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Web Check-in</span>
                     </Link>
                 </li>
                 <li class="slide">
-                    <Link to='*' class="side-menu__item">
+                    <Link to='/agent/ReminderWebCheck-in' class="side-menu__item">
                         <img src={SidebarIcon9} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label">Reminder Web Checkin</span>
-                    </Link>
-                </li>
-                <li class="slide">
-                    <Link to='*' class="side-menu__item">
-                        <img src={SidebarIcon10} className='side-menu__icon' style={myStyle}  alt="" />
-                        <span class="side-menu__label">Online Recharge</span>
                     </Link>
                 </li>
                 <li class="slide">

@@ -44,8 +44,23 @@ import { Routes, Route } from 'react-router-dom';
     import AdBalanceSheet from '../Pages/Admin/Accounts/AdminBalanceSheet/BalanceSheet.jsx'
     import AdAgentCreditDebit from "../Pages/Admin/Accounts/AgentCreditDebit/AgentCreditDebit.jsx";
 
+/* Admin  Queries  */ 
+    import AdQueries from "../Pages/Admin/Queries/All-Queries/AdQueries.jsx";
+    import AdminAddQueries from "../Pages/Admin/Queries/Add-Queries/addQueries.jsx";
+
+/*  Admin Hotel Enquiry */ 
+    import AdHotelEnquiry from "../Pages/Admin/Queries/HotelEnquiry/HotelEnquiry.jsx";
+
+/*  Admin Package Enquiry */ 
+    import AdPackageEnquiry from "../Pages/Admin/Queries/PackageEnquiry/PackageEnquiry.jsx"
+
+/*  Admin Package Itinerary */ 
+    import AdPackageItinerary from "../Pages/Admin/Queries/PackageItinerary/PackageItinerary.jsx"
 
 
+//  PaymentSuccess Page
+    import PaymentSuccess from "../Pages/Agent/PaymentVerification/PaymentSuccess.jsx";
+    import BookingSuccess from "../Pages/Agent/BookingSuccess/BookingSuccess.jsx";
 // import Profileview from '../Pages/Agent/Profile/Profileview.jsx';
 // import AdminDash from '../Pages/Admin/Dashboard';
 // import AdList from '../Pages/Admin/List';
@@ -65,7 +80,7 @@ import AgentCustomerAdd from "../Pages/Agent/Customer/Add.jsx";
 import AgentFlightSearch from "../Pages/Agent/Flights/Search.jsx";
 
 
-import PaymentSuccess from "../Pages/Agent/PaymentVerification/PaymentSuccess.jsx";
+
 // import my customer
 
 // My Booking
@@ -143,9 +158,7 @@ const Routing = () => {
                     </GuestRoute>
                 }
             />
-
              {/* Error page */}  
-
             <Route exact path='*' element={<Nopage />} />
             <Route exact path='/register' element={<Register />}></Route>
 
@@ -356,13 +369,29 @@ const Routing = () => {
     <Route exact path="admin/HotelBooking" element={<AdHotelBooking />}></Route> 
     <Route exact path="admin/ActivityBooking" element={<AdActivityBooking />}></Route>          
 
-    {/* Admin Accounts Details */}
+{/* Admin Accounts Details */}
     <Route exact path="admin/FlightInvoice" element={<AdFlightInvoice />}></Route>
     <Route exact path="admin/HotelInvoice" element={<AdHotelInvoice />}></Route>
     <Route exact path="admin/BalanceSheet" element={<AdBalanceSheet />}></Route> 
     <Route exact path="admin/AgentCredit-Debit" element={<AdAgentCreditDebit />}></Route> 
+    
+{/* Admin  Queries */}
+    <Route exact path="admin/All-Queries" element={<AdQueries />}></Route>
+    <Route exact path="admin/Add-Queries" element={<AdminAddQueries />}></Route>
 
-    <Route exact path="PaymentSuccess" element={<PaymentSuccess />}></Route>   
+{/* Admin Hotel Enquiry */}
+    <Route exact path="admin/HotelEnquiry" element={<AdHotelEnquiry />}></Route>
+
+{/* Admin Package Enquiry */}
+    <Route exact path="admin/PackageEnquiry" element={< AdPackageEnquiry />}></Route>
+
+{/* Admin Package Itinerary */}
+    <Route exact path="admin/Package-Itinerary" element={< AdPackageItinerary />}></Route>
+   
+    {/* Payment Details */}
+    <Route exact path="PaymentSuccess" element={<PaymentSuccess />}></Route>
+    <Route exact path="BookingSuccess" element={<BookingSuccess />}></Route>
+    
           
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}
             {/* <Route exact path='/' element={<AdminDash />}></Route>

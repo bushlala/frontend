@@ -121,16 +121,16 @@ export default function Sidebar() {
                             </Link>
                             <ul class="slide-menu child1 d-block">
                                 <li class="slide">
-                                    <Link to="/admin/allbooking" class="side-menu__item">Query</Link>
+                                    <Link to="/admin/All-Queries" class="side-menu__item">Query</Link>
                                 </li>
                                 <li class="slide">
-                                    <Link to="" class="side-menu__item">Hotel Enquiry</Link>
+                                    <Link to="/admin/HotelEnquiry" class="side-menu__item">Hotel Enquiry</Link>
                                 </li>
                                 <li class="slide">
-                                    <Link to="" class="side-menu__item">Package Enquiry</Link>                                    
+                                    <Link to="/admin/PackageEnquiry" class="side-menu__item">Package Enquiry</Link>                                    
                                 </li>
                                 <li class="slide">
-                                    <Link to="" class="side-menu__item">Itinerary Download List(B2C)</Link>
+                                    <Link to="/admin/Package-Itinerary" class="side-menu__item">Itinerary Download List(B2C)</Link>
                                 </li>
                                 <li class="slide">
                                     <Link to="" class="side-menu__item">Group Enquiry</Link>

@@ -19,17 +19,17 @@ export default function AgentFlightReviewBook() {
       BASE_URL = process.env.REACT_APP_LIVE_API_URL;
   }
 
-  let amount=5000
-  const checkoutHandler = async (amount) => {
-    console.log('######################',amount)
-    let getapiurl=`${BASE_URL}api/payment/getkey`
-    let checkoutapiurl=`${BASE_URL}api/payment/checkout`
+   let amount=5000
+    const checkoutHandler = async (amount) => {
+    
+      let getapiurl=`${BASE_URL}api/payment/getkey`
+      let checkoutapiurl=`${BASE_URL}api/payment/checkout`
+      
+      const { data: { data } } = await axios.get(getapiurl)
+      // console.log('######################',checkoutapiurl)
+      const { data: { order } } = await axios.post(checkoutapiurl,{amount})
 
-    const { data: { data } } = await axios.get(getapiurl)
-    const { data: { order } } = await axios.post(checkoutapiurl, {
-        amount 
-    })
-    console.log(data)
+    // console.log('#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',order)
 
     const options = {
         key:data.RAZORPAY_API_KEY,
@@ -133,7 +133,6 @@ export default function AgentFlightReviewBook() {
                   <h4 className="my-auto">Flight Details</h4>
                   <div>
                     <Link onClick={() => navigate(-1)} className="my-auto text-danger" >Back to Search</Link>
-                    
                   </div>
               </div>
               {
