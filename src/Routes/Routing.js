@@ -58,9 +58,11 @@ import { Routes, Route } from 'react-router-dom';
     import AdPackageItinerary from "../Pages/Admin/Queries/PackageItinerary/PackageItinerary.jsx"
 
 
-//  PaymentSuccess Page
+/*  PaymentSuccess Page */ 
     import PaymentSuccess from "../Pages/Agent/PaymentVerification/PaymentSuccess.jsx";
     import BookingSuccess from "../Pages/Agent/BookingSuccess/BookingSuccess.jsx";
+    import AgentReview from "../Pages/Agent/Flights/Review/Review.jsx";
+    import BookingHold from "../Pages/Agent/BookingSuccess/BookingHold/BookingHold.jsx"
 // import Profileview from '../Pages/Agent/Profile/Profileview.jsx';
 // import AdminDash from '../Pages/Admin/Dashboard';
 // import AdList from '../Pages/Admin/List';
@@ -126,6 +128,8 @@ import AgentGenerateInvoice from "../Pages/Agent/Generate-Invoice/GenerateInvoic
 
 // Agent Profile
 import AgentProfile from "../Pages/Agent/Agent-Profile/AgentProfile.jsx"
+
+
 
 import Nopage from "./NoPage.jsx";
 //import Flight from "@mui/icons-material/Flight.js";
@@ -391,6 +395,10 @@ const Routing = () => {
     {/* Payment Details */}
     <Route exact path="PaymentSuccess" element={<PaymentSuccess />}></Route>
     <Route exact path="BookingSuccess" element={<BookingSuccess />}></Route>
+    <Route exact path="Agent-Review" element={<AgentReview />}></Route>
+    <Route exact path="BookingHold" element={<BookingHold />}></Route>
+
+
     
           
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}
