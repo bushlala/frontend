@@ -21,7 +21,8 @@ export default function AgentFlightReviewBook() {
         firstName: "",
         lastName: "",
         dateOfBirth: "",
-        passangerType : 'adult'
+        passangerType : 'adult',
+        saveDetailStatus : "",
       },
     ],
     extraInfo : [
@@ -152,60 +153,6 @@ export default function AgentFlightReviewBook() {
     if(ruleId){
       getBookingReviewData(ruleId);
     }
-    let passangerInfo = [];
-    const adult = 2;
-    const children = 2;
-    const infant = 2;
-    // For Adult
-    for (var i=0; i < adult; i++) {
-      const tmp =  {
-        title: "",
-        firstName: "",
-        lastName: "",
-        dateOfBirth: "",
-        passangerType : 'adult'
-      }
-      passangerInfo.push(tmp)
-    }
-    // For Childern
-    for (var i=0; i < children; i++) {
-      const tmp =  {
-        title: "",
-        firstName: "",
-        lastName: "",
-        dateOfBirth: "",
-        passangerType : 'children'
-      }
-      passangerInfo.push(tmp)
-    }
-    // For Infants
-    for (var i=0; i < infant; i++) {
-      const tmp =  {
-        title: "",
-        firstName: "",
-        lastName: "",
-        dateOfBirth: "",
-        passangerType : 'infant'
-      }
-      passangerInfo.push(tmp)
-    }
-    
-    reInitialValues.passangerInfo = passangerInfo;
-    reInitialValues.extraInfo = [
-      {
-        from:"Delhi",
-        to:"Rajkot",
-        date: "January 15, 2024",
-        mealBaggageInfo : [
-          {
-            baggage: "",
-            meals: "",
-          }
-        ]
-      }
-    ]
-    
-    setReInitialValues(reInitialValues);
   }, [ruleId])
   
 
@@ -216,8 +163,78 @@ export default function AgentFlightReviewBook() {
     }
     FlightSearchService.BookingReview(requestData).then(async (response) => {
         if(response.data.status){
-          const result =  response.data.data
+          const result =  response.data.data;
           console.log("result",result);
+          // Code for bagger and meal information
+          var extraInfo = [];
+          result.listOfFlight && result.listOfFlight.forEach((flightDetail, index) => {
+            var tmp={from:"",to:"",date:"", mealBaggageInfo:"",baggageList : [],mealList:[]};
+            tmp.from        = flightDetail.departureAirportInformation.city;
+            tmp.to          = flightDetail.arrivalAirportInformation.city;
+            tmp.date        = flightDetail.departureDate;
+            tmp.baggageList = flightDetail.ssrInfo.BAGGAGE ? flightDetail.ssrInfo.BAGGAGE : [];
+            tmp.mealList    = flightDetail.ssrInfo.MEAL ? flightDetail.ssrInfo.MEAL : [];
+            var mealBaggageInfo = [];
+            for (var i=0; i < result.seasionDetail.paxInfo.ADULT; i++) {
+              const tmp1 =  {
+                memberName : `Adult ${i+1}`,
+                baggage: "",
+                meals: "",
+              }
+              mealBaggageInfo.push(tmp1);
+            }
+            for (var i=0; i < result.seasionDetail.paxInfo.INFANT; i++) {
+              const tmp1 =  {
+                memberName : `INFANT ${i+1}`,
+                baggage: "",
+                meals: "",
+              }
+              mealBaggageInfo.push(tmp1);
+            }
+            tmp.mealBaggageInfo = mealBaggageInfo;
+            extraInfo.push(tmp)
+          });
+          console.log("extraInfo",extraInfo);
+          let passangerInfo = [];
+          // For Adult
+          for (var i=0; i < result.seasionDetail.paxInfo.ADULT; i++) {
+            const tmp =  {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passangerType : 'adult',
+              saveDetailStatus :"",
+            }
+            passangerInfo.push(tmp)
+          }
+          // For Childern
+          for (var i=0; i < result.seasionDetail.paxInfo.CHILD; i++) {
+            const tmp =  {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passangerType : 'children',
+              saveDetailStatus :"",
+            }
+            passangerInfo.push(tmp)
+          }
+          // For Infants
+          for (var i=0; i < result.seasionDetail.paxInfo.INFANT; i++) {
+            const tmp =  {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passangerType : 'infant',
+              saveDetailStatus :"",
+            }
+            passangerInfo.push(tmp)
+          }
+          reInitialValues.passangerInfo = passangerInfo;
+          reInitialValues.extraInfo = extraInfo;
+          setReInitialValues(reInitialValues);
           setBookingReviewData(result);
           setBaseFarePrice(result?.fareDetail?.baseFare);
           setTaxesFee(result?.fareDetail?.taxesAndFees);
@@ -326,22 +343,50 @@ export default function AgentFlightReviewBook() {
 
                                                 <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
                                                   <label for="input-label" className="form-label">First Name*</label>
-                                                  <input type="text" className="form-control" id="input-label" />
+                                                  <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="input-label"
+                                                    name={`passangerInfo.${index}.firstName`}
+                                                    onChange={handleChange}
+                                                    value={values.passangerInfo[index].firstName}
+                                                  />
                                                 </div>
                                                 <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
                                                   <label for="input-placeholder" className="form-label">Last Name*</label>
-                                                  <input type="text" className="form-control" id="input-label" />
+                                                  <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="input-label"
+                                                    name={`passangerInfo.${index}.lastName`}
+                                                    onChange={handleChange}
+                                                    value={values.passangerInfo[index].lastName} 
+                                                  />
                                                 </div>
                                                 {
                                                   values.passangerInfo[index].passangerType==='infant' &&
                                                     <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
                                                       <label for="input-placeholder" className="form-label">DOB</label>
-                                                      <input type="date" className="form-control" id="input-label" />
+                                                      <input 
+                                                        type="date" 
+                                                        className="form-control"
+                                                        id="input-label"
+                                                        name={`passangerInfo.${index}.dateOfBith`}
+                                                        onChange={handleChange}
+                                                        value={values.passangerInfo[index].dateOfBirth}
+                                                      />
                                                     </div>
                                                 }
                                             </div>
                                             <div className='accordion-footer mt-3'>
-                                                <input type='checkbox' id='passenger-check2' /> <label for='passenger-check2'> Save Passenger Details  </label>
+                                                <input 
+                                                  type='checkbox' 
+                                                  id={`passangerInfo.${index}.saveDetailStatus`}
+                                                  name={`passangerInfo.${index}.saveDetailStatus`}
+                                                  onChange={handleChange}
+                                                  value={values.passangerInfo[index].saveDetailStatus}
+                                                /> 
+                                                <label for={`passangerInfo.${index}.saveDetailStatus`}> Save Passenger Details  </label>
                                             </div>
                                         </div>
                                       </div>
@@ -382,28 +427,39 @@ export default function AgentFlightReviewBook() {
                                               <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
                                           </p>
                                           {
-                                            extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((meal, index) => (
+                                            extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((mealBaggage, index) => (
                                               <div className='row mb-4'>
                                                   <div className='col-xl-2'>
-                                                    <h6 className='mt-4'>ADULT 1</h6>
+                                                    <h6 className='mt-4'>{mealBaggage.memberName}</h6>
                                                   </div>
 
                                                   <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
                                                       <label for="input-label" className="form-label">Baggage Information </label> 
-                                                      <select className="form-select" aria-label="Default select example">
-                                                              <option selected="">--Select Baggage--</option>
-                                                              <option value="1">Excess Baggage - 3 Kg</option>
-                                                              <option value="2">Excess Baggage - 5 Kg</option>
-                                                              <option value="3">Excess Baggage - 10 Kg</option>
+                                                      <select 
+                                                        className="form-select" 
+                                                        aria-label="Default select example"
+                                                      >
+                                                        <option value="">--Select Baggage--</option>
+                                                        {
+                                                          extra.baggageList && extra.baggageList.length > 0 && extra.baggageList.map((baggageInfo, index) => (
+                                                            <option value={baggageInfo.code}>{`${baggageInfo.desc} (${baggageInfo.amount})`}</option>
+                                                          ))
+                                                        }
                                                       </select>
                                                   </div>
+
                                                   <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
                                                       <label for="input-label" className="form-label">Select Meal </label>
-                                                      <select className="form-select" aria-label="Default select example">
-                                                              <option selected="">--Meal Preferences--
-                                                              </option>
-                                                              <option value="1">Tomato Cucumber Cheese Lettuce Sandwich Combo @ ₹400.00</option>
-                                                              <option value="2">Tomato Cucumber Cheese Lettuce Sandwich Combo</option>
+                                                      <select 
+                                                        className="form-select" 
+                                                        aria-label="Default select example"
+                                                      >
+                                                        <option value="">--Meal Preferences--</option>
+                                                        {
+                                                          extra.mealList && extra.mealList.length > 0 && extra.mealList.map((mealInfo, index) => (
+                                                            <option value={mealInfo.code}>{`${mealInfo.desc} (${mealInfo.code})`}</option>
+                                                          ))
+                                                        }  
                                                       </select>
                                                   </div>
                                               </div>
@@ -430,173 +486,33 @@ export default function AgentFlightReviewBook() {
                         <div id="flush-collapseThree" className="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
                           <div className="accordion-body">
                               <div className='gy-3 row'>
-                                <div className='col-12'>
-                                  <div className='row align-items-center'>  
-                                    <div className='col-md-4'>
-                                        <p className="bagNmeal-flightInfo-positionHandle mb-0">
-                                            <b className="bagNmeal-cityInfo-positionHandle">
-                                              <span>Delhi</span>
-                                              <span className="ars-arright bagNmeal-arrowright-positionHandle">→</span> 
-                                              <span>Rajkot</span>
-                                            </b>
-                                            <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on January 15, 2024</span>
-                                        </p>
+                                {
+                                  values.extraInfo && values.extraInfo.length > 0 && values.extraInfo.map((extra, index) => (
+                                    <div className='col-12'>
+                                      <div className='row align-items-center'>  
+                                        <div className='col-md-4'>
+                                            <p className="bagNmeal-flightInfo-positionHandle mb-0">
+                                                <b className="bagNmeal-cityInfo-positionHandle">
+                                                  <span>{extra.from}</span>
+                                                  <span className="ars-arright bagNmeal-arrowright-positionHandle">→</span> 
+                                                  <span>{extra.to}</span>
+                                                </b>
+                                                <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
+                                            </p>
+                                        </div>
+                                        <div className='col-lg-4'>
+                                            <p className='mb-0'>No Seat Selected</p>
+                                        </div>
+                                        <div className="col-xl-2 col-lg-6 col-md-6 col-sm-12">
+                                          <Button 
+                                            className="btn-danger re-seat" 
+                                            onClick={handleShow}
+                                          >Show Sheet Map</Button>
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div className='col-lg-4'>
-                                        <p className='mb-0'>No Seat Selected</p>
-                                    </div>
-                                    <div className="col-xl-2 col-lg-6 col-md-6 col-sm-12">
-                                        <Button className="btn-danger re-seat" onClick={handleShow}>Show Sheet Map</Button>
-                                        
-                                    <Modal size="xl" show={showModal} onHide={handleClose} centered>
-                                      <Modal.Header closeButton>
-                                        <Modal.Title>Select Seats</Modal.Title>
-                                      </Modal.Header>
-                                      <Modal.Body>
-                                          <div className='row'>
-                                            <div className='col-3 border p-2 ' >
-                                                <div className='d-flex'>
-                                                    <img className='flight-flag' src='https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png 'alt=''/>
-                                                    <div className=''>
-                                                        <div className="flightname" id=""> Vistara BLR-BOM </div>
-                                                        <div className="flightnumber" id="">UK-840</div>
-                                                    </div>
-                                                </div> 
-                                                <hr></hr>
-                                                <div className="table-responsive">
-                                                    <table className="table text-nowrap w-100">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Passanger</th>
-                                                                <th>Seat</th>
-                                                                <th>Fee</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>ADULT-1</td>
-                                                                <td>--</td>
-                                                                <td>0.00</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Total</td>
-                                                                <td>--</td>
-                                                                <td>0.00</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <button className='btn btn-dark w-100'>Proceed</button>
-                                                <h6 className='fw-bold flightname mt-4'>Proceed Without Seats </h6>
-                                                <p className='flightnumber'>* Conditions apply. We will try our best to accomodate your seat preferences, however due to operational considerations we can't guarantee this selection. The seat map shown may not be the exact replica of flight layout, we shall not responsible for losses arising from the same. Thank you for your understanding</p>
-                                            </div>
-                                            <div className='col-7'>
-
-                                              <div className='cabin fuselage'>
-                                                <div className='seats'>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="1A"  />
-                                                        <label class="" for="1A">1A</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="2B"  />
-                                                        <label class="" for="2B">2B</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="3C"  />
-                                                        <label class="" for="3C">3C</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="4D"  />
-                                                        <label class="" for="4D">4D</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="5E"  />
-                                                        <label class="" for="5E">5E</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="6F"  />
-                                                        <label class="" for="6F">6F</label>
-                                                    </div>
-                                                </div>
-                                                <div className='seats'>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="1A2"  />
-                                                        <label class="" for="1A2">1A</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="2B2"  />
-                                                        <label class="" for="2B2">2B</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="3C2"  />
-                                                        <label class="" for="3C2">3C</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="4D2"  />
-                                                        <label class="" for="4D2">4D</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="5E2"  />
-                                                        <label class="" for="5E2">5E</label>
-                                                    </div>
-                                                    <div className='seat'>
-                                                        <input type="radio" class="" name="options-outlined" id="6F2"  />
-                                                        <label class="" for="6F2">6F</label>
-                                                    </div>
-                                                </div>
-                                              </div>  
-                                            </div>
-                                            <div className='col-2 border'>
-                                                  <h6 className='fs-13 text-center mt-3'>Flight Orientation</h6>
-                                                  <div className='text-center mt-2'>
-                                                      <img className='flight-flag' src='https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png 'alt=''/>
-                                                  </div>
-                                                  <hr></hr>
-                                                  <div className=''>
-                                                      <h6 className='text-center'>Seat Status</h6>
-                                                      <span><i class="fa-solid fa-square-check me-1" style={{color:"#4aa301"}}></i> - Selected</span>
-                                                      <p><i class="fa-solid fa-circle-xmark me-1" style={{color:"#a4b4c1"}}></i> - Booked</p>
-                                                      <hr></hr>
-                                                      <h6 className=''>Seat Fees</h6>
-                                                  </div>
-                                                      <div>
-                                                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e4c8c8"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>0.00</span></p>
-                                                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#806a7d"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>200.00</span></p>
-                                                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e69c77"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>250.00</span></p>
-                                                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e9c352"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>300.00</span></p>
-                                                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#b589d7"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>400.00</span></p>
-                                                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#81f5dc"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>650.00</span></p>
-                                                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#4ab8ed"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>900.00</span></p>
-                                                      </div> 
-                                                  
-                                            </div>
-                                          </div>
-                                      </Modal.Body>
-                                    </Modal> 
-                                    </div>
-                                  </div>
-                                </div>  
-                                <div className='col-12'>
-                                  <div className='row align-items-center'>  
-                                    <div className='col-md-4'>
-                                        <p className="bagNmeal-flightInfo-positionHandle mb-0">
-                                            <b className="bagNmeal-cityInfo-positionHandle">
-                                              <span>Delhi</span>
-                                              <span className="ars-arright bagNmeal-arrowright-positionHandle">→</span> 
-                                              <span>Rajkot</span>
-                                            </b>
-                                            <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on January 15, 2024</span>
-                                        </p>
-                                    </div>
-                                    <div className='col-lg-4'>
-                                        <p className='mb-0'>No Seat Selected</p>
-                                    </div>
-                                    <div className="col-xl-2 col-lg-6 col-md-6 col-sm-12">
-                                        <button className='btn btn-danger'>Show Sheet Map</button>
-                                    </div>
-                                  </div>
-                                </div>  
+                                  ))
+                                }
                               </div>  
                           </div>
                         </div>
@@ -751,6 +667,133 @@ export default function AgentFlightReviewBook() {
         </div>
       </div>
     </div>
+
+    <Modal size="xl" show={showModal} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Select Seats</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+          <div className='row'>
+            <div className='col-3 border p-2 ' >
+                <div className='d-flex'>
+                    <img className='flight-flag' src='https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png 'alt=''/>
+                    <div className=''>
+                        <div className="flightname" id=""> Vistara BLR-BOM </div>
+                        <div className="flightnumber" id="">UK-840</div>
+                    </div>
+                </div> 
+                <hr></hr>
+                <div className="table-responsive">
+                    <table className="table text-nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>Passanger</th>
+                                <th>Seat</th>
+                                <th>Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ADULT-1</td>
+                                <td>--</td>
+                                <td>0.00</td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td>--</td>
+                                <td>0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button className='btn btn-dark w-100'>Proceed</button>
+                <h6 className='fw-bold flightname mt-4'>Proceed Without Seats </h6>
+                <p className='flightnumber'>* Conditions apply. We will try our best to accomodate your seat preferences, however due to operational considerations we can't guarantee this selection. The seat map shown may not be the exact replica of flight layout, we shall not responsible for losses arising from the same. Thank you for your understanding</p>
+            </div>
+            <div className='col-7'>
+
+              <div className='cabin fuselage'>
+                <div className='seats'>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="1A"  />
+                        <label class="" for="1A">1A</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="2B"  />
+                        <label class="" for="2B">2B</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="3C"  />
+                        <label class="" for="3C">3C</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="4D"  />
+                        <label class="" for="4D">4D</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="5E"  />
+                        <label class="" for="5E">5E</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="6F"  />
+                        <label class="" for="6F">6F</label>
+                    </div>
+                </div>
+                <div className='seats'>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="1A2"  />
+                        <label class="" for="1A2">1A</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="2B2"  />
+                        <label class="" for="2B2">2B</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="3C2"  />
+                        <label class="" for="3C2">3C</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="4D2"  />
+                        <label class="" for="4D2">4D</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="5E2"  />
+                        <label class="" for="5E2">5E</label>
+                    </div>
+                    <div className='seat'>
+                        <input type="radio" class="" name="options-outlined" id="6F2"  />
+                        <label class="" for="6F2">6F</label>
+                    </div>
+                </div>
+              </div>  
+            </div>
+            <div className='col-2 border'>
+                  <h6 className='fs-13 text-center mt-3'>Flight Orientation</h6>
+                  <div className='text-center mt-2'>
+                      <img className='flight-flag' src='https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png 'alt=''/>
+                  </div>
+                  <hr></hr>
+                  <div className=''>
+                      <h6 className='text-center'>Seat Status</h6>
+                      <span><i class="fa-solid fa-square-check me-1" style={{color:"#4aa301"}}></i> - Selected</span>
+                      <p><i class="fa-solid fa-circle-xmark me-1" style={{color:"#a4b4c1"}}></i> - Booked</p>
+                      <hr></hr>
+                      <h6 className=''>Seat Fees</h6>
+                  </div>
+                      <div>
+                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e4c8c8"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>0.00</span></p>
+                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#806a7d"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>200.00</span></p>
+                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e69c77"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>250.00</span></p>
+                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e9c352"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>300.00</span></p>
+                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#b589d7"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>400.00</span></p>
+                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#81f5dc"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>650.00</span></p>
+                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#4ab8ed"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>900.00</span></p>
+                      </div> 
+                  
+            </div>
+          </div>
+      </Modal.Body>
+    </Modal> 
     
     </>
   )
