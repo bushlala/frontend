@@ -100,24 +100,18 @@ export default function Review() {
                                 <div>Mobile : <span className='fw-bold'>8745120369</span></div>
                             </div>
                             <hr></hr>
-                            <div className='row'>
-                              <div className='col-5'>
-                                <button className='btn btn-dark'>Back</button>
-                              </div>
-                              <div className='col-4'>
+                            <div className='d-flex justify-content-between'>
+                                <Link className='btn btn-danger'>Back</Link>
                                 <div className='d-flex'>
-                                    <div class="form-check me-2 mt-2">
-                                      <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" />
-                                        <label class="form-check-label" for="flexCheckChecked">
-                                            I accept <Link>terms & Conditions</Link>
-                                        </label>
-                                    </div>
-                                       <Link to={'/BookingHold'}><button className='btn btn-dark float-end'> BLOCK</button> </Link> 
-                                  </div>
-                              </div>
-                              <div className='col-3'>
-                                  <button className='btn btn-dark float-end'> PROCEED TO PAY</button>
-                              </div>
+                                      <div class="form-check me-2 mt-2">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" />
+                                          <label class="form-check-label" for="flexCheckChecked">
+                                              I accept <Link className='text-danger'>terms & Conditions</Link>
+                                          </label>
+                                      </div>
+                                      <Link to={'/BookingHold'}><button className='btn btn-dark float-end mx-2'> Block</button> </Link> 
+                                    <button className='btn btn-danger float-end'> Proceed To Pay</button>
+                                </div>
                             </div>
                       </div>   
                     </div>  

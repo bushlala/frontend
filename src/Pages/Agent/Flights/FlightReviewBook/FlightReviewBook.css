@@ -101,9 +101,9 @@
     padding: 5px;
     position: relative;
   }
-  .seat:nth-child(3) {
+  /* .seat:nth-child(3) {
     margin-right: 14.2857142857%;
-  }
+  } */
   .seat input[type=radio] {
     position: absolute;
     opacity: 0;
@@ -140,6 +140,7 @@
     font-size: 14px;
     font-weight: bold;
     line-height: 1.5rem;
+    height: 35px;
     padding: 4px 0;
     background: #e4c8c8;
     border-radius: 5px;
@@ -160,6 +161,11 @@
   .seat label:hover {
     cursor: pointer;
     box-shadow: 0 0 0px 2px #5c6aff;
+  }
+  label.empty {
+    overflow: hidden;
+    opacity: 0;
+    cursor: default !important;
   }
   
   

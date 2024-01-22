@@ -101,20 +101,20 @@
 
 
 /****Flight-Fillter****/
-
-.btn-check:checked + .btn-outline-light {
+ 
+.flight-Fillter .btn-check:checked + .btn-outline-light {
     background: #e8e8e8 !important;
     text-align: center;
     color: #666666;
     border-color: #bab8bb !important;
 }
-.btn-outline-light {
+.flight-Fillter .btn-outline-light {
     border: 1px  solid #bab8bb;
     font-weight: 500;
     font-size: 12px;
 }
 
- .btn-outline-light:hover, .btn-check + .btn.btn-outline-light:hover {
+.flight-Fillter .btn-outline-light:hover, .btn-check + .btn.btn-outline-light:hover {
     border-color: #bab8bb !important;
  }
 /****Flight-Fillter****/

@@ -43,4 +43,15 @@ export const FlightSearchService = {
         }
       })
     },
+
+    BookingSeatMap: async function (request, cancel = false) {
+      return await apiConfig.request({
+        url: `booking/seatMap`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+      })
+    },
 }

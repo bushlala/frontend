@@ -13,26 +13,42 @@ export default function FlightBook() {
       <div className="main-content app-content flightreview">
           <div className="container-fluid">
                <div className='row'>
-                    <div className='col-3'>
+                    <div className='col-3 flight-fillter'>
                         <div className='card'>
                             <div className=''>
                               <div className='list-group list-group-flush'>
                                   <div className='list-group-item'>
-                                    <h5>Total Records</h5>
+                                    <h5>Total Records 2</h5>
                                     <p className='mb-0'>Flights</p>
                                   </div>  
                                   <div className='list-group-item'>
                                     <h5>Price Range</h5>
-                                    <p className='mb-0'>-----</p>
+                                    <div className=''>
+
+                                    </div>
                                   </div>   
                                   <div className='list-group-item'>
                                     <h5>Net Fare</h5>
                                     <p className='mb-0'> <i className='fa fa-eye me-2 small'></i> Show Net Fare</p>
                                   </div> 
-                                  <div className='list-group-item'>
+                                  <div className='list-group-item p-3'>
+                                    <p className='mb-2 small'>Stops</p>
                                     <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
-                                      <input type="checkbox" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked />
+                                      <input type="checkbox" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" />
                                       <label class="btn btn-outline-light" for="btnradio1">0 <br /> Non Stop</label>
+
+                                      <input type="checkbox" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
+                                      <label class="btn btn-outline-light" for="btnradio2">1 <br /> Non Stop</label>
+
+                                      <input type="checkbox" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" />
+                                      <label class="btn btn-outline-light" for="btnradio3">2+ <br /> Non Stop</label>
+                                    </div>
+                                  </div>  
+                                  <div className='list-group-item p-3'>
+                                    <p className='mb-2'>Return Stops</p>
+                                    <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                      <input type="checkbox" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" />
+                                      <label class="btn btn-outline-light" for="btnradio1">0 <br /> Return Stops</label>
 
                                       <input type="checkbox" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
                                       <label class="btn btn-outline-light" for="btnradio2">1 <br /> Non Stop</label>
@@ -42,7 +58,6 @@ export default function FlightBook() {
                                     </div>
                                   </div> 
                               </div>    
-                                
                             </div>
                         </div>
                     </div>

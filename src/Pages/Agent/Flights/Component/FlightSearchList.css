@@ -128,6 +128,16 @@
     overflow: auto;
 }
 
+
+.animated-box {
+    height: 100px; /* Set initial height */
+    overflow: hidden; /* Hide content that overflows the box */
+    transition: height 0.5s ease; /* Transition property and duration for height */
+  }
+  
+.animated-box.active {
+    height: 200px; /* Set target height */
+}
 .flight-search-calouter {
     padding: 4px;
     background-color: #fff;
@@ -161,6 +171,7 @@
 .flight-item-flight-moodal .nav-pills .nav-link {
     color: #464647;
 }
+
 /****Flight-Fillter****/
 
 .btn-check:checked + .btn-outline-light {
@@ -178,4 +189,5 @@
  .btn-outline-light:hover, .btn-check + .btn.btn-outline-light:hover {
     border-color: #bab8bb !important;
  }
+
 /****Flight-Fillter****/

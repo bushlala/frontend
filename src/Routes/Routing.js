@@ -395,7 +395,7 @@ const Routing = () => {
     {/* Payment Details */}
     <Route exact path="PaymentSuccess" element={<PaymentSuccess />}></Route>
     <Route exact path="BookingSuccess" element={<BookingSuccess />}></Route>
-    <Route exact path="Agent-Review" element={<AgentReview />}></Route>
+    <Route exact path="agentreview" element={<AgentReview />}></Route>
     <Route exact path="BookingHold" element={<BookingHold />}></Route>
 
 

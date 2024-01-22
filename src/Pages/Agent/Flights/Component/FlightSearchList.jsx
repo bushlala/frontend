@@ -52,11 +52,28 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
         console.log(tripList[tripKey]);
         //console.log("fareDetail",fareDetail);
     }
+
+    /********/
+    const [isActive, setIsActive] = useState(false);
+
+    const toggleStyle = () => {
+      // Toggle between two sets of styles based on the current state
+      setIsActive(!isActive);
+    };
+  
+    const dynamicStyles = {
+      // Define your styles here
+      height: isActive ? '93px' : 'auto',
+      overflow: isActive ? 'hidden' : 'hidden',
+      transition: isActive ? 'height 4s' : 'height 4s',
+      // Add other styles as needed
+    };
+    
     return (
         <>
             <div className="col-sm-12 container-fluid">
                 <div className='row'>
-                    {/* <div className='col-3'>
+                     {/* <div className='col-3'>
                         <div className='card'>
                             <div className=''>
                                 <div className='list-group list-group-flush'>
@@ -74,7 +91,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                     </div> 
                                     <div className='list-group-item'>
                                         <div className="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
-                                        <input type="checkbox" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" checked />
+                                        <input type="checkbox" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" />
                                         <label className="btn btn-outline-light" htmlFor="btnradio1">0 <br /> Non Stop</label>
 
                                         <input type="checkbox" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" />
@@ -87,7 +104,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                 </div>
                             </div>
                         </div>
-                    </div> */}
+                    </div>  */}
                     <div className='col-9 m-auto'>
                         <div className='flight-search-calouter mb-4'>
                             <div className='btn-group'>
@@ -154,61 +171,63 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                     </div>
                                                 </div>
                                                 <div className='col-6 pricelisttable d-flex flex-column'>
-                                                <div className='' style={{overflow:"hidden"}}>
-                                                    {
-                                                        value.fareDetail.fareDetails && value.fareDetail.fareDetails.length!==0 && value.fareDetail.fareDetails.map((fdValue, fdKey) => (
-                                                            <div key={fdKey} className='d-flex py-1 border-bottom'>
-                                                                <div className='me-4' style={{width:"2%"}}>
-                                                                    <div className="form-check">
-                                                                        <input className="form-check-input" 
-                                                                            type="radio"
-                                                                            name={`flight_detail_on_radio${key}`}
-                                                                            id={`flight_detail_on_radio${key}`}
-                                                                            checked
-                                                                            //checked={fdKey===0 && 'checked'}
-                                                                            onClick={() =>onClickFlightDetailOnRadio(key,fdKey)}
-                                                                        />
+                                                <div className='' >
+                                                    <div className=''  style={dynamicStyles}>
+                                                        {
+                                                            value.fareDetail.fareDetails && value.fareDetail.fareDetails.length!==0 && value.fareDetail.fareDetails.map((fdValue, fdKey) => (
+                                                                <div key={fdKey} className='d-flex py-1 border-bottom'>
+                                                                    <div className='me-4' style={{width:"2%"}}>
+                                                                        <div className="form-check">
+                                                                            <input className="form-check-input" 
+                                                                                type="radio"
+                                                                                name={`flight_detail_on_radio${key}`}
+                                                                                id={`flight_detail_on_radio${key}`}
+                                                                                checked
+                                                                                //checked={fdKey===0 && 'checked'}
+                                                                                onClick={() =>onClickFlightDetailOnRadio(key,fdKey)}
+                                                                            />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div  className="pricelistright position-relative text-left d-inline-block" style={{width:"64%"}}>
-                                                                    <div className='d-flex justify-content-between'>
-                                                                    <div className=''>
-                                                                        <span className="mainprice"> ₹ {fdValue?.payAmount} </span> 
-                                                                        <span className="netpriceshow d-none" style={{color:"#009933"}}>
-                                                                        ₹ 11547
-                                                                        </span> 
-                                                                    </div> 
+                                                                    <div  className="pricelistright position-relative text-left d-inline-block" style={{width:"64%"}}>
+                                                                        <div className='d-flex justify-content-between'>
+                                                                        <div className=''>
+                                                                            <span className="mainprice"> ₹ {fdValue?.payAmount} </span> 
+                                                                            <span className="netpriceshow d-none" style={{color:"#009933"}}>
+                                                                            ₹ 11547
+                                                                            </span> 
+                                                                        </div> 
 
-                                                                    <div className=''>
-                                                                        <span className="sharechek">
-                                                                        <input type="checkbox" name="checkbox" value={value?.flightDatails?.flightId} className="sck" onChange={(e)=>handleChnageShareTrip(e.target.checked,value)}  />
-                                                                        Share
-                                                                        </span>
-                                                                    </div> 
-                                                                    </div>
-                                                                    <div className=''>
-                                                                        <span className="label label-warning ars-flightlabel ars-refunsleft ars-flightlabel-positionHandle" style={{backgroundColor:"#0099e0", color:"#FFFFFF"}}>
-                                                                        {`${fdValue?.fareIdentifier} FARE`}                
-                                                                        </span>
-                                                                        <span className="label--text w-100"> Economy,  &nbsp;
-                                                                        <span className="rdable">{fdValue.RefundType ===0 ? 'Non Refundable':fdValue.RefundType ===1? 'Refundable' : 'Partial Refundable'  }<span> &nbsp; <i className="fa fa-info-circle fa-info-circle5310" aria-hidden="true" style={{fontSize:"18px,", cursor: "pointer"}}></i></span>
-                                                                            <div className="ymessage ymsgclass5310" >
+                                                                        <div className=''>
+                                                                            <span className="sharechek">
+                                                                            <input type="checkbox" name="checkbox" value={value?.flightDatails?.flightId} className="sck" onChange={(e)=>handleChnageShareTrip(e.target.checked,value)}  />
+                                                                            Share
+                                                                            </span>
+                                                                        </div> 
+                                                                        </div>
+                                                                        <div className=''>
+                                                                            <span className="label label-warning ars-flightlabel ars-refunsleft ars-flightlabel-positionHandle" style={{backgroundColor:"#0099e0", color:"#FFFFFF"}}>
                                                                             {`${fdValue?.fareIdentifier} FARE`}                
-                                                                            </div>
-                                                                        </span>
-                                                                        </span>
-                                                                    </div>    
+                                                                            </span>
+                                                                            <span className="label--text w-100"> Economy,  &nbsp;
+                                                                            <span className="rdable">{fdValue.RefundType ===0 ? 'Non Refundable':fdValue.RefundType ===1? 'Refundable' : 'Partial Refundable'  }<span> &nbsp; <i className="fa fa-info-circle fa-info-circle5310" aria-hidden="true" style={{fontSize:"18px,", cursor: "pointer"}}></i></span>
+                                                                                <div className="ymessage ymsgclass5310" >
+                                                                                {`${fdValue?.fareIdentifier} FARE`}                
+                                                                                </div>
+                                                                            </span>
+                                                                            </span>
+                                                                        </div>    
+                                                                    </div>
+                                                                    <div className='ms-4' style={{width:"34%"}}>
+                                                                        <Link to={`/agent/flight-review-book/${fdValue.fareRuleId}`} className='btn btn-danger w-100'>Booking</Link>
+                                                                    </div>
                                                                 </div>
-                                                                <div className='ms-4' style={{width:"34%"}}>
-                                                                    <Link to={`/agent/flight-review-book/${fdValue.fareRuleId}`} className='btn btn-danger w-100'>Booking</Link>
-                                                                </div>
-                                                            </div>
-                                                        ))  
-                                                    }
+                                                            ))  
+                                                        }
+                                                    </div>    
                                                     {
                                                         value.fareDetail.fareDetails && value.fareDetail.fareDetails.length>1 &&
                                                             <div className='morefrebtnouter'>
-                                                                <Link className='morefrebt'>+ More Fare</Link> 
+                                                                <Link className='morefrebt' onClick={toggleStyle} >+ More Fare</Link> 
                                                             </div>
                                                     }
                                                     

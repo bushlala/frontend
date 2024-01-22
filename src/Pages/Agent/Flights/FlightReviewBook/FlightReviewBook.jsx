@@ -1,10 +1,10 @@
-import React,{useState} from 'react'
-//import { Link } from 'react-router-dom'
-import Header from '../../../../Component/Layout/Agent/Header/Header'
-import {Modal, Button} from 'react-bootstrap'
-import Sidebar from '../../../../Component/Layout/Agent/Sidebar/Sidebar'
-import Indigo from '../../../../assets/images/indigo.png'
-import './FlightReviewBook.css'
+import React,{useState} from 'react';
+//import { Link } from 'react-router-dom';
+import Header from '../../../../Component/Layout/Agent/Header/Header';
+import {Modal, Button} from 'react-bootstrap';
+import Sidebar from '../../../../Component/Layout/Agent/Sidebar/Sidebar';
+import Indigo from '../../../../assets/images/indigo.png';
+import './FlightReviewBook.css';
 import {Link,useNavigate,useParams } from 'react-router-dom';
 import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service'
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,6 +12,7 @@ import FlightDetail from './Component/FlightDetails'
 import axios from "axios";
 import { FieldArray,Form, Formik } from "formik";
 import * as Yup from "yup";
+import SeatMapModel from './Component/SeatMapModel';
 
 export default function AgentFlightReviewBook() {
   const initialValues = {
@@ -22,6 +23,9 @@ export default function AgentFlightReviewBook() {
         lastName: "",
         dateOfBirth: "",
         passangerType : 'adult',
+        passangerTypeName : '',
+        seat : '',
+        fee : '0',
         saveDetailStatus : "",
       },
     ],
@@ -65,8 +69,13 @@ export default function AgentFlightReviewBook() {
   const nameForm = React.useRef(null)
   const [reInitialValues, setReInitialValues] = React.useState(initialValues);
   const [showModal, setShowModal] = useState(false);
+  const [flightMapInfo, setFlightMapInfo] = React.useState();
+  const [passangerInfo,setPassangerInfo] = React.useState();
+  const [flightMapIndex,setFlightMapIndex] = React.useState(0);
+
   const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
+  
+  //const handleShow = () => setShowModal(true);
 
   let BASE_URL = '';
   if(process.env.REACT_APP_SERVER_ENV==='Local'){
@@ -168,12 +177,27 @@ export default function AgentFlightReviewBook() {
           // Code for bagger and meal information
           var extraInfo = [];
           result.listOfFlight && result.listOfFlight.forEach((flightDetail, index) => {
-            var tmp={from:"",to:"",date:"", mealBaggageInfo:"",baggageList : [],mealList:[]};
-            tmp.from        = flightDetail.departureAirportInformation.city;
-            tmp.to          = flightDetail.arrivalAirportInformation.city;
-            tmp.date        = flightDetail.departureDate;
-            tmp.baggageList = flightDetail.ssrInfo.BAGGAGE ? flightDetail.ssrInfo.BAGGAGE : [];
-            tmp.mealList    = flightDetail.ssrInfo.MEAL ? flightDetail.ssrInfo.MEAL : [];
+            var tmp={
+              from:"",
+              to:"",
+              date:"",
+              flightName:"",
+              flightNumber:"",
+              flightCode:"",
+              flightLogo:"",
+              mealBaggageInfo:"",
+              baggageList : [],
+              mealList:[]
+            };
+            tmp.from          = flightDetail.departureAirportInformation.city;
+            tmp.to            = flightDetail.arrivalAirportInformation.city;
+            tmp.date          = flightDetail.departureDate;
+            tmp.flightName    = flightDetail.flightDescription.name;
+            tmp.flightNumber  = flightDetail.flightNumber;
+            tmp.flightCode    = flightDetail.flightCode;
+            tmp.flightLogo    = flightDetail.flightLogo;
+            tmp.baggageList   = flightDetail.ssrInfo.BAGGAGE ? flightDetail.ssrInfo.BAGGAGE : [];
+            tmp.mealList      = flightDetail.ssrInfo.MEAL ? flightDetail.ssrInfo.MEAL : [];
             var mealBaggageInfo = [];
             for (var i=0; i < result.seasionDetail.paxInfo.ADULT; i++) {
               const tmp1 =  {
@@ -204,6 +228,9 @@ export default function AgentFlightReviewBook() {
               lastName: "",
               dateOfBirth: "",
               passangerType : 'adult',
+              passangerTypeName : `ADULT ${i+1}`,
+              seat : '',
+              fee : '0',
               saveDetailStatus :"",
             }
             passangerInfo.push(tmp)
@@ -216,6 +243,9 @@ export default function AgentFlightReviewBook() {
               lastName: "",
               dateOfBirth: "",
               passangerType : 'children',
+              passangerTypeName : `CHILDREN ${i+1}`,
+              seat : '',
+              fee : '0',
               saveDetailStatus :"",
             }
             passangerInfo.push(tmp)
@@ -228,12 +258,16 @@ export default function AgentFlightReviewBook() {
               lastName: "",
               dateOfBirth: "",
               passangerType : 'infant',
+              passangerTypeName : `INFANT ${i+1}`,
+              seat : '',
+              fee : '0',
               saveDetailStatus :"",
             }
             passangerInfo.push(tmp)
           }
           reInitialValues.passangerInfo = passangerInfo;
           reInitialValues.extraInfo = extraInfo;
+          setPassangerInfo(passangerInfo);
           setReInitialValues(reInitialValues);
           setBookingReviewData(result);
           setBaseFarePrice(result?.fareDetail?.baseFare);
@@ -247,6 +281,14 @@ export default function AgentFlightReviewBook() {
         toast.error('Something went wrong');
     });
   };
+
+  
+
+  const openSeatMapModel = (flightMapInfo,index) => {
+    setShowModal(true);
+    setFlightMapInfo(flightMapInfo);
+    setFlightMapIndex(index);
+  }
 
   const handleOnSubmit = async (values, { resetForm }) => {
     console.log(values);
@@ -506,7 +548,7 @@ export default function AgentFlightReviewBook() {
                                         <div className="col-xl-2 col-lg-6 col-md-6 col-sm-12">
                                           <Button 
                                             className="btn-danger re-seat" 
-                                            onClick={handleShow}
+                                            onClick={()=>openSeatMapModel(extra,index)}
                                           >Show Sheet Map</Button>
                                         </div>
                                       </div>
@@ -582,8 +624,10 @@ export default function AgentFlightReviewBook() {
                                 </div>
                             </div>
                             <hr></hr>
-                            <div className='card-title'>
-                                <Button className='btn btn-danger' onClick={() => checkoutHandler(amount)}>5000 Pay Now</Button>
+                            <div className='card-title d-flex justify-content-between'>
+                                {/* <Button className='btn btn-danger' onClick={() => checkoutHandler(amount)}>5000 Pay Now</Button> */}
+                                <Link  className='btn btn-danger'> Back </Link>
+                                <Link to='/agentreview'  className='btn btn-danger'> Proceed To Review </Link>
                             </div>
                           </div>  
                       </div>
@@ -667,134 +711,19 @@ export default function AgentFlightReviewBook() {
         </div>
       </div>
     </div>
-
-    <Modal size="xl" show={showModal} onHide={handleClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Select Seats</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-          <div className='row'>
-            <div className='col-3 border p-2 ' >
-                <div className='d-flex'>
-                    <img className='flight-flag' src='https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png 'alt=''/>
-                    <div className=''>
-                        <div className="flightname" id=""> Vistara BLR-BOM </div>
-                        <div className="flightnumber" id="">UK-840</div>
-                    </div>
-                </div> 
-                <hr></hr>
-                <div className="table-responsive">
-                    <table className="table text-nowrap w-100">
-                        <thead>
-                            <tr>
-                                <th>Passanger</th>
-                                <th>Seat</th>
-                                <th>Fee</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>ADULT-1</td>
-                                <td>--</td>
-                                <td>0.00</td>
-                            </tr>
-                            <tr>
-                                <td>Total</td>
-                                <td>--</td>
-                                <td>0.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button className='btn btn-dark w-100'>Proceed</button>
-                <h6 className='fw-bold flightname mt-4'>Proceed Without Seats </h6>
-                <p className='flightnumber'>* Conditions apply. We will try our best to accomodate your seat preferences, however due to operational considerations we can't guarantee this selection. The seat map shown may not be the exact replica of flight layout, we shall not responsible for losses arising from the same. Thank you for your understanding</p>
-            </div>
-            <div className='col-7'>
-
-              <div className='cabin fuselage'>
-                <div className='seats'>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="1A"  />
-                        <label class="" for="1A">1A</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="2B"  />
-                        <label class="" for="2B">2B</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="3C"  />
-                        <label class="" for="3C">3C</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="4D"  />
-                        <label class="" for="4D">4D</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="5E"  />
-                        <label class="" for="5E">5E</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="6F"  />
-                        <label class="" for="6F">6F</label>
-                    </div>
-                </div>
-                <div className='seats'>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="1A2"  />
-                        <label class="" for="1A2">1A</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="2B2"  />
-                        <label class="" for="2B2">2B</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="3C2"  />
-                        <label class="" for="3C2">3C</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="4D2"  />
-                        <label class="" for="4D2">4D</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="5E2"  />
-                        <label class="" for="5E2">5E</label>
-                    </div>
-                    <div className='seat'>
-                        <input type="radio" class="" name="options-outlined" id="6F2"  />
-                        <label class="" for="6F2">6F</label>
-                    </div>
-                </div>
-              </div>  
-            </div>
-            <div className='col-2 border'>
-                  <h6 className='fs-13 text-center mt-3'>Flight Orientation</h6>
-                  <div className='text-center mt-2'>
-                      <img className='flight-flag' src='https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png 'alt=''/>
-                  </div>
-                  <hr></hr>
-                  <div className=''>
-                      <h6 className='text-center'>Seat Status</h6>
-                      <span><i class="fa-solid fa-square-check me-1" style={{color:"#4aa301"}}></i> - Selected</span>
-                      <p><i class="fa-solid fa-circle-xmark me-1" style={{color:"#a4b4c1"}}></i> - Booked</p>
-                      <hr></hr>
-                      <h6 className=''>Seat Fees</h6>
-                  </div>
-                      <div>
-                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e4c8c8"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>0.00</span></p>
-                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#806a7d"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>200.00</span></p>
-                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e69c77"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>250.00</span></p>
-                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#e9c352"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>300.00</span></p>
-                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#b589d7"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>400.00</span></p>
-                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#81f5dc"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>650.00</span></p>
-                          <p className='mb-1'><span className='seat-color-box me-2' style={{backgroundColor: "#4ab8ed"}}></span><span><i class="fa-solid fa-indian-rupee-sign me-1 fa-sm"></i>900.00</span></p>
-                      </div> 
-                  
-            </div>
-          </div>
-      </Modal.Body>
-    </Modal> 
-    
+    {
+      showModal && 
+      <SeatMapModel
+        showModal = {showModal}
+        handleClose = {handleClose}
+        //handleClickSetPassanger = {handleClickSetPassanger}
+        bookingId = {bookingReviewData?.seasionDetail?.bookingId}
+        flightMapInfo = {flightMapInfo}
+        flightMapIndex = {flightMapIndex}
+        passangerInfo = {passangerInfo}
+        //selectPassanger = {selectPassanger}
+      />
+    }
     </>
   )
 }
