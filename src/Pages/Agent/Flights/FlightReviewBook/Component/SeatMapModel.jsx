@@ -7,16 +7,14 @@ import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.
 import toast from 'react-hot-toast';
 import FlightDetailModel from '../../Component/FlightDetailModel';
 //import Moment from 'moment';
-export default function SeatMapModel({showModal, handleClose, bookingId, flightMapInfo, flightMapIndex, passangerInfo}) {
-    //console.log('showModal',showModal);
-    //console.log('bookingId',bookingId);
-    //console.log('flightMapInfo',flightMapInfo);
-    //console.log('passangerInfo',passangerInfo);
+export default function SeatMapModel({showModal, handleClose,proceedForSeat, bookingId, flightMapInfo, flightMapIndex, passangerInfo}) {
     const [passangerInfoModel, setPassangerInfoModel] = React.useState(passangerInfo);
     const [selectPassanger,setSelectPassanger] = React.useState(0);
-    const [bookingSeatMap, setBookingSeatMap] = React.useState();
+    //const [bookingSeatMap, setBookingSeatMap] = React.useState();
     const [customSeatMap,setCustomSeatMap] = React.useState();
     const [prices,setPrices] = React.useState([]);
+    const [totalFee, setTotalFee] = React.useState(0);
+    const [totalSeats,setTotalSeats] = React.useState();
     
     
     React.useEffect(() => {
@@ -75,22 +73,21 @@ export default function SeatMapModel({showModal, handleClose, bookingId, flightM
 
     const handleClickSetPassanger = (selectPassangerKey, seatInfo, seatStatus) => {
         if(seatStatus){
-            //passangerInfo[selectPassangerKey];
             if(seatInfo.seatStatus === 'full'){
-                const passangerInfoModel =  passangerInfoModel[selectPassangerKey];
-                passangerInfoModel[selectPassangerKey].seat = seatInfo.seat.seatNo;
-                passangerInfoModel[selectPassangerKey].fee = seatInfo.seat.amount;
-                setPassangerInfoModel(passangerInfoModel);
-                //passangerInfo[selectPassangerKey] = passanger;
-                //setPassangerInfoModel(passangerInfoModel);
-                //setPassangerInfoModel(passangerInfoModel => passangerInfoModel[selectPassangerKey])
-                //setPassangerInfoModel(prevMovies => ([...prevMovies, ...passangerInfoModelCheck]));
-                //console.log("passangerInfoModel",passangerInfoModel);
+                let newData = [...passangerInfoModel] //copy the object
+                newData[selectPassangerKey].seat = seatInfo.seat.seatNo;
+                newData[selectPassangerKey].fee = seatInfo.seat.amount;
+                
+                let feeSum = newData.reduce(function(prev, current) {
+                    return prev + +current.fee
+                }, 0);
+                
+                let totalSeats = Array.prototype.map.call(newData, function(item) { return item.seat; }).join(",")
+                setTotalFee(feeSum);
+                setTotalSeats(totalSeats);
+                setPassangerInfoModel(newData);
             }
         }
-        //console.log('selectPassangerKey', selectPassangerKey);
-        //console.log('seatInfo', seatInfo);
-        //console.log('seatStatus', seatStatus);
         setSelectPassanger(selectPassangerKey);
     };
     return (
@@ -121,10 +118,9 @@ export default function SeatMapModel({showModal, handleClose, bookingId, flightM
                                 </thead>
                                 <tbody>
                                     {
-                                        
-                                        passangerInfoModel && passangerInfoModel.length > 0 && passangerInfoModel.map((passanger, passangerKey) => (
+                                        passangerInfoModel && passangerInfoModel.length !== 0 && passangerInfoModel.map((passanger, passangerKey) => (
                                             
-                                            <tr onClick={()=>handleClickSetPassanger(passangerKey,null,false)}>
+                                            <tr key={passangerKey} onClick={()=>handleClickSetPassanger(passangerKey,null,false)}>
                                                 <td>{passanger.passangerTypeName}</td>
                                                 <td>{passanger.seat}</td>
                                                 <td>{passanger.fee}</td>
@@ -133,13 +129,13 @@ export default function SeatMapModel({showModal, handleClose, bookingId, flightM
                                     }
                                     <tr>
                                         <td>Total</td>
-                                        <td>--</td>
-                                        <td>0.00</td>
+                                        <td>{totalSeats}</td>
+                                        <td>{totalFee}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <button className='btn btn-dark w-100'>Proceed</button>
+                        <button className='btn btn-dark w-100' onClick={()=> proceedForSeat(totalSeats,totalFee,passangerInfoModel)}>Proceed</button>
                         <h6 className='fw-bold flightname mt-4'>Proceed Without Seats </h6>
                         <p className='flightnumber'>* Conditions apply. We will try our best to accomodate your seat preferences, however due to operational considerations we can't guarantee this selection. The seat map shown may not be the exact replica of flight layout, we shall not responsible for losses arising from the same. Thank you for your understanding</p>
                     </div>
@@ -151,8 +147,8 @@ export default function SeatMapModel({showModal, handleClose, bookingId, flightM
                                 <div className='seats' key={rowKey}>
                                     {
                                         columns.column && columns.column.length > 0 && columns.column.map((column, columnKey) => (
-                                            <div className='seat' key={columnKey} onClick={()=>handleClickSetPassanger(selectPassanger,column,true)}>
-                                                <input type="radio" class="" name="options-outlined" id={`${rowKey}-${columnKey}`}  />
+                                            <div className='seat' key={columnKey} >
+                                                <input type="radio" class="" name="options-outlined" id={`${rowKey}-${columnKey}`}  onClick={()=>handleClickSetPassanger(selectPassanger,column,true)} />
 
                                                 <label className={column.seatStatus === 'empty' ? 'empty' : ''  } for={`${rowKey}-${columnKey}`}  style={ column.seatStatus !== 'empty' ? {backgroundColor:column?.seat?.color} : {} } >{column?.seat?.seatNo}</label>
                                             </div>

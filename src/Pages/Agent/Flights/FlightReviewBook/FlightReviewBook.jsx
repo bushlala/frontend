@@ -1,8 +1,7 @@
 import React,{useState} from 'react';
 //import { Link } from 'react-router-dom';
-import Header from '../../../../Component/Layout/Agent/Header/Header';
+import Header from '../../../../Component/Layout/Agent/Header/SearchHeader';
 import {Modal, Button} from 'react-bootstrap';
-import Sidebar from '../../../../Component/Layout/Agent/Sidebar/Sidebar';
 import Indigo from '../../../../assets/images/indigo.png';
 import './FlightReviewBook.css';
 import {Link,useNavigate,useParams } from 'react-router-dom';
@@ -13,6 +12,8 @@ import axios from "axios";
 import { FieldArray,Form, Formik } from "formik";
 import * as Yup from "yup";
 import SeatMapModel from './Component/SeatMapModel';
+import Nav from 'react-bootstrap/Nav';
+import Tab from 'react-bootstrap/Tab'
 
 export default function AgentFlightReviewBook() {
   const initialValues = {
@@ -131,7 +132,8 @@ export default function AgentFlightReviewBook() {
   const [baseFarePrice, setBaseFarePrice] = React.useState(0);
   const [taxesFee, setTaxesFee] = React.useState(0);
   const [total, setTotal] = React.useState(0);
-
+  const [totalFee, setTotalFee] = React.useState(0);
+  const [totalSeats,setTotalSeats] = React.useState();
   // React.useEffect(() => {
   //   let timerid;
 
@@ -186,6 +188,7 @@ export default function AgentFlightReviewBook() {
               flightCode:"",
               flightLogo:"",
               mealBaggageInfo:"",
+              seats : "No Seat Selected",
               baggageList : [],
               mealList:[]
             };
@@ -196,6 +199,7 @@ export default function AgentFlightReviewBook() {
             tmp.flightNumber  = flightDetail.flightNumber;
             tmp.flightCode    = flightDetail.flightCode;
             tmp.flightLogo    = flightDetail.flightLogo;
+            tmp.seats         = ""; 
             tmp.baggageList   = flightDetail.ssrInfo.BAGGAGE ? flightDetail.ssrInfo.BAGGAGE : [];
             tmp.mealList      = flightDetail.ssrInfo.MEAL ? flightDetail.ssrInfo.MEAL : [];
             var mealBaggageInfo = [];
@@ -290,6 +294,13 @@ export default function AgentFlightReviewBook() {
     setFlightMapIndex(index);
   }
 
+  const proceedForSeat = (totalSeats,totalFee,passangerInfoModel)=>{
+    //setTotalSeats(totalSeats);
+    reInitialValues.extraInfo[flightMapIndex].seats = totalSeats;
+    setReInitialValues(reInitialValues);
+    setShowModal(false);
+  }
+
   const handleOnSubmit = async (values, { resetForm }) => {
     console.log(values);
   };
@@ -297,425 +308,733 @@ export default function AgentFlightReviewBook() {
   return (
     <>
     <Header />
-    <Sidebar />
-    <div className="main-content app-content flightreview mb-5">
-      <div className="container-fluid">
-        <div className="row">
-            <div className='col-9'>
-              <div className="page-header">
-                  <h4 className="my-auto">Flight Details</h4>
-                  <div>
-                    <Link onClick={() => navigate(-1)} className="my-auto text-danger" >Back to Search</Link>
-                  </div>
-              </div>
-              {
-                bookingReviewData &&
-                bookingReviewData.listOfFlight &&
-                bookingReviewData.listOfFlight.length !=0 &&
-                <FlightDetail
-                  listOfFlight={bookingReviewData.listOfFlight}
-                  fareDetail={bookingReviewData.fareDetail}
-                />
-              }
+    <div className="main-content px-0 main-top-padding">
+   
+   <Tab.Container id="left-tabs-example" defaultActiveKey="first" className="">
+       <div className='apt-section'>
+           <div className='container'>
+               <Nav variant="pills" className="row bookingTop-row-positionHandle">
+                 <Nav.Item className='booking-top-btn no-padding col-sm-3'>
+                   <Nav.Link eventKey="first" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>FIRST
+                           STEP</span></span>
+                       <h4 class="apt-flightiti"><span>Flight Itinerary</span></h4></Nav.Link>
+                 </Nav.Item>
+                 <Nav.Item className='booking-top-btn no-padding col-sm-3'>
+                   <Nav.Link eventKey="second" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>SECOND STEP</span></span>
+                   <h4 class="apt-flightiti"><span>Passenger Details</span></h4></Nav.Link>
+                 </Nav.Item>
+                 <Nav.Item className='booking-top-btn no-padding col-sm-3'>
+                   <Nav.Link eventKey="third" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>THIRD STEP</span></span>
+                   <h4 class="apt-flightiti"><span>Review</span></h4></Nav.Link>
+                 </Nav.Item>
+                 <Nav.Item className='booking-top-btn no-padding col-sm-3'>
+                   <Nav.Link eventKey="fourth" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>FINISH STEP</span></span>
+                   <h4 class="apt-flightiti"><span>Payments</span></h4></Nav.Link>
+                 </Nav.Item>
+               </Nav>
+           </div>  
+       </div>  
+       <Tab.Content>
+           <Tab.Pane eventKey="first">
+            <div className="flightreview mb-5">
+              <div className="container">
+                <div className="row">
+                    <div className='col-9'>
+                      <div className="page-header">
+                          <h4 className="my-auto">Flight Details</h4>
+                          <div>
+                            <Link onClick={() => navigate(-1)} className="my-auto text-danger" >Back to Search</Link>
+                          </div>
+                      </div>
+                      {
+                        bookingReviewData &&
+                        bookingReviewData.listOfFlight &&
+                        bookingReviewData.listOfFlight.length !=0 &&
+                        <FlightDetail
+                          listOfFlight={bookingReviewData.listOfFlight}
+                          fareDetail={bookingReviewData.fareDetail}
+                        />
+                      }
 
-              <div className="page-header">
-                  <h4 className="my-auto">Passenger Details</h4>
-                  <div className=''>
-                      <button type='button' className='btn btn-danger re-butoon'>Clear</button>
-                      <button type='button' className='btn btn-danger'>Import</button>
-                  </div>
-              </div>
-              <Formik
-                initialValues={reInitialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleOnSubmit}
-                enableReinitialize={true}
-              >
-                {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
-                  <Form ref={nameForm}>
-                    <div className='flight-item-list'>
-                      <div className="accordion accordion-flush" id="accordionFlushExample">
-                      <FieldArray
-                        name="passangerInfo"
-                        render={arrayHelpers => {
-                          const passangerInfo = values.passangerInfo;
-                          console.log("passangerInfo",passangerInfo);
-                          return (
-                            <div>
-                                {
-                                passangerInfo && passangerInfo.length > 0 
-                                ? passangerInfo.map((user, index) => (
-                                    <div className="accordion-item mb-3">
-                                      <h2 className="accordion-header" id={`flush-headingOne${index}`}>
-                                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapseOne${index}`} aria-expanded="false" aria-controls={`flush-collapseOne${index}`}>
-                                            {
-                                              values.passangerInfo[index].passangerType==='adult' &&
-                                              'Adult 1 (12 + yrs)'
-                                            }
-                                            {
-                                              values.passangerInfo[index].passangerType==='children' &&
-                                              'Children 1 (12 - yrs)'
-                                            }
-                                            {
-                                              values.passangerInfo[index].passangerType==='infant' &&
-                                              'Infant 1 (0 + 2yrs)'
-                                            }
-                                        </button>
-                                      </h2>
-                                      <div id={`flush-collapseOne${index}`} className="accordion-collapse collapse" aria-labelledby={`flush-headingOne${index}`} data-bs-parent="#accordionFlushExample">
-                                        <div className="accordion-body">
-                                            
-                                            <div className="row gy-4">
-                                                <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                                    <label for="input-label" className="form-label">Title*</label> 
-                                                    <select 
-                                                      className="form-select" 
-                                                      aria-label="Default select example"
-                                                      id={`passangerInfo.${index}.title`}
-                                                      name={`passangerInfo.${index}.title`}
-                                                      onChange={handleChange}
-                                                      value={values.passangerInfo[index].title}
-                                                    >
-                                                      <option selected="">Select</option>
-                                                      <option value="1">Mr.</option>
-                                                      <option value="2">Mrs.</option>
-                                                      <option value="3">Ms.</option>
-                                                    </select>
-                                                </div>
+                     <div class="card">
+                        <div className='card-body d-flex justify-content-between'>
+                              <Link className='btn btn-danger'>Back</Link>
+                              <Link className='btn btn-danger'>ADD PASSENGERS</Link>
+                        </div>
+                     </div>  
 
-                                                <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                                  <label for="input-label" className="form-label">First Name*</label>
-                                                  <input 
-                                                    type="text" 
-                                                    className="form-control" 
-                                                    id="input-label"
-                                                    name={`passangerInfo.${index}.firstName`}
-                                                    onChange={handleChange}
-                                                    value={values.passangerInfo[index].firstName}
-                                                  />
-                                                </div>
-                                                <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                                  <label for="input-placeholder" className="form-label">Last Name*</label>
-                                                  <input 
-                                                    type="text" 
-                                                    className="form-control" 
-                                                    id="input-label"
-                                                    name={`passangerInfo.${index}.lastName`}
-                                                    onChange={handleChange}
-                                                    value={values.passangerInfo[index].lastName} 
-                                                  />
-                                                </div>
-                                                {
-                                                  values.passangerInfo[index].passangerType==='infant' &&
-                                                    <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                                      <label for="input-placeholder" className="form-label">DOB</label>
-                                                      <input 
-                                                        type="date" 
-                                                        className="form-control"
-                                                        id="input-label"
-                                                        name={`passangerInfo.${index}.dateOfBith`}
-                                                        onChange={handleChange}
-                                                        value={values.passangerInfo[index].dateOfBirth}
-                                                      />
-                                                    </div>
-                                                }
-                                            </div>
-                                            <div className='accordion-footer mt-3'>
-                                                <input 
-                                                  type='checkbox' 
-                                                  id={`passangerInfo.${index}.saveDetailStatus`}
-                                                  name={`passangerInfo.${index}.saveDetailStatus`}
-                                                  onChange={handleChange}
-                                                  value={values.passangerInfo[index].saveDetailStatus}
-                                                /> 
-                                                <label for={`passangerInfo.${index}.saveDetailStatus`}> Save Passenger Details  </label>
-                                            </div>
-                                        </div>
+                    </div>
+
+                    <div className='col-3 mt-5'>
+                        <div className='re-card'>
+                            <div className=''>
+                            <div className='list-group list-group-flush'>
+                                <div className='list-group-item'>
+                                    <h6>Fare Summary</h6>
+                                </div>  
+                                <div className='list-group-item'>
+                                    <div className='row d-flex'>
+                                      <div className="col">
+                                        <h6 className=''>Base fare</h6>
+                                      </div>
+                                      <div className="col">
+                                        <h6 className='float-end'>
+                                          <i className="fa-solid fa-indian-rupee-sign"></i>{baseFarePrice}
+                                        </h6>
                                       </div>
                                     </div>
-                                  ))
-                                : null}
+
+                                    <hr></hr>
+                                    <div className='row d-flex'>
+                                      <div className="col">
+                                        <h6 className=''>Taxes and fees</h6>
+                                      </div>
+                                      <div className="col">
+                                        <h6 className='float-end'>
+                                          <i className="fa-solid fa-indian-rupee-sign"></i>{taxesFee}
+                                        </h6>
+                                      </div>
+                                    </div>
+
+                                    <hr></hr>
+                                    <div className='row d-flex'>
+                                      <div className="col">
+                                        <h6 className=''>Amount to Pay</h6>
+                                      </div>
+                                      <div className="col">
+                                        <h6 className='float-end'>
+                                          <i className="fa-solid fa-indian-rupee-sign"></i>{total}
+                                        </h6>
+                                      </div>
+                                    </div>
+                                  <hr></hr>
+                                  <div className="graysmalltext text-danger mb-3"> <i className="fa-solid fa-circle-info"></i> You dont't have sufficient balance</div>
+                                </div>   
+                              </div>   
                             </div>
-                            
-                          );
-                        }}
-                      />
+                        </div>
+                        <div className='re-card mt-3'>
+                            <div className=''>
+                            <div className='list-group list-group-flush'>
+                                <div className='list-group-item'>
+                                    <h6>Select a Discount Coupan</h6>
+                                </div>  
+                                <div className='list-group-item'>
+                                    <div className='d-flex mt-2'>
+                                        <input type="text" className="form-control " id="input-label"/>
+                                        <button className='btn btn-danger btn-coupan'>Apply</button>
+                                    </div>
+                                    <p className='text-center graysmalltext mt-3'>No Discount Coupan Available</p>
+                                </div>   
+                              </div>   
+                            </div>
+                        </div>
+                    </div>
 
-                      <div className="accordion-item mb-3">
-                        <h2 className="accordion-header" id="flush-headingTwo">
-                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                              Add Baggage, Meal & Other Services to Your Travel
-                          </button>
-                        </h2>
-                        <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                          <div className="accordion-body">
-                            <FieldArray
-                              name="extraInfo"
-                              render={arrayHelpers => {
-                                const extraInfo = values.extraInfo;
-                                console.log("extraInfo1",extraInfo);
-                                return (
-                                  <div>
-                                    {
-                                      extraInfo && extraInfo.length > 0 
-                                      ? extraInfo.map((extra, index) => (
-                                        <div className='mb-4'>
-                                          <p className="bagNmeal-flightInfo-positionHandle mb-4">
-                                              <b className="bagNmeal-cityInfo-positionHandle">
-                                                <span>{extra.from}</span>
-                                                <span className="ars-arright bagNmeal-arrowright-positionHandle">→</span> 
-                                                <span>{extra.to}</span>
-                                              </b>
-                                              <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
-                                          </p>
-                                          {
-                                            extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((mealBaggage, index) => (
-                                              <div className='row mb-4'>
-                                                  <div className='col-xl-2'>
-                                                    <h6 className='mt-4'>{mealBaggage.memberName}</h6>
+                </div>
+              </div>
+            </div>
+           </Tab.Pane>
+           <Tab.Pane eventKey="second">
+                <div className='flightreview'>
+                      <div className='container'>
+                          <div className='row'>
+                              <div className='col-sm-9'>
+                                <div className="page-header">
+                                    <h4 className="my-auto">Passenger Details</h4>
+                                    <div className=''>
+                                        <button type='button' className='btn btn-danger re-butoon'>Clear</button>
+                                        <button type='button' className='btn btn-danger'>Import</button>
+                                    </div>
+                                </div>
+                                <Formik
+                                  initialValues={reInitialValues}
+                                  validationSchema={validationSchema}
+                                  onSubmit={handleOnSubmit}
+                                  enableReinitialize={true}
+                                >
+                                  {({ classes,errors, touched, values, handleChange, setFieldValue }) => (
+                                    <Form ref={nameForm}>
+                                      <div className='flight-item-list'>
+                                        <div className="accordion accordion-flush" id="accordionFlushExample">
+                                        <FieldArray
+                                          name="passangerInfo"
+                                          render={arrayHelpers => {
+                                            const passangerInfo = values.passangerInfo;
+                                            console.log("passangerInfo",passangerInfo);
+                                            return (
+                                              <div>
+                                                  {
+                                                  passangerInfo && passangerInfo.length > 0 
+                                                  ? passangerInfo.map((user, index) => (
+                                                      <div className="accordion-item mb-3">
+                                                        <h2 className="accordion-header" id={`flush-headingOne${index}`}>
+                                                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapseOne${index}`} aria-expanded="false" aria-controls={`flush-collapseOne${index}`}>
+                                                              {
+                                                                values.passangerInfo[index].passangerType==='adult' &&
+                                                                'Adult 1 (12 + yrs)'
+                                                              }
+                                                              {
+                                                                values.passangerInfo[index].passangerType==='children' &&
+                                                                'Children 1 (12 - yrs)'
+                                                              }
+                                                              {
+                                                                values.passangerInfo[index].passangerType==='infant' &&
+                                                                'Infant 1 (0 + 2yrs)'
+                                                              }
+                                                          </button>
+                                                        </h2>
+                                                        <div id={`flush-collapseOne${index}`} className="accordion-collapse collapse" aria-labelledby={`flush-headingOne${index}`} data-bs-parent="#accordionFlushExample">
+                                                          <div className="accordion-body">
+                                                              
+                                                              <div className="row gy-4">
+                                                                  <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                                                      <label for="input-label" className="form-label">Title*</label> 
+                                                                      <select 
+                                                                        className="form-select" 
+                                                                        aria-label="Default select example"
+                                                                        id={`passangerInfo.${index}.title`}
+                                                                        name={`passangerInfo.${index}.title`}
+                                                                        onChange={handleChange}
+                                                                        value={values.passangerInfo[index].title}
+                                                                      >
+                                                                        <option selected="">Select</option>
+                                                                        <option value="1">Mr.</option>
+                                                                        <option value="2">Mrs.</option>
+                                                                        <option value="3">Ms.</option>
+                                                                      </select>
+                                                                  </div>
+
+                                                                  <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                                                    <label for="input-label" className="form-label">First Name*</label>
+                                                                    <input 
+                                                                      type="text" 
+                                                                      className="form-control" 
+                                                                      id="input-label"
+                                                                      name={`passangerInfo.${index}.firstName`}
+                                                                      onChange={handleChange}
+                                                                      value={values.passangerInfo[index].firstName}
+                                                                    />
+                                                                  </div>
+                                                                  
+                                                                  <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                                                    <label for="input-placeholder" className="form-label">Last Name*</label>
+                                                                    <input 
+                                                                      type="text" 
+                                                                      className="form-control" 
+                                                                      id="input-label"
+                                                                      name={`passangerInfo.${index}.lastName`}
+                                                                      onChange={handleChange}
+                                                                      value={values.passangerInfo[index].lastName} 
+                                                                    />
+                                                                  </div>
+                                                                  {
+                                                                    values.passangerInfo[index].passangerType==='infant' &&
+                                                                      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                                                        <label for="input-placeholder" className="form-label">DOB</label>
+                                                                        <input 
+                                                                          type="date" 
+                                                                          className="form-control"
+                                                                          id="input-label"
+                                                                          name={`passangerInfo.${index}.dateOfBith`}
+                                                                          onChange={handleChange}
+                                                                          value={values.passangerInfo[index].dateOfBirth}
+                                                                        />
+                                                                      </div>
+                                                                  }
+                                                              </div>
+                                                              <div className='accordion-footer mt-3'>
+                                                                  <input 
+                                                                    type='checkbox' 
+                                                                    id={`passangerInfo.${index}.saveDetailStatus`}
+                                                                    name={`passangerInfo.${index}.saveDetailStatus`}
+                                                                    onChange={handleChange}
+                                                                    value={values.passangerInfo[index].saveDetailStatus}
+                                                                  /> 
+                                                                  <label for={`passangerInfo.${index}.saveDetailStatus`}> Save Passenger Details  </label>
+                                                              </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    ))
+                                                  : null}
+                                              </div>
+                                              
+                                            );
+                                          }}
+                                        />
+
+                                        <div className="accordion-item mb-3">
+                                          <h2 className="accordion-header" id="flush-headingTwo">
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                                Add Baggage, Meal & Other Services to Your Travel
+                                            </button>
+                                          </h2>
+                                          <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                            <div className="accordion-body">
+                                              <FieldArray
+                                                name="extraInfo"
+                                                render={arrayHelpers => {
+                                                  const extraInfo = values.extraInfo;
+                                                  console.log("extraInfo1",extraInfo);
+                                                  return (
+                                                    <div>
+                                                      {
+                                                        extraInfo && extraInfo.length > 0 
+                                                        ? extraInfo.map((extra, index) => (
+                                                          <div className='mb-4'>
+                                                            <p className="bagNmeal-flightInfo-positionHandle mb-4">
+                                                                <b className="bagNmeal-cityInfo-positionHandle">
+                                                                  <span>{extra.from}</span>
+                                                                  <span className="ars-arright bagNmeal-arrowright-positionHandle">→</span> 
+                                                                  <span>{extra.to}</span>
+                                                                </b>
+                                                                <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
+                                                            </p>
+                                                            {
+                                                              extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((mealBaggage, index) => (
+                                                                <div className='row mb-4'>
+                                                                    <div className='col-xl-2'>
+                                                                      <h6 className='mt-4'>{mealBaggage.memberName}</h6>
+                                                                    </div>
+
+                                                                    <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                                        <label for="input-label" className="form-label">Baggage Information </label> 
+                                                                        <select 
+                                                                          className="form-select" 
+                                                                          aria-label="Default select example"
+                                                                        >
+                                                                          <option value="">--Select Baggage--</option>
+                                                                          {
+                                                                            extra.baggageList && extra.baggageList.length > 0 && extra.baggageList.map((baggageInfo, index) => (
+                                                                              <option value={baggageInfo.code}>{`${baggageInfo.desc} (${baggageInfo.amount})`}</option>
+                                                                            ))
+                                                                          }
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                                        <label for="input-label" className="form-label">Select Meal </label>
+                                                                        <select 
+                                                                          className="form-select" 
+                                                                          aria-label="Default select example"
+                                                                        >
+                                                                          <option value="">--Meal Preferences--</option>
+                                                                          {
+                                                                            extra.mealList && extra.mealList.length > 0 && extra.mealList.map((mealInfo, index) => (
+                                                                              <option value={mealInfo.code}>{`${mealInfo.desc} (${mealInfo.code})`}</option>
+                                                                            ))
+                                                                          }  
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                              ))
+                                                            } 
+                                                          </div> 
+                                                        ))
+                                                        : null
+                                                      }
+                                                    </div>
+                                                  );
+                                                }}
+                                              />
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div className="accordion-item mb-3">
+                                          <h2 className="accordion-header" id="flush-headingThree">
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                              Select Seats (Optional)
+                                            </button>
+                                          </h2>
+                                          <div id="flush-collapseThree" className="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                                            <div className="accordion-body">
+                                                <div className='gy-3 row'>
+                                                  {
+                                                    values.extraInfo && values.extraInfo.length > 0 && values.extraInfo.map((extra, index) => (
+                                                      <div className='col-12'>
+                                                        <div className='row align-items-center'>  
+                                                          <div className='col-md-4'>
+                                                              <p className="bagNmeal-flightInfo-positionHandle mb-0">
+                                                                  <b className="bagNmeal-cityInfo-positionHandle">
+                                                                    <span>{extra.from}</span>
+                                                                    <span className="ars-arright bagNmeal-arrowright-positionHandle">→</span> 
+                                                                    <span>{extra.to}</span>
+                                                                  </b>
+                                                                  <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
+                                                              </p>
+                                                          </div>
+                                                          <div className='col-lg-4'>
+                                                              <p className='mb-0'>
+                                                                {extra.seats?extra.seats:"Seat Not Selected"}
+                                                              </p>
+                                                          </div>
+                                                          <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                                                            <Button 
+                                                              className="btn-danger re-seat" 
+                                                              onClick={()=>openSeatMapModel(extra,index)}
+                                                            >Show Sheet Map</Button>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    ))
+                                                  }
+                                                </div>  
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div className="accordion-item mb-3">
+                                          <h2 className="accordion-header" id="gstnumber">
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gst-collapseOne" aria-expanded="false" aria-controls="gst-collapseOne">
+                                              GST Number for Business Travel (Optional)
+                                            </button>
+                                          </h2>
+                                          <div id="gst-collapseOne" className="accordion-collapse collapse" aria-labelledby="gstnumber" data-bs-parent="#accordionFlushExample">
+                                            <div className="accordion-body">
+                                                
+                                                <div className="row gy-4">
+                                                    <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                        <label for="input-label" className="form-label">FRegistration Number</label>
+                                                        <input type="text" className="form-control" id="input-label" />
+                                                    </div>
+                                                    <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                        <label for="input-placeholder" className="form-label">Registered Company Name</label>
+                                                        <input type="text" className="form-control" id="input-label" />
+                                                    </div>
+                                                    <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                        <label for="input-placeholder" className="form-label">Registered Email</label>
+                                                        <input type="text" className="form-control" id="input-label" />
+                                                    </div>
+                                                    <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                        <label for="input-placeholder" className="form-label">Registered Phone</label>
+                                                        <input type="text" className="form-control" id="input-label" />
+                                                    </div>
+                                                    <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                        <label for="input-placeholder" className="form-label">Registered Address</label>
+                                                        <input type="text" className="form-control" id="input-label" />
+                                                    </div>
+                                                </div>
+                                                <div className='accordion-footer mt-3'>
+                                                    <input type='checkbox' id='gst-check' /> <label for='gst-check'> Save GST Details  </label>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        </div>
+                                      </div>
+
+                                      <div className='flight-item-list mt-3'>
+                                        <div className='card'>
+                                            <div className="card-header">
+                                                <p className='flightname mb-0'>Contact Details</p>
+                                            </div>
+                                            <div className='card-body'>
+                                              <div className="row gy-4">
+                                                  <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                                      <label for="input-label" className="form-label">Email*</label> 
+                                                      <input type="email" className="form-control" id="input-label" placeholder='demo@gmail.com' />
                                                   </div>
-
-                                                  <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                      <label for="input-label" className="form-label">Baggage Information </label> 
-                                                      <select 
-                                                        className="form-select" 
-                                                        aria-label="Default select example"
-                                                      >
-                                                        <option value="">--Select Baggage--</option>
-                                                        {
-                                                          extra.baggageList && extra.baggageList.length > 0 && extra.baggageList.map((baggageInfo, index) => (
-                                                            <option value={baggageInfo.code}>{`${baggageInfo.desc} (${baggageInfo.amount})`}</option>
-                                                          ))
-                                                        }
-                                                      </select>
+                                                  <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                                      <label for="input-label" className="form-label">Phone*</label>
+                                                      <input type="text" className="form-control" id="input-label" placeholder='7845120369' />
                                                   </div>
-
-                                                  <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                      <label for="input-label" className="form-label">Select Meal </label>
-                                                      <select 
-                                                        className="form-select" 
-                                                        aria-label="Default select example"
-                                                      >
-                                                        <option value="">--Meal Preferences--</option>
-                                                        {
-                                                          extra.mealList && extra.mealList.length > 0 && extra.mealList.map((mealInfo, index) => (
-                                                            <option value={mealInfo.code}>{`${mealInfo.desc} (${mealInfo.code})`}</option>
-                                                          ))
-                                                        }  
-                                                      </select>
+                                                  <div className="form-check">
+                                                      <input className="me-2" type="radio" value="" id="checkebox-sm"  />
+                                                          <label className="" for="checkebox-sm">
+                                                              I have a GST Number
+                                                          </label>
                                                   </div>
                                               </div>
-                                            ))
-                                          } 
-                                        </div> 
-                                      ))
-                                      : null
-                                    }
-                                  </div>
-                                );
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="accordion-item mb-3">
-                        <h2 className="accordion-header" id="flush-headingThree">
-                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                            Select Seats (Optional)
-                          </button>
-                        </h2>
-                        <div id="flush-collapseThree" className="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                          <div className="accordion-body">
-                              <div className='gy-3 row'>
-                                {
-                                  values.extraInfo && values.extraInfo.length > 0 && values.extraInfo.map((extra, index) => (
-                                    <div className='col-12'>
-                                      <div className='row align-items-center'>  
-                                        <div className='col-md-4'>
-                                            <p className="bagNmeal-flightInfo-positionHandle mb-0">
-                                                <b className="bagNmeal-cityInfo-positionHandle">
-                                                  <span>{extra.from}</span>
-                                                  <span className="ars-arright bagNmeal-arrowright-positionHandle">→</span> 
-                                                  <span>{extra.to}</span>
-                                                </b>
-                                                <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
-                                            </p>
-                                        </div>
-                                        <div className='col-lg-4'>
-                                            <p className='mb-0'>No Seat Selected</p>
-                                        </div>
-                                        <div className="col-xl-2 col-lg-6 col-md-6 col-sm-12">
-                                          <Button 
-                                            className="btn-danger re-seat" 
-                                            onClick={()=>openSeatMapModel(extra,index)}
-                                          >Show Sheet Map</Button>
+                                              <hr></hr>
+                                              <div className='card-title d-flex justify-content-between'>
+                                                  {/* <Button className='btn btn-danger' onClick={() => checkoutHandler(amount)}>5000 Pay Now</Button> */}
+                                                  <Link  className='btn btn-danger'> Back </Link>
+                                                  <Link to=''  className='btn btn-danger'> Proceed To Review </Link>
+                                              </div>
+                                            </div>  
                                         </div>
                                       </div>
-                                    </div>
-                                  ))
-                                }
-                              </div>  
+                                    </Form>
+                                  )}
+                                </Formik>
+                              </div>
+
+                              <div className='col-3 mt-5'>
+                                  <div className='re-card'>
+                                      <div className=''>
+                                      <div className='list-group list-group-flush'>
+                                          <div className='list-group-item'>
+                                              <h6>Fare Summary</h6>
+                                          </div>  
+                                          <div className='list-group-item'>
+                                              <div className='row d-flex'>
+                                                <div className="col">
+                                                  <h6 className=''>Base fare</h6>
+                                                </div>
+                                                <div className="col">
+                                                  <h6 className='float-end'>
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{baseFarePrice}
+                                                  </h6>
+                                                </div>
+                                              </div>
+
+                                              <hr></hr>
+                                              <div className='row d-flex'>
+                                                <div className="col">
+                                                  <h6 className=''>Taxes and fees</h6>
+                                                </div>
+                                                <div className="col">
+                                                  <h6 className='float-end'>
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{taxesFee}
+                                                  </h6>
+                                                </div>
+                                              </div>
+
+                                              <hr></hr>
+                                              <div className='row d-flex'>
+                                                <div className="col">
+                                                  <h6 className=''>Amount to Pay</h6>
+                                                </div>
+                                                <div className="col">
+                                                  <h6 className='float-end'>
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{total}
+                                                  </h6>
+                                                </div>
+                                              </div>
+                                            <hr></hr>
+                                            <div className="graysmalltext text-danger mb-3"> <i className="fa-solid fa-circle-info"></i> You dont't have sufficient balance</div>
+                                          </div>   
+                                        </div>   
+                                      </div>
+                                  </div>
+                                  <div className='re-card mt-3'>
+                                      <div className=''>
+                                      <div className='list-group list-group-flush'>
+                                          <div className='list-group-item'>
+                                              <h6>Select a Discount Coupan</h6>
+                                          </div>  
+                                          <div className='list-group-item'>
+                                              <div className='d-flex mt-2'>
+                                                  <input type="text" className="form-control " id="input-label"/>
+                                                  <button className='btn btn-danger btn-coupan'>Apply</button>
+                                              </div>
+                                              <p className='text-center graysmalltext mt-3'>No Discount Coupan Available</p>
+                                          </div>   
+                                        </div>   
+                                      </div>
+                                  </div>
+                              </div>
                           </div>
-                        </div>
-                      </div>
 
-                      <div className="accordion-item mb-3">
-                        <h2 className="accordion-header" id="gstnumber">
-                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gst-collapseOne" aria-expanded="false" aria-controls="gst-collapseOne">
-                            GST Number for Business Travel (Optional)
-                          </button>
-                        </h2>
-                        <div id="gst-collapseOne" className="accordion-collapse collapse" aria-labelledby="gstnumber" data-bs-parent="#accordionFlushExample">
-                          <div className="accordion-body">
-                              
-                              <div className="row gy-4">
-                                  <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                      <label for="input-label" className="form-label">FRegistration Number</label>
-                                      <input type="text" className="form-control" id="input-label" />
-                                  </div>
-                                  <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                      <label for="input-placeholder" className="form-label">Registered Company Name</label>
-                                      <input type="text" className="form-control" id="input-label" />
-                                  </div>
-                                  <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                      <label for="input-placeholder" className="form-label">Registered Email</label>
-                                      <input type="text" className="form-control" id="input-label" />
-                                  </div>
-                                  <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                      <label for="input-placeholder" className="form-label">Registered Phone</label>
-                                      <input type="text" className="form-control" id="input-label" />
-                                  </div>
-                                  <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                      <label for="input-placeholder" className="form-label">Registered Address</label>
-                                      <input type="text" className="form-control" id="input-label" />
-                                  </div>
-                              </div>
-                              <div className='accordion-footer mt-3'>
-                                  <input type='checkbox' id='gst-check' /> <label for='gst-check'> Save GST Details  </label>
-                              </div>
+                          <div className="open-button text-center">
+                            Your session will expire in <p>{`${countdown}`} min</p>
                           </div>
-                        </div>
-                      </div>
 
                       </div>
-                    </div>
-
-                    <div className='flight-item-list mt-3'>
-                      <div className='card'>
-                          <div className="card-header">
-                              <p className='flightname mb-0'>Contact Details</p>
-                          </div>
-                          <div className='card-body'>
-                            <div className="row gy-4">
-                                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                    <label for="input-label" className="form-label">Email*</label> 
-                                    <input type="email" className="form-control" id="input-label" placeholder='demo@gmail.com' />
-                                </div>
-                                <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                    <label for="input-label" className="form-label">Phone*</label>
-                                    <input type="text" className="form-control" id="input-label" placeholder='7845120369' />
-                                </div>
-                                <div className="form-check">
-                                    <input className="me-2" type="radio" value="" id="checkebox-sm"  />
-                                        <label className="" for="checkebox-sm">
-                                            I have a GST Number
-                                        </label>
-                                </div>
-                            </div>
-                            <hr></hr>
-                            <div className='card-title d-flex justify-content-between'>
-                                {/* <Button className='btn btn-danger' onClick={() => checkoutHandler(amount)}>5000 Pay Now</Button> */}
-                                <Link  className='btn btn-danger'> Back </Link>
-                                <Link to='/agentreview'  className='btn btn-danger'> Proceed To Review </Link>
-                            </div>
-                          </div>  
-                      </div>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-
-            </div>
-
-            <div className='col-3 mt-5'>
-                <div className='re-card'>
-                    <div className=''>
-                    <div className='list-group list-group-flush'>
-                        <div className='list-group-item'>
-                            <h6>Fare Summary</h6>
-                        </div>  
-                        <div className='list-group-item'>
-                            <div className='row d-flex'>
-                              <div className="col">
-                                <h6 className=''>Base fare</h6>
-                              </div>
-                              <div className="col">
-                                <h6 className='float-end'>
-                                  <i className="fa-solid fa-indian-rupee-sign"></i>{baseFarePrice}
-                                </h6>
-                              </div>
-                            </div>
-
-                            <hr></hr>
-                            <div className='row d-flex'>
-                              <div className="col">
-                                <h6 className=''>Taxes and fees</h6>
-                              </div>
-                              <div className="col">
-                                <h6 className='float-end'>
-                                  <i className="fa-solid fa-indian-rupee-sign"></i>{taxesFee}
-                                </h6>
-                              </div>
-                            </div>
-
-                            <hr></hr>
-                            <div className='row d-flex'>
-                              <div className="col">
-                                <h6 className=''>Amount to Pay</h6>
-                              </div>
-                              <div className="col">
-                                <h6 className='float-end'>
-                                  <i className="fa-solid fa-indian-rupee-sign"></i>{total}
-                                </h6>
-                              </div>
-                            </div>
-                          <hr></hr>
-                          <div className="graysmalltext text-danger mb-3"> <i className="fa-solid fa-circle-info"></i> You dont't have sufficient balance</div>
-                        </div>   
-                      </div>   
-                    </div>
-                </div>
-                <div className='re-card mt-3'>
-                    <div className=''>
-                    <div className='list-group list-group-flush'>
-                        <div className='list-group-item'>
-                            <h6>Select a Discount Coupan</h6>
-                        </div>  
-                        <div className='list-group-item'>
-                             <div className='d-flex mt-2'>
-                                <input type="text" className="form-control " id="input-label"/>
-                                <button className='btn btn-danger btn-coupan'>Apply</button>
+                </div>      
+           </Tab.Pane>
+           <Tab.Pane eventKey="third">
+             <div className=''>
+               <div className="container">
+                 <div className="page-header">
+                   <h1 className="page-title fw-bold my-auto">Review</h1>
+                   <div>
+                     <ol className="breadcrumb mb-0">
+                       <li className="breadcrumb-item">
+                         <Link to={`/`}>Dashboard</Link>
+                       </li>
+                       <li className="breadcrumb-item active" aria-current="page">Review</li>
+                     </ol>
+                   </div>
+                 </div>
+                 <div className='row'>
+                   <div className='col-9'>
+                     <div className='card list-item'>
+                       <div className='card-body'>
+                         <h6>Delhi <i class="fa-solid fa-arrow-right-long me-1"></i> Mumbai <span className="graysmalltext"> on
+                             Sun, Jan 14th 2024</span> </h6>
+                         <hr>
+                         </hr>
+                         <div className='row'>
+                           <div className='col-12'>
+                             <div className='row'>
+                               <div className='col-2'>
+                                 <div className='d-flex'>
+                                   <img className='flight-flag' src={Indigo} />
+                                   <div className=''>
+                                     <div className="flightname" id="">GoIndigo</div>
+                                     <div className="flightnumber" id="">6E-6114</div>
+                                   </div>
+                                 </div>
+                               </div>
+                               <div className='col-10 d-flex'>
+                                 <div className="" style={{ width: "30%" }}>
+                                   <div className="coltime"> Jan 14, San, 20:20</div>
+                                   <div className="graysmalltext">Delhi,India</div>
+                                   <div className="graysmalltext">Delhi Indira Gandhi Intl</div>
+                                   <div className="graysmalltext">Terminal 3</div>
+                                 </div>
+                                 <div className="mt-3 me-5" style={{ width: "30%" }}>
+                                   <div className="nostops fw-bold">Non-Stop</div>
+                                 </div>
+                                 <div className="" style={{ width: "30%" }}>
+                                   <div className="coltime"> Jan 14, San, 20:20</div>
+                                   <div className="graysmalltext">Delhi,India</div>
+                                   <div className="graysmalltext">Delhi Indira Gandhi Intl</div>
+                                   <div className="graysmalltext">Terminal 3</div>
+                                 </div>
+                                 <div className="" style={{ width: "30%" }}>
+                                   <div className="coltime"> 2h:5m</div>
+                                   <div className="graysmalltext">Economy,Free</div>
+                                   <div className="graysmalltext">Meal,Refundable</div>
+                                 </div>
+                               </div>
                              </div>
-                             <p className='text-center graysmalltext mt-3'>No Discount Coupan Available</p>
-                        </div>   
-                      </div>   
-                    </div>
-                </div>
-            </div>
+                             <div className='row mt-3'>
+                               <div className='w-50'>
+                                 <p className='bg-warning text-dark rounded w-25 text-center'>Published</p>
+                               </div>
+                               <div>
+                                 <p><i class="fa-solid fa-suitcase me-1"></i>: (Adult), Cabin : 7 Kg</p>
+                               </div>
+                             </div>
+                             <div className='mt-4'>
+                               <h5>Passenger Details</h5>
+                               <div className="table-responsive">
+                                 <table className="table text-nowrap w-100">
+                                   <thead>
+                                     <tr>
+                                       <th>Sr.</th>
+                                       <th>Name,Age & Passport</th>
+                                       <th>Seat Booking</th>
+                                       <th>Meal & Baggage Preference</th>
+                                     </tr>
+                                   </thead>
+                                   <tbody>
+                                     <tr>
+                                       <td className='fw-bold'>1</td>
+                                       <td className='fw-bold'>Mr Rajat Patidar</td>
+                                       <td className='fw-bold'>BLR-BOM: 10B</td>
+                                       <td>
+                                         <div className='graysmalltext'><i class="fa-solid fa-suitcase me-1"></i> - BLR-BOM : + 5
+                                           kg Xcess Baggage</div>
+                                         <div className='graysmalltext'><i class="fa-solid fa-utensils"></i> - BLR-BOM: Chicken
+                                           Ghee Roast with Siracha Fried Rice</div>
+                                       </td>
+                                     </tr>
+                                   </tbody>
+                                 </table>
+                               </div>
+                             </div>
+                             <div className='mt-4'>
+                               <h5>Contact Details</h5>
+                               <div className='mt-3'>Email : <span className='fw-bold'>info@gmail.com</span></div>
+                               <div>Mobile : <span className='fw-bold'>8745120369</span></div>
+                             </div>
+                             <hr>
+                             </hr>
+                             <div className='d-flex justify-content-between'>
+                               <Link className='btn btn-danger'>Back</Link>
+                               <div className='d-flex'>
+                                 <div class="form-check me-2 mt-2">
+                                   <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" />
+                                   <label class="form-check-label" for="flexCheckChecked">
+                                     I Accept <Link className='text-danger'>Terms & Conditions</Link>
+                                   </label>
+                                 </div>
+                                 <Link to={'/BookingHold'}><button className='btn btn-dark float-end mx-2'> Block</button> </Link>
+                                 <button className='btn btn-danger float-end'> Proceed To Pay</button>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                   <div className='col-3'>
+                     <div className='card'>
+                       <div class="card-body ">
+                         <h5 className='fw-bold'>Fare Summary</h5>
+                         <hr>
+                         </hr>
+                         <div className='row'>
+                           <div className='col-6'>
+                             <h6>Base fare</h6>
+                           </div>
+                           <div className='col-6 '>
+                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
+                           </div>
+                           <hr>
+                           </hr>
+                         </div>
+                         <div className='row'>
+                           <div className='col-6'>
+                             <h6>Taxes and fees</h6>
+                           </div>
+                           <div className='col-6 '>
+                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
+                           </div>
+                           <hr>
+                           </hr>
+                         </div>
+                         <div className='row'>
+                           <div className='col-8'>
+                             <h6>Meal, Baggage & Seat</h6>
+                           </div>
+                           <div className='col-4 '>
+                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
+                           </div>
+                           <hr>
+                           </hr>
+                         </div>
+                         <div className='row'>
+                           <div className='col-6'>
+                             <h6>Amount To Pay</h6>
+                           </div>
+                           <div className='col-6 '>
+                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
+                           </div>
+                           <hr>
+                           </hr>
+                         </div>
+                         <div className='row'>
+                           <div className='col-5'>
+                             <div className='d-flex'>
+                               <div className=''>
+                                 <div className="flightname" id="">TJ Coins :</div>
+                                 <div className="fs-13" id="">10 Coins = 1 Rs.</div>
+                               </div>
+                             </div>
+                           </div>
+                           <div className='col-4'>
+                             <input className="form-control" type='text' />
+                           </div>
+                           <div className='col-3'>
+                             <button className='btn btn-dark float-end'>Redeem</button>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </Tab.Pane>
+           <Tab.Pane eventKey="fourth">Second tab content</Tab.Pane>
+       </Tab.Content>
+   </Tab.Container>
 
-        </div>
-
-        <div className="open-button text-center">
-          Your session will expire in <p>{`${countdown}`} min</p>
-        </div>
-      </div>
-    </div>
+     
+ </div>
     {
       showModal && 
       <SeatMapModel
         showModal = {showModal}
         handleClose = {handleClose}
+        proceedForSeat = {proceedForSeat}
         //handleClickSetPassanger = {handleClickSetPassanger}
         bookingId = {bookingReviewData?.seasionDetail?.bookingId}
         flightMapInfo = {flightMapInfo}
