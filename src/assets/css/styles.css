@@ -21683,35 +21683,33 @@ padding: 12px ;
   background-position: 10px 8px;
   background-color: #333;
 }
-.bookingTop-row-positionHandle :nth-child(2) .apt-firstep::before {
+.apt-section .bookingTop-row-positionHandle :nth-child(2) .apt-firstep::before {
   background-image: url(../../assets/images/step2_passenger.svg);
   background-position: 12px 11px;
   background-color: #fff;
 }
-.bookingTop-row-positionHandle :nth-child(3) .apt-firstep::before {
+.apt-section .bookingTop-row-positionHandle :nth-child(3) .apt-firstep::before {
   background-image: url(../../assets/images/step3_review.svg);
   background-position: 13px 11px;
   background-color: #fff;
 }
-.bookingTop-row-positionHandle :nth-child(4) .apt-firstep::before {
+.apt-section .bookingTop-row-positionHandle :nth-child(4) .apt-firstep::before {
   background-image: url(../../assets/images/step3_payment.svg);
   background-position: 11px 13px;
   background-color: #fff;
 }
 
-.bookingTop-row-positionHandle .active {
+.apt-section .bookingTop-row-positionHandle .active {
   background-color: transparent !important;
 }
-.bookingTop-row-positionHandle .active.apt-firstep::before {
+.apt-section .bookingTop-row-positionHandle .active.apt-firstep::before {
   color: #fff;
   background: #4aa301;
   content: "\F00C";
 }
-.bookingTop-row-positionHandle .active.apt-firstep {
+.apt-section .bookingTop-row-positionHandle .active.apt-firstep {
   color: #000 !important;
 }
-
-
 .apt-section .apt-common::after {
   content: '';
   position: absolute;
@@ -21739,7 +21737,7 @@ padding: 12px ;
   font-size: 15px;
   color: #000;
 }
-.bookingTop-row-positionHandle :last-child .apt-common:after {
+.apt-section.bookingTop-row-positionHandle :last-child .apt-common:after {
   content: initial;
 }
 

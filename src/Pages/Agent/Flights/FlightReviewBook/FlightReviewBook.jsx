@@ -16,18 +16,46 @@ import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab'
 
 export default function AgentFlightReviewBook() {
-  const initialValues = {
-    passangerInfo  : [
+  let initialValues = {
+    isDomestic : true,
+    bookingId : '',
+    tripType : '',
+    requestId : '',
+    personalPhone : '',
+    personalEmail : '',
+    gstNumber : '',
+    gstEmail : '',
+    registeredName : '',
+    mobile : '',
+    address : '',
+    isGst : '',
+    paxInfo : {
+      ADULT : '',
+      CHILD : '',
+      INFANT : '',
+    },
+    preferredFareType : 'REGULAR',
+    flightStops : 1,
+    listOfFlight : [],
+    fareDetail : {},
+    travellerInfo  : [
       {
         title: "",
         firstName: "",
         lastName: "",
         dateOfBirth: "",
-        passangerType : 'adult',
+        passengerType : 'ADULT',
         passangerTypeName : '',
         seat : '',
         fee : '0',
         saveDetailStatus : "",
+        isSave : false,
+        ssrMealInfos : [
+          {
+            code:"",
+            key:"",
+          }
+        ]
       },
     ],
     extraInfo : [
@@ -73,6 +101,16 @@ export default function AgentFlightReviewBook() {
   const [flightMapInfo, setFlightMapInfo] = React.useState();
   const [passangerInfo,setPassangerInfo] = React.useState();
   const [flightMapIndex,setFlightMapIndex] = React.useState(0);
+  const [baseFarePrice, setBaseFarePrice] = React.useState(0);
+  const [taxesFee, setTaxesFee] = React.useState(0);
+  const [mealBaggageFee, setMealBaggageFee] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
+  const [totalFee, setTotalFee] = React.useState(0);
+  const [totalSeats,setTotalSeats] = React.useState();
+  const [activeStep,setActiveStep] = React.useState('first')
+  // for timers
+  const [countdown, setcountdown] = React.useState(60 * 5);
+  const [runtimer, setruntimer] = React.useState(true);
 
   const handleClose = () => setShowModal(false);
   
@@ -92,10 +130,8 @@ export default function AgentFlightReviewBook() {
   let checkoutapiurl=`${BASE_URL}api/payment/checkout`
 
   const { data: { data } } = await axios.get(getapiurl)
-  // console.log('######################',checkoutapiurl)
   const { data: { order } } = await axios.post(checkoutapiurl,{amount})
 
-  // console.log('#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',order)
 
   const options = {
       key:data.RAZORPAY_API_KEY,
@@ -124,16 +160,9 @@ export default function AgentFlightReviewBook() {
 
   const navigate = useNavigate();
   const { ruleId } = useParams();
-  console.log('ruleIds',ruleId);
   const [bookingReviewData, setBookingReviewData] = useState();
-  // for timers
-  const [countdown, setcountdown] = React.useState(60 * 5);
-  const [runtimer, setruntimer] = React.useState(true);
-  const [baseFarePrice, setBaseFarePrice] = React.useState(0);
-  const [taxesFee, setTaxesFee] = React.useState(0);
-  const [total, setTotal] = React.useState(0);
-  const [totalFee, setTotalFee] = React.useState(0);
-  const [totalSeats,setTotalSeats] = React.useState();
+  
+  
   // React.useEffect(() => {
   //   let timerid;
 
@@ -168,14 +197,12 @@ export default function AgentFlightReviewBook() {
   
 
   const getBookingReviewData = async (ruleId) => {
-    console.log("ruleId",ruleId);
     var requestData = {
       priceIds : [ruleId]
     }
     FlightSearchService.BookingReview(requestData).then(async (response) => {
         if(response.data.status){
           const result =  response.data.data;
-          console.log("result",result);
           // Code for bagger and meal information
           var extraInfo = [];
           result.listOfFlight && result.listOfFlight.forEach((flightDetail, index) => {
@@ -205,7 +232,7 @@ export default function AgentFlightReviewBook() {
             var mealBaggageInfo = [];
             for (var i=0; i < result.seasionDetail.paxInfo.ADULT; i++) {
               const tmp1 =  {
-                memberName : `Adult ${i+1}`,
+                memberName : `ADULT ${i+1}`,
                 baggage: "",
                 meals: "",
               }
@@ -222,8 +249,8 @@ export default function AgentFlightReviewBook() {
             tmp.mealBaggageInfo = mealBaggageInfo;
             extraInfo.push(tmp)
           });
-          console.log("extraInfo",extraInfo);
-          let passangerInfo = [];
+         
+          let travellerInfo = [];
           // For Adult
           for (var i=0; i < result.seasionDetail.paxInfo.ADULT; i++) {
             const tmp =  {
@@ -231,13 +258,25 @@ export default function AgentFlightReviewBook() {
               firstName: "",
               lastName: "",
               dateOfBirth: "",
-              passangerType : 'adult',
+              passengerType : 'ADULT',
               passangerTypeName : `ADULT ${i+1}`,
               seat : '',
               fee : '0',
               saveDetailStatus :"",
+              isSave : false,
+              ssrMealInfos: [
+                {
+                  code: "AVML",
+                  key: "308"
+                },
+                {
+                  code: "AVML",
+                  key: "309"
+                }
+              ]
+              
             }
-            passangerInfo.push(tmp)
+            travellerInfo.push(tmp)
           }
           // For Childern
           for (var i=0; i < result.seasionDetail.paxInfo.CHILD; i++) {
@@ -246,13 +285,24 @@ export default function AgentFlightReviewBook() {
               firstName: "",
               lastName: "",
               dateOfBirth: "",
-              passangerType : 'children',
-              passangerTypeName : `CHILDREN ${i+1}`,
+              passengerType : 'CHILD',
+              passangerTypeName : `CHILD ${i+1}`,
               seat : '',
               fee : '0',
               saveDetailStatus :"",
+              isSave : false,
+              ssrMealInfos: [
+                {
+                  code: "AVML",
+                  key: "308"
+                },
+                {
+                  code: "AVML",
+                  key: "309"
+                }
+              ]
             }
-            passangerInfo.push(tmp)
+            travellerInfo.push(tmp)
           }
           // For Infants
           for (var i=0; i < result.seasionDetail.paxInfo.INFANT; i++) {
@@ -261,17 +311,28 @@ export default function AgentFlightReviewBook() {
               firstName: "",
               lastName: "",
               dateOfBirth: "",
-              passangerType : 'infant',
+              passengerType : 'INFANT',
               passangerTypeName : `INFANT ${i+1}`,
               seat : '',
               fee : '0',
               saveDetailStatus :"",
+              isSave : false,
+              ssrMealInfos: [
+                {
+                  code: "AVML",
+                  key: "308"
+                },
+                {
+                  code: "AVML",
+                  key: "309"
+                }
+              ]
             }
-            passangerInfo.push(tmp)
+            travellerInfo.push(tmp)
           }
-          reInitialValues.passangerInfo = passangerInfo;
+          reInitialValues.travellerInfo = travellerInfo;
           reInitialValues.extraInfo = extraInfo;
-          setPassangerInfo(passangerInfo);
+          setPassangerInfo(travellerInfo);
           setReInitialValues(reInitialValues);
           setBookingReviewData(result);
           setBaseFarePrice(result?.fareDetail?.baseFare);
@@ -301,8 +362,80 @@ export default function AgentFlightReviewBook() {
     setShowModal(false);
   }
 
+  const handleClickStep = () => {
+
+    if(activeStep === "first"){
+      setActiveStep("second");
+    }else if(activeStep === 'second'){
+      setActiveStep("third");
+    }
+  }
+
+  const handleChangeMealBaggageValue = (event,setFieldValue,values,fieldNamme,commonFieldName,indexKey,indexKey2) => {
+
+    let extraPrice = 0;
+    values.extraInfo.forEach((extra, extraIndex) => {
+      const mealList = extra.mealList;
+      const baggageList = extra.baggageList;
+      extra.mealBaggageInfo.forEach((mealBaggage, mealBaggageIndex) => {
+        if(indexKey2 !==mealBaggageIndex || commonFieldName !=="baggage"){
+          if(mealBaggage.baggage){
+            const baggageFound = baggageList.find(baggage => {
+              return baggage.code === mealBaggage.baggage;
+            });
+            if(baggageFound){
+              extraPrice+=baggageFound?.amount;
+            }
+          }
+        }
+        
+        if(indexKey2 !==mealBaggageIndex || commonFieldName !=="meal"){
+          if(mealBaggage.meals){
+            const mealFound = mealList.find(baggage => {
+              return baggage.code === mealBaggage.meals;
+            });
+            if(mealFound){
+              extraPrice+=mealFound?.amount;
+            }
+          }
+        }
+        
+      });
+    });
+  
+    if(commonFieldName === 'baggage'){
+      const baggageList = reInitialValues.extraInfo[indexKey].baggageList;
+      if(baggageList && baggageList.length !== 0){
+    
+        const baggageFound = baggageList.find(baggage => {
+          return baggage.code === event.target.value;
+        });
+        if(baggageFound){
+          setMealBaggageFee(extraPrice+baggageFound?.amount);
+        }
+      }
+    }
+
+    if(commonFieldName === 'meal'){
+      const mealList = reInitialValues.extraInfo[indexKey].mealList;
+      if(mealList && mealList.length !== 0){
+    
+        const mealFound = mealList.find(meal => {
+          return meal.code === event.target.value;
+        });
+        if(mealFound){
+          setMealBaggageFee(extraPrice+mealFound?.amount);
+        }
+      }
+    }
+
+    
+   
+    setFieldValue(fieldNamme,event.target.value);
+  }
+
   const handleOnSubmit = async (values, { resetForm }) => {
-    console.log(values);
+
   };
 
   return (
@@ -310,30 +443,39 @@ export default function AgentFlightReviewBook() {
     <Header />
     <div className="main-content px-0 main-top-padding">
    
-   <Tab.Container id="left-tabs-example" defaultActiveKey="first" className="">
+   <Tab.Container 
+    id="left-tabs-example" 
+    defaultActiveKey="first" 
+    activeKey={activeStep}
+    onSelect={(key) => setActiveStep(key)}
+    className=""
+  >
        <div className='apt-section'>
            <div className='container'>
                <Nav variant="pills" className="row bookingTop-row-positionHandle">
                  <Nav.Item className='booking-top-btn no-padding col-sm-3'>
-                   <Nav.Link eventKey="first" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>FIRST
-                           STEP</span></span>
+                   <Nav.Link eventKey="first" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>FIRST STEP</span></span>
                        <h4 class="apt-flightiti"><span>Flight Itinerary</span></h4></Nav.Link>
                  </Nav.Item>
+
                  <Nav.Item className='booking-top-btn no-padding col-sm-3'>
                    <Nav.Link eventKey="second" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>SECOND STEP</span></span>
                    <h4 class="apt-flightiti"><span>Passenger Details</span></h4></Nav.Link>
                  </Nav.Item>
+
                  <Nav.Item className='booking-top-btn no-padding col-sm-3'>
                    <Nav.Link eventKey="third" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>THIRD STEP</span></span>
                    <h4 class="apt-flightiti"><span>Review</span></h4></Nav.Link>
                  </Nav.Item>
+
                  <Nav.Item className='booking-top-btn no-padding col-sm-3'>
                    <Nav.Link eventKey="fourth" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>FINISH STEP</span></span>
                    <h4 class="apt-flightiti"><span>Payments</span></h4></Nav.Link>
                  </Nav.Item>
                </Nav>
            </div>  
-       </div>  
+       </div>
+
        <Tab.Content>
            <Tab.Pane eventKey="first">
             <div className="flightreview mb-5">
@@ -358,8 +500,8 @@ export default function AgentFlightReviewBook() {
 
                      <div class="card">
                         <div className='card-body d-flex justify-content-between'>
-                              <Link className='btn btn-danger'>Back</Link>
-                              <Link className='btn btn-danger'>ADD PASSENGERS</Link>
+                              {/* <Link className='btn btn-danger'>Back</Link> */}
+                              <Button type='button' className='btn btn-danger' onClick={() => handleClickStep()}>ADD PASSENGERS</Button>
                         </div>
                      </div>  
 
@@ -430,11 +572,11 @@ export default function AgentFlightReviewBook() {
                             </div>
                         </div>
                     </div>
-
                 </div>
               </div>
             </div>
            </Tab.Pane>
+
            <Tab.Pane eventKey="second">
                 <div className='flightreview'>
                       <div className='container'>
@@ -458,28 +600,28 @@ export default function AgentFlightReviewBook() {
                                       <div className='flight-item-list'>
                                         <div className="accordion accordion-flush" id="accordionFlushExample">
                                         <FieldArray
-                                          name="passangerInfo"
+                                          name="travellerInfo"
                                           render={arrayHelpers => {
-                                            const passangerInfo = values.passangerInfo;
-                                            console.log("passangerInfo",passangerInfo);
+                                            const travellerInfo = values.travellerInfo;
+                                           
                                             return (
                                               <div>
                                                   {
-                                                  passangerInfo && passangerInfo.length > 0 
-                                                  ? passangerInfo.map((user, index) => (
+                                                  travellerInfo && travellerInfo.length > 0 
+                                                  ? travellerInfo.map((user, index) => (
                                                       <div className="accordion-item mb-3">
                                                         <h2 className="accordion-header" id={`flush-headingOne${index}`}>
                                                           <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapseOne${index}`} aria-expanded="false" aria-controls={`flush-collapseOne${index}`}>
                                                               {
-                                                                values.passangerInfo[index].passangerType==='adult' &&
+                                                                user.passengerType==='ADULT' &&
                                                                 'Adult 1 (12 + yrs)'
                                                               }
                                                               {
-                                                                values.passangerInfo[index].passangerType==='children' &&
+                                                                user.passengerType==='CHILD' &&
                                                                 'Children 1 (12 - yrs)'
                                                               }
                                                               {
-                                                                values.passangerInfo[index].passangerType==='infant' &&
+                                                                user.passengerType==='INFANT' &&
                                                                 'Infant 1 (0 + 2yrs)'
                                                               }
                                                           </button>
@@ -493,10 +635,10 @@ export default function AgentFlightReviewBook() {
                                                                       <select 
                                                                         className="form-select" 
                                                                         aria-label="Default select example"
-                                                                        id={`passangerInfo.${index}.title`}
-                                                                        name={`passangerInfo.${index}.title`}
+                                                                        id={`travellerInfo.${index}.title`}
+                                                                        name={`travellerInfo.${index}.title`}
                                                                         onChange={handleChange}
-                                                                        value={values.passangerInfo[index].title}
+                                                                        value={values.travellerInfo[index].title}
                                                                       >
                                                                         <option selected="">Select</option>
                                                                         <option value="1">Mr.</option>
@@ -510,10 +652,11 @@ export default function AgentFlightReviewBook() {
                                                                     <input 
                                                                       type="text" 
                                                                       className="form-control" 
-                                                                      id="input-label"
-                                                                      name={`passangerInfo.${index}.firstName`}
+                                                                      id={`travellerInfo.${index}.firstName`}
+                                                                      name={`travellerInfo.${index}.firstName`}
+                                                                      value={values.travellerInfo[index].firstName}
                                                                       onChange={handleChange}
-                                                                      value={values.passangerInfo[index].firstName}
+                                                                      
                                                                     />
                                                                   </div>
                                                                   
@@ -522,23 +665,23 @@ export default function AgentFlightReviewBook() {
                                                                     <input 
                                                                       type="text" 
                                                                       className="form-control" 
-                                                                      id="input-label"
-                                                                      name={`passangerInfo.${index}.lastName`}
+                                                                      id={`travellerInfo.${index}.lastName`}
+                                                                      name={`travellerInfo.${index}.lastName`}
+                                                                      value={values.travellerInfo[index].lastName}
                                                                       onChange={handleChange}
-                                                                      value={values.passangerInfo[index].lastName} 
                                                                     />
                                                                   </div>
                                                                   {
-                                                                    values.passangerInfo[index].passangerType==='infant' &&
+                                                                    user.passengerType==='INFANT' &&
                                                                       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
                                                                         <label for="input-placeholder" className="form-label">DOB</label>
                                                                         <input 
                                                                           type="date" 
                                                                           className="form-control"
-                                                                          id="input-label"
-                                                                          name={`passangerInfo.${index}.dateOfBith`}
+                                                                          id={`travellerInfo.${index}.dateOfBith`}
+                                                                          name={`travellerInfo.${index}.dateOfBith`}
+                                                                          value={values.travellerInfo[index].dateOfBirth}
                                                                           onChange={handleChange}
-                                                                          value={values.passangerInfo[index].dateOfBirth}
                                                                         />
                                                                       </div>
                                                                   }
@@ -546,12 +689,12 @@ export default function AgentFlightReviewBook() {
                                                               <div className='accordion-footer mt-3'>
                                                                   <input 
                                                                     type='checkbox' 
-                                                                    id={`passangerInfo.${index}.saveDetailStatus`}
-                                                                    name={`passangerInfo.${index}.saveDetailStatus`}
+                                                                    id={`travellerInfo.${index}.saveDetailStatus`}
+                                                                    name={`travellerInfo.${index}.saveDetailStatus`}
+                                                                    value={values.travellerInfo[index].saveDetailStatus}
                                                                     onChange={handleChange}
-                                                                    value={values.passangerInfo[index].saveDetailStatus}
                                                                   /> 
-                                                                  <label for={`passangerInfo.${index}.saveDetailStatus`}> Save Passenger Details  </label>
+                                                                  <label for={`travellerInfo.${index}.saveDetailStatus`}> Save Passenger Details  </label>
                                                               </div>
                                                           </div>
                                                         </div>
@@ -576,12 +719,12 @@ export default function AgentFlightReviewBook() {
                                                 name="extraInfo"
                                                 render={arrayHelpers => {
                                                   const extraInfo = values.extraInfo;
-                                                  console.log("extraInfo1",extraInfo);
+                                                 
                                                   return (
                                                     <div>
                                                       {
                                                         extraInfo && extraInfo.length > 0 
-                                                        ? extraInfo.map((extra, index) => (
+                                                        ? extraInfo.map((extra, extraIndex) => (
                                                           <div className='mb-4'>
                                                             <p className="bagNmeal-flightInfo-positionHandle mb-4">
                                                                 <b className="bagNmeal-cityInfo-positionHandle">
@@ -592,7 +735,7 @@ export default function AgentFlightReviewBook() {
                                                                 <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
                                                             </p>
                                                             {
-                                                              extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((mealBaggage, index) => (
+                                                              extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((mealBaggage, mealBaggageIndex) => (
                                                                 <div className='row mb-4'>
                                                                     <div className='col-xl-2'>
                                                                       <h6 className='mt-4'>{mealBaggage.memberName}</h6>
@@ -603,6 +746,15 @@ export default function AgentFlightReviewBook() {
                                                                         <select 
                                                                           className="form-select" 
                                                                           aria-label="Default select example"
+                                                                          id={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`}
+
+                                                                          name={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`}
+
+                                                                          onChange={(e) => {
+                                                                            handleChangeMealBaggageValue(e, setFieldValue,values,`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`,'baggage',extraIndex,mealBaggageIndex);
+                                                                          }} 
+
+                                                                          value={values.extraInfo[extraIndex].mealBaggageInfo[mealBaggageIndex].baggage}
                                                                         >
                                                                           <option value="">--Select Baggage--</option>
                                                                           {
@@ -618,6 +770,16 @@ export default function AgentFlightReviewBook() {
                                                                         <select 
                                                                           className="form-select" 
                                                                           aria-label="Default select example"
+
+                                                                          id={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`}
+
+                                                                          name={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`}
+                                                                          onChange={(e) => {
+                                                                            handleChangeMealBaggageValue(e, setFieldValue,values,`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`,'meal',extraIndex,mealBaggageIndex);
+                                                                          }} 
+                                                                          //onChange={handleChange}
+
+                                                                          value={values.extraInfo[extraIndex].mealBaggageInfo[mealBaggageIndex].meal}
                                                                         >
                                                                           <option value="">--Meal Preferences--</option>
                                                                           {
@@ -750,9 +912,10 @@ export default function AgentFlightReviewBook() {
                                               </div>
                                               <hr></hr>
                                               <div className='card-title d-flex justify-content-between'>
-                                                  {/* <Button className='btn btn-danger' onClick={() => checkoutHandler(amount)}>5000 Pay Now</Button> */}
-                                                  <Link  className='btn btn-danger'> Back </Link>
-                                                  <Link to=''  className='btn btn-danger'> Proceed To Review </Link>
+                                                  <Button type='button' className='btn btn-danger'>Back</Button>
+                                                  <Button type='submit' className='btn btn-danger' >Proceed To Review </Button>
+                                                 
+                                                  {/* <Link to=''  className='btn btn-danger'> Proceed To Review </Link> */}
                                               </div>
                                             </div>  
                                         </div>
@@ -789,6 +952,17 @@ export default function AgentFlightReviewBook() {
                                                 <div className="col">
                                                   <h6 className='float-end'>
                                                     <i className="fa-solid fa-indian-rupee-sign"></i>{taxesFee}
+                                                  </h6>
+                                                </div>
+                                              </div>
+
+                                              <div className='row d-flex'>
+                                                <div className="col">
+                                                  <h6 className=''>Extra Meals & Baggage</h6>
+                                                </div>
+                                                <div className="col">
+                                                  <h6 className='float-end'>
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{mealBaggageFee}
                                                   </h6>
                                                 </div>
                                               </div>
@@ -836,11 +1010,12 @@ export default function AgentFlightReviewBook() {
                       </div>
                 </div>      
            </Tab.Pane>
+
            <Tab.Pane eventKey="third">
              <div className=''>
                <div className="container">
                  <div className="page-header">
-                   <h1 className="page-title fw-bold my-auto">Review</h1>
+                   <h4 className="my-auto">Review</h4>
                    <div>
                      <ol className="breadcrumb mb-0">
                        <li className="breadcrumb-item">
@@ -1023,6 +1198,7 @@ export default function AgentFlightReviewBook() {
                </div>
              </div>
            </Tab.Pane>
+
            <Tab.Pane eventKey="fourth">Second tab content</Tab.Pane>
        </Tab.Content>
    </Tab.Container>

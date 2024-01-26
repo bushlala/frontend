@@ -60,7 +60,7 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                     customSeatMap.push(tmp);
                 }
                 //console.log("customSeatMapCount",customSeatMap.length);
-                //console.log("customSeatMap",customSeatMap);
+                console.log("customSeatMap",customSeatMap);
                 setCustomSeatMap(customSeatMap)
             }else{
               toast.error('Something went wrong');
@@ -150,7 +150,7 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                                             <div className='seat' key={columnKey} >
                                                 <input type="radio" class="" name="options-outlined" id={`${rowKey}-${columnKey}`}  onClick={()=>handleClickSetPassanger(selectPassanger,column,true)} />
 
-                                                <label className={column.seatStatus === 'empty' ? 'empty' : ''  } for={`${rowKey}-${columnKey}`}  style={ column.seatStatus !== 'empty' ? {backgroundColor:column?.seat?.color} : {} } >{column?.seat?.seatNo}</label>
+                                                <label className={column.seatStatus === 'empty' ? 'empty' : column.seat.isBooked ? 'seat-booked' : 'seat-available' } for={`${rowKey}-${columnKey}`}  style={ column.seatStatus !== 'empty' ? {backgroundColor:column?.seat?.color} : {} } >{column?.seat?.seatNo}</label>
                                             </div>
                                         ))
                                     }

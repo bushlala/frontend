@@ -49,6 +49,9 @@
     right: 10px;
     top: 14px;
 }
+.searchdestinationboxclass .list:hover, .searchdestinationboxclass .list.active {
+    background-color: #f4f4f4;
+ }
 .travellersshow
 {
     box-shadow: 2px 2px 7px #0000003b;

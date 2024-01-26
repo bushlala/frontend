@@ -1,17 +1,30 @@
-import React, {useState } from 'react';
+import React, {useState,useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import Indigo from '../../../../assets/images/indigo.png';
 import './FlightSearchList.css';
 import ShareFlightPop from './ShareFlightPop';
 import Button from 'react-bootstrap/Button';
 import FlightDetailModel from './FlightDetailModel';
+import Moment from 'moment';
 
-export default function FlightSearchList({dateForHorizontal,tripList,reInitialValues,handleChangeDate}) {
+export default function FlightSearchList({dateForHorizontal,tripList,handleChangeDate,dateList}) {
+
+   
+
+
     //console.log("departureDate",departureDate);
     //departureDate = Moment(departureDate).format('DD-MM-YYYY');
     //console.log("departureDate1",departureDate);
     //console.log("tripList",tripList);
-    //console.log("reInitialValues",reInitialValues);
+    // console.log("reInitialValues",reInitialValues);
+   
+ 
+    //    let dateArr = dates;
+       
+    //    setDates(dateArr);
+     
+   
+
     const [shareTrips, setShareTrips] = React.useState([]);
     const [tripDetail, setTripDetails] = React.useState({});
     const [show, setShow] = useState(false);
@@ -106,19 +119,19 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                         </div>
                     </div>  */}
                     <div className='col-9 m-auto'>
-                        <div className='flight-search-calouter mb-4'>
+                        <div className='flight-search-calouter mb-4 mt-2'>
                             <div className='btn-group'>
-
-                                {
-                                    reInitialValues.dateArr && reInitialValues.dateArr.length!=0  && reInitialValues.dateArr.map((value, key) => (
-                                        <div className=''>
-                                            <input type="radio" class="btn-check" onChange={()=>handleChangeDate(value)} autocomplete="off" name="travellersClass.adults" id={`datesbox${key}`} value="1" 
-                                            checked={dateForHorizontal==value ? 'checked':''}
-                                             />
-                                            <label class="btn search-check-box"  for={`datesbox${key}`}>{value}</label>
-                                        </div>
-                                    ))
-                                }
+                                
+                               {dateList && dateList.map((value,key) => (
+                              <div className=''>
+                                   <input type="radio" class="btn-check" onChange={()=>handleChangeDate(value)} autocomplete="off" name="travellersClass.adults" id={`datesbox${key}`} value="1" 
+                                       checked={dateForHorizontal==value ? 'checked':''}
+                                        />
+                                       <label class="btn search-check-box"  for={`datesbox${key}`}>{value}</label>
+                                   </div>
+                               )
+                        
+                                )}
                             </div>
                         </div>
 

@@ -72,7 +72,7 @@ export default function FlightDetailModel({show,handleClose,flightDetail,fareDet
                                 <div className='row'>
                                     <div className='col-sm-2'>
                                         <div className='d-flex'>
-                                            <img className='flight-flag' src={Indigo} alt=''/>
+                                            <img className='flight-flag' src={flightDetail?.flightLogo} alt=''/>
                                             <div className=''>
                                                 <div className="flightname" id="">{flightDetail?.flightDescription?.name}</div>
                                                 <div className="flightnumber" id="">{`${flightDetail?.flightDescription?.code} - ${flightDetail?.flightNumber}`}</div>

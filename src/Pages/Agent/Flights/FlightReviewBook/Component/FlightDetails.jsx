@@ -8,8 +8,8 @@ import toast from 'react-hot-toast';
 import FlightDetailModel from '../../Component/FlightDetailModel';
 //import Moment from 'moment';
 export default function FlightDetail({listOfFlight,fareDetail}) {
-    console.log('listOfFlight',listOfFlight);
-    console.log('fareDetail',fareDetail);
+    //console.log('listOfFlight',listOfFlight);
+    //console.log('fareDetail',fareDetail);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = (test) => {
