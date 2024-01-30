@@ -6,13 +6,13 @@ import Indigo from '../../../../assets/images/indigo.png';
 import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service'; 
 import toast from 'react-hot-toast';
 export default function FlightDetailModel({show,handleClose,flightDetail,fareDetail}) {
-    console.log('flightDetail',flightDetail);
-    console.log('fareDetail',fareDetail);
+    //console.log('flightDetail',flightDetail);
+    //console.log('fareDetail',fareDetail);
     //var fareDetail = tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0];
     //console.log("fareDetail",fareDetail);
     const [searchRule, setSearchRule] = React.useState();
     const handleClickGetSearchRule=(fareDetailRule) => {
-        console.log("fareDetail",fareDetail);
+        //console.log("fareDetail",fareDetail);
         const requestParam= {
             id:fareDetail.fareRuleId,
             flowType:fareDetail.flowType
@@ -20,7 +20,7 @@ export default function FlightDetailModel({show,handleClose,flightDetail,fareDet
         FlightSearchService.SearchRule(requestParam).then(async (response) => {
             if(response.status === 200){
                 if(response.data.status){
-                    console.log("result",response.data.data);
+                    //console.log("result",response.data.data);
                     setSearchRule(response.data.data)
                 }else{
                     setSearchRule();

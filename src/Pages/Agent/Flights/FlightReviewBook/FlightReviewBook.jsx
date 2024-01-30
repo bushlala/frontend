@@ -12,10 +12,12 @@ import axios from "axios";
 import { FieldArray,Form, Formik } from "formik";
 import * as Yup from "yup";
 import SeatMapModel from './Component/SeatMapModel';
+import BookingReview from './Component/BookingReview';
 import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab'
 
 export default function AgentFlightReviewBook() {
+
   let initialValues = {
     isDomestic : true,
     bookingId : '',
@@ -34,17 +36,17 @@ export default function AgentFlightReviewBook() {
       CHILD : '',
       INFANT : '',
     },
-    preferredFareType : 'REGULAR',
+    preferredFareType : '',
     flightStops : 1,
-    listOfFlight : [],
-    fareDetail : {},
+    listOfFlight : '',
+    fareDetail : '',
     travellerInfo  : [
       {
         title: "",
         firstName: "",
         lastName: "",
         dateOfBirth: "",
-        passengerType : 'ADULT',
+        passengerType : 'ADULT-1',
         passangerTypeName : '',
         seat : '',
         fee : '0',
@@ -55,7 +57,7 @@ export default function AgentFlightReviewBook() {
             code:"",
             key:"",
           }
-        ]
+        ],
       },
     ],
     extraInfo : [
@@ -96,21 +98,24 @@ export default function AgentFlightReviewBook() {
     // ),
   });
   const nameForm = React.useRef(null)
-  const [reInitialValues, setReInitialValues] = React.useState(initialValues);
+  const navigate = useNavigate();
+  const { ruleId } = useParams();
+  const [bookingReviewData, setBookingReviewData] = useState();
+  var [reInitialValues, setReInitialValues] = React.useState(initialValues);
   const [showModal, setShowModal] = useState(false);
   const [flightMapInfo, setFlightMapInfo] = React.useState();
   const [passangerInfo,setPassangerInfo] = React.useState();
   const [flightMapIndex,setFlightMapIndex] = React.useState(0);
-  const [baseFarePrice, setBaseFarePrice] = React.useState(0);
-  const [taxesFee, setTaxesFee] = React.useState(0);
-  const [mealBaggageFee, setMealBaggageFee] = React.useState(0);
-  const [total, setTotal] = React.useState(0);
-  const [totalFee, setTotalFee] = React.useState(0);
-  const [totalSeats,setTotalSeats] = React.useState();
+  const [totalPrices, setTotalPrices] = React.useState({
+    baseFarePrice : 0,
+    taxesFee : 0,
+    mealBaggageFee : 0,
+    total : 0,
+  });
   const [activeStep,setActiveStep] = React.useState('first')
   // for timers
   const [countdown, setcountdown] = React.useState(60 * 5);
-  const [runtimer, setruntimer] = React.useState(true);
+  //const [runtimer, setruntimer] = React.useState(true);
 
   const handleClose = () => setShowModal(false);
   
@@ -158,9 +163,7 @@ export default function AgentFlightReviewBook() {
     razor.open();
   }
 
-  const navigate = useNavigate();
-  const { ruleId } = useParams();
-  const [bookingReviewData, setBookingReviewData] = useState();
+  
   
   
   // React.useEffect(() => {
@@ -235,6 +238,7 @@ export default function AgentFlightReviewBook() {
                 memberName : `ADULT ${i+1}`,
                 baggage: "",
                 meals: "",
+                seat : ""
               }
               mealBaggageInfo.push(tmp1);
             }
@@ -243,6 +247,7 @@ export default function AgentFlightReviewBook() {
                 memberName : `INFANT ${i+1}`,
                 baggage: "",
                 meals: "",
+                seat : ""
               }
               mealBaggageInfo.push(tmp1);
             }
@@ -330,14 +335,28 @@ export default function AgentFlightReviewBook() {
             }
             travellerInfo.push(tmp)
           }
+          console.log("result",result);
+          console.log("result.fareDetail1",result.fareDetail);
           reInitialValues.travellerInfo = travellerInfo;
           reInitialValues.extraInfo = extraInfo;
-          setPassangerInfo(travellerInfo);
+          reInitialValues.isDomestic = result?.seasionDetail?.isDomestic;
+          reInitialValues.bookingId = result?.seasionDetail?.bookingId;
+          reInitialValues.requestId = result?.seasionDetail?.requestId;
+          reInitialValues.paxInfo = result?.seasionDetail?.paxInfo;
+          reInitialValues.preferredFareType = result?.seasionDetail?.preferredFareType;
+          reInitialValues.tripType = 1; // How to get 
+          reInitialValues.flightStops = 1; // How to get
+          reInitialValues.listOfFlight = result.listOfFlight;
+          reInitialValues.fareDetail = result?.fareDetail;
           setReInitialValues(reInitialValues);
+          totalPrices.baseFarePrice = result?.fareDetail?.baseFare;
+          totalPrices.taxesFee = result?.fareDetail?.taxesAndFees;
+          totalPrices.total = result?.fareDetail?.payAmount;
+          
+          setPassangerInfo(travellerInfo);
+          
           setBookingReviewData(result);
-          setBaseFarePrice(result?.fareDetail?.baseFare);
-          setTaxesFee(result?.fareDetail?.taxesAndFees);
-          setTotal(result?.fareDetail?.payAmount);
+          setTotalPrices(totalPrices);
         }else{
           toast.error('Something went wrong');
         }
@@ -363,7 +382,6 @@ export default function AgentFlightReviewBook() {
   }
 
   const handleClickStep = () => {
-
     if(activeStep === "first"){
       setActiveStep("second");
     }else if(activeStep === 'second'){
@@ -372,7 +390,6 @@ export default function AgentFlightReviewBook() {
   }
 
   const handleChangeMealBaggageValue = (event,setFieldValue,values,fieldNamme,commonFieldName,indexKey,indexKey2) => {
-
     let extraPrice = 0;
     values.extraInfo.forEach((extra, extraIndex) => {
       const mealList = extra.mealList;
@@ -411,7 +428,15 @@ export default function AgentFlightReviewBook() {
           return baggage.code === event.target.value;
         });
         if(baggageFound){
-          setMealBaggageFee(extraPrice+baggageFound?.amount);
+          setTotalPrices({ ...totalPrices,
+            mealBaggageFee: extraPrice+baggageFound?.amount,
+            total : extraPrice+baggageFound?.amount+totalPrices.baseFarePrice+totalPrices.taxesFee
+          });
+        }else{
+          setTotalPrices({ ...totalPrices,
+            mealBaggageFee: extraPrice,
+            total : extraPrice+totalPrices.baseFarePrice+totalPrices.taxesFee
+          });
         }
       }
     }
@@ -424,18 +449,36 @@ export default function AgentFlightReviewBook() {
           return meal.code === event.target.value;
         });
         if(mealFound){
-          setMealBaggageFee(extraPrice+mealFound?.amount);
+          setTotalPrices({ ...totalPrices, 
+            mealBaggageFee: extraPrice+mealFound?.amount,
+            total : extraPrice+mealFound?.amount+totalPrices.baseFarePrice+totalPrices.taxesFee 
+          });
+        }else{
+          setTotalPrices({ ...totalPrices, 
+            mealBaggageFee: extraPrice,
+            total : extraPrice+totalPrices.baseFarePrice+totalPrices.taxesFee 
+          });
         }
       }
     }
-
-    
-   
     setFieldValue(fieldNamme,event.target.value);
   }
 
   const handleOnSubmit = async (values, { resetForm }) => {
-
+    console.log("values",values);
+    setReInitialValues(values);
+    setActiveStep("third");
+    FlightSearchService.BookingAddPassenger(values).then(async (response) => {
+      if(response.data.status){
+        const result =  response.data.data;
+        console.log("result",result);
+      }else{
+        toast.error('Something went wrong');
+      }
+    }).catch((e) => {
+      console.log(e);
+      toast.error('Something went wrong');
+    });
   };
 
   return (
@@ -521,7 +564,7 @@ export default function AgentFlightReviewBook() {
                                       </div>
                                       <div className="col">
                                         <h6 className='float-end'>
-                                          <i className="fa-solid fa-indian-rupee-sign"></i>{baseFarePrice}
+                                          <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.baseFarePrice}
                                         </h6>
                                       </div>
                                     </div>
@@ -533,7 +576,7 @@ export default function AgentFlightReviewBook() {
                                       </div>
                                       <div className="col">
                                         <h6 className='float-end'>
-                                          <i className="fa-solid fa-indian-rupee-sign"></i>{taxesFee}
+                                          <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.taxesFee}
                                         </h6>
                                       </div>
                                     </div>
@@ -545,7 +588,7 @@ export default function AgentFlightReviewBook() {
                                       </div>
                                       <div className="col">
                                         <h6 className='float-end'>
-                                          <i className="fa-solid fa-indian-rupee-sign"></i>{total}
+                                          <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.total}
                                         </h6>
                                       </div>
                                     </div>
@@ -858,28 +901,69 @@ export default function AgentFlightReviewBook() {
                                                 
                                                 <div className="row gy-4">
                                                     <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                        <label for="input-label" className="form-label">FRegistration Number</label>
-                                                        <input type="text" className="form-control" id="input-label" />
+                                                        <label for="gstNumber" className="form-label">Registration Number</label>
+                                                        <input 
+                                                          type="text" 
+                                                          className="form-control" 
+                                                          id="gstNumber"
+                                                          name="gstNumber"
+                                                          value={values.gstNumber}
+                                                          onChange={handleChange}
+                                                        />
                                                     </div>
                                                     <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                        <label for="input-placeholder" className="form-label">Registered Company Name</label>
-                                                        <input type="text" className="form-control" id="input-label" />
+                                                        <label for="gstNumber" className="form-label">Registered Company Name</label>
+                                                        <input 
+                                                          type="text" 
+                                                          className="form-control" 
+                                                          id="registeredName"
+                                                          name="registeredName"
+                                                          value={values.registeredName}
+                                                          onChange={handleChange}
+                                                        />
                                                     </div>
                                                     <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                        <label for="input-placeholder" className="form-label">Registered Email</label>
-                                                        <input type="text" className="form-control" id="input-label" />
+                                                        <label for="gstEmail" className="form-label">Registered Email</label>
+                                                        <input 
+                                                          type="text" 
+                                                          className="form-control" 
+                                                          id="gstEmail"
+                                                          name="gstEmail"
+                                                          value={values.gstEmail}
+                                                          onChange={handleChange}
+                                                        />
                                                     </div>
                                                     <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                        <label for="input-placeholder" className="form-label">Registered Phone</label>
-                                                        <input type="text" className="form-control" id="input-label" />
+                                                        <label for="mobile" className="form-label">Registered Phone</label>
+                                                        <input 
+                                                          type="text" 
+                                                          className="form-control" 
+                                                          id="mobile"
+                                                          name="mobile"
+                                                          value={values.mobile}
+                                                          onChange={handleChange}
+                                                        />
                                                     </div>
                                                     <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                        <label for="input-placeholder" className="form-label">Registered Address</label>
-                                                        <input type="text" className="form-control" id="input-label" />
+                                                        <label for="address" className="form-label">Registered Address</label>
+                                                        <input 
+                                                          type="text" 
+                                                          className="form-control" 
+                                                          id="address"
+                                                          name="address"
+                                                          value={values.address}
+                                                          onChange={handleChange}
+                                                        />
                                                     </div>
                                                 </div>
                                                 <div className='accordion-footer mt-3'>
-                                                    <input type='checkbox' id='gst-check' /> <label for='gst-check'> Save GST Details  </label>
+                                                    <input 
+                                                      type='checkbox'
+                                                      id="isSaveGST"
+                                                      name="isSaveGST"
+                                                      value={values.isSaveGST}
+                                                      onChange={handleChange}
+                                                    /> <label for='isSaveGST'> Save GST Details  </label>
                                                 </div>
                                             </div>
                                           </div>
@@ -896,18 +980,42 @@ export default function AgentFlightReviewBook() {
                                             <div className='card-body'>
                                               <div className="row gy-4">
                                                   <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                                      <label for="input-label" className="form-label">Email*</label> 
-                                                      <input type="email" className="form-control" id="input-label" placeholder='demo@gmail.com' />
+                                                      <label for="personalEmail" className="form-label">Email*</label> 
+                                                      <input 
+                                                        type="email" 
+                                                        className="form-control"  
+                                                        placeholder='demo@gmail.com'
+                                                        id="personalEmail"
+                                                        name="personalEmail"
+                                                        value={values.personalEmail}
+                                                        onChange={handleChange}
+                                                      />
                                                   </div>
                                                   <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                                      <label for="input-label" className="form-label">Phone*</label>
-                                                      <input type="text" className="form-control" id="input-label" placeholder='7845120369' />
+                                                      <label for="personalPhone" className="form-label">Phone*</label>
+                                                      <input 
+                                                        type="text"
+                                                        className="form-control" 
+                                                        placeholder='7845120369'
+                                                        id="personalPhone"
+                                                        name="personalPhone"
+                                                        value={values.personalPhone}
+                                                        onChange={handleChange}
+                                                      />
                                                   </div>
                                                   <div className="form-check">
-                                                      <input className="me-2" type="radio" value="" id="checkebox-sm"  />
-                                                          <label className="" for="checkebox-sm">
-                                                              I have a GST Number
-                                                          </label>
+                                                      <input 
+                                                        className="me-2" 
+                                                        type="radio" 
+                                                        id="isGst"
+                                                        name="isGst"
+                                                        value="true"
+                                                        checked={values.isGst === 'true'}
+                                                        onChange={handleChange}
+                                                      />
+                                                      <label className="" for="isGst">
+                                                          I have a GST Number
+                                                      </label>
                                                   </div>
                                               </div>
                                               <hr></hr>
@@ -931,7 +1039,7 @@ export default function AgentFlightReviewBook() {
                                       <div className='list-group list-group-flush'>
                                           <div className='list-group-item'>
                                               <h6>Fare Summary</h6>
-                                          </div>  
+                                          </div>
                                           <div className='list-group-item'>
                                               <div className='row d-flex'>
                                                 <div className="col">
@@ -939,7 +1047,7 @@ export default function AgentFlightReviewBook() {
                                                 </div>
                                                 <div className="col">
                                                   <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{baseFarePrice}
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.baseFarePrice}
                                                   </h6>
                                                 </div>
                                               </div>
@@ -951,7 +1059,7 @@ export default function AgentFlightReviewBook() {
                                                 </div>
                                                 <div className="col">
                                                   <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{taxesFee}
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.taxesFee}
                                                   </h6>
                                                 </div>
                                               </div>
@@ -962,7 +1070,7 @@ export default function AgentFlightReviewBook() {
                                                 </div>
                                                 <div className="col">
                                                   <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{mealBaggageFee}
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.mealBaggageFee}
                                                   </h6>
                                                 </div>
                                               </div>
@@ -974,13 +1082,13 @@ export default function AgentFlightReviewBook() {
                                                 </div>
                                                 <div className="col">
                                                   <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{total}
+                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.total}
                                                   </h6>
                                                 </div>
                                               </div>
                                             <hr></hr>
                                             <div className="graysmalltext text-danger mb-3"> <i className="fa-solid fa-circle-info"></i> You dont't have sufficient balance</div>
-                                          </div>   
+                                          </div>
                                         </div>   
                                       </div>
                                   </div>
@@ -1012,191 +1120,17 @@ export default function AgentFlightReviewBook() {
            </Tab.Pane>
 
            <Tab.Pane eventKey="third">
-             <div className=''>
-               <div className="container">
-                 <div className="page-header">
-                   <h4 className="my-auto">Review</h4>
-                   <div>
-                     <ol className="breadcrumb mb-0">
-                       <li className="breadcrumb-item">
-                         <Link to={`/`}>Dashboard</Link>
-                       </li>
-                       <li className="breadcrumb-item active" aria-current="page">Review</li>
-                     </ol>
-                   </div>
-                 </div>
-                 <div className='row'>
-                   <div className='col-9'>
-                     <div className='card list-item'>
-                       <div className='card-body'>
-                         <h6>Delhi <i class="fa-solid fa-arrow-right-long me-1"></i> Mumbai <span className="graysmalltext"> on
-                             Sun, Jan 14th 2024</span> </h6>
-                         <hr>
-                         </hr>
-                         <div className='row'>
-                           <div className='col-12'>
-                             <div className='row'>
-                               <div className='col-2'>
-                                 <div className='d-flex'>
-                                   <img className='flight-flag' src={Indigo} />
-                                   <div className=''>
-                                     <div className="flightname" id="">GoIndigo</div>
-                                     <div className="flightnumber" id="">6E-6114</div>
-                                   </div>
-                                 </div>
-                               </div>
-                               <div className='col-10 d-flex'>
-                                 <div className="" style={{ width: "30%" }}>
-                                   <div className="coltime"> Jan 14, San, 20:20</div>
-                                   <div className="graysmalltext">Delhi,India</div>
-                                   <div className="graysmalltext">Delhi Indira Gandhi Intl</div>
-                                   <div className="graysmalltext">Terminal 3</div>
-                                 </div>
-                                 <div className="mt-3 me-5" style={{ width: "30%" }}>
-                                   <div className="nostops fw-bold">Non-Stop</div>
-                                 </div>
-                                 <div className="" style={{ width: "30%" }}>
-                                   <div className="coltime"> Jan 14, San, 20:20</div>
-                                   <div className="graysmalltext">Delhi,India</div>
-                                   <div className="graysmalltext">Delhi Indira Gandhi Intl</div>
-                                   <div className="graysmalltext">Terminal 3</div>
-                                 </div>
-                                 <div className="" style={{ width: "30%" }}>
-                                   <div className="coltime"> 2h:5m</div>
-                                   <div className="graysmalltext">Economy,Free</div>
-                                   <div className="graysmalltext">Meal,Refundable</div>
-                                 </div>
-                               </div>
-                             </div>
-                             <div className='row mt-3'>
-                               <div className='w-50'>
-                                 <p className='bg-warning text-dark rounded w-25 text-center'>Published</p>
-                               </div>
-                               <div>
-                                 <p><i class="fa-solid fa-suitcase me-1"></i>: (Adult), Cabin : 7 Kg</p>
-                               </div>
-                             </div>
-                             <div className='mt-4'>
-                               <h5>Passenger Details</h5>
-                               <div className="table-responsive">
-                                 <table className="table text-nowrap w-100">
-                                   <thead>
-                                     <tr>
-                                       <th>Sr.</th>
-                                       <th>Name,Age & Passport</th>
-                                       <th>Seat Booking</th>
-                                       <th>Meal & Baggage Preference</th>
-                                     </tr>
-                                   </thead>
-                                   <tbody>
-                                     <tr>
-                                       <td className='fw-bold'>1</td>
-                                       <td className='fw-bold'>Mr Rajat Patidar</td>
-                                       <td className='fw-bold'>BLR-BOM: 10B</td>
-                                       <td>
-                                         <div className='graysmalltext'><i class="fa-solid fa-suitcase me-1"></i> - BLR-BOM : + 5
-                                           kg Xcess Baggage</div>
-                                         <div className='graysmalltext'><i class="fa-solid fa-utensils"></i> - BLR-BOM: Chicken
-                                           Ghee Roast with Siracha Fried Rice</div>
-                                       </td>
-                                     </tr>
-                                   </tbody>
-                                 </table>
-                               </div>
-                             </div>
-                             <div className='mt-4'>
-                               <h5>Contact Details</h5>
-                               <div className='mt-3'>Email : <span className='fw-bold'>info@gmail.com</span></div>
-                               <div>Mobile : <span className='fw-bold'>8745120369</span></div>
-                             </div>
-                             <hr>
-                             </hr>
-                             <div className='d-flex justify-content-between'>
-                               <Link className='btn btn-danger'>Back</Link>
-                               <div className='d-flex'>
-                                 <div class="form-check me-2 mt-2">
-                                   <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" />
-                                   <label class="form-check-label" for="flexCheckChecked">
-                                     I Accept <Link className='text-danger'>Terms & Conditions</Link>
-                                   </label>
-                                 </div>
-                                 <Link to={'/BookingHold'}><button className='btn btn-dark float-end mx-2'> Block</button> </Link>
-                                 <button className='btn btn-danger float-end'> Proceed To Pay</button>
-                               </div>
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                   <div className='col-3'>
-                     <div className='card'>
-                       <div class="card-body ">
-                         <h5 className='fw-bold'>Fare Summary</h5>
-                         <hr>
-                         </hr>
-                         <div className='row'>
-                           <div className='col-6'>
-                             <h6>Base fare</h6>
-                           </div>
-                           <div className='col-6 '>
-                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
-                           </div>
-                           <hr>
-                           </hr>
-                         </div>
-                         <div className='row'>
-                           <div className='col-6'>
-                             <h6>Taxes and fees</h6>
-                           </div>
-                           <div className='col-6 '>
-                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
-                           </div>
-                           <hr>
-                           </hr>
-                         </div>
-                         <div className='row'>
-                           <div className='col-8'>
-                             <h6>Meal, Baggage & Seat</h6>
-                           </div>
-                           <div className='col-4 '>
-                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
-                           </div>
-                           <hr>
-                           </hr>
-                         </div>
-                         <div className='row'>
-                           <div className='col-6'>
-                             <h6>Amount To Pay</h6>
-                           </div>
-                           <div className='col-6 '>
-                             <p className='float-end'><i class="fa-solid fa-indian-rupee-sign"></i> 3,000.85</p>
-                           </div>
-                           <hr>
-                           </hr>
-                         </div>
-                         <div className='row'>
-                           <div className='col-5'>
-                             <div className='d-flex'>
-                               <div className=''>
-                                 <div className="flightname" id="">TJ Coins :</div>
-                                 <div className="fs-13" id="">10 Coins = 1 Rs.</div>
-                               </div>
-                             </div>
-                           </div>
-                           <div className='col-4'>
-                             <input className="form-control" type='text' />
-                           </div>
-                           <div className='col-3'>
-                             <button className='btn btn-dark float-end'>Redeem</button>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
+            {
+              bookingReviewData &&
+              bookingReviewData.listOfFlight &&
+              bookingReviewData.listOfFlight.length !=0 &&
+              <BookingReview
+                listOfFlight={bookingReviewData.listOfFlight}
+                fareDetail={bookingReviewData.fareDetail}
+                reInitialValues={reInitialValues}
+              />
+            }
+             
            </Tab.Pane>
 
            <Tab.Pane eventKey="fourth">Second tab content</Tab.Pane>
@@ -1211,11 +1145,14 @@ export default function AgentFlightReviewBook() {
         showModal = {showModal}
         handleClose = {handleClose}
         proceedForSeat = {proceedForSeat}
-        //handleClickSetPassanger = {handleClickSetPassanger}
         bookingId = {bookingReviewData?.seasionDetail?.bookingId}
         flightMapInfo = {flightMapInfo}
         flightMapIndex = {flightMapIndex}
+
         passangerInfo = {passangerInfo}
+        setPassangerInfo = {setPassangerInfo}
+        reInitialValues = {reInitialValues}
+        setReInitialValues = {setReInitialValues}
         //selectPassanger = {selectPassanger}
       />
     }
