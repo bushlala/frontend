@@ -19,6 +19,7 @@ import Tab from 'react-bootstrap/Tab'
 
 export default function AgentFlightReviewBook() {
 
+
   let initialValues = {
     isDomestic : true,
     bookingId : '',
@@ -198,7 +199,7 @@ export default function AgentFlightReviewBook() {
     }
   }, [ruleId])
   
-
+  const[layover,setLayover]=useState([]);
   const getBookingReviewData = async (ruleId) => {
     var requestData = {
       priceIds : [ruleId]
@@ -207,6 +208,7 @@ export default function AgentFlightReviewBook() {
         if(response.data.status){
           const result =  response.data.data;
           // Code for bagger and meal information
+        setLayover(response.data.data.layover);
           var extraInfo = [];
           result.listOfFlight && result.listOfFlight.forEach((flightDetail, index) => {
             var tmp={
@@ -335,6 +337,7 @@ export default function AgentFlightReviewBook() {
           setPassangerInfo(travellerInfo);
           
           setBookingReviewData(result);
+        
           setTotalPrices(totalPrices);
         }else{
           toast.error('Something went wrong');
@@ -356,7 +359,9 @@ export default function AgentFlightReviewBook() {
   const proceedForSeat = (totalSeats,totalFee,passangerInfoModel)=>{
     //setTotalSeats(totalSeats);
     reInitialValues.extraInfo[flightMapIndex].seats = totalSeats;
+    reInitialValues.travellerInfo = passangerInfoModel;
     setReInitialValues(reInitialValues);
+    console.log("procces reInitialValues " ,reInitialValues);
     setShowModal(false);
   }
 
@@ -474,20 +479,22 @@ export default function AgentFlightReviewBook() {
             ssrBaggageInfos.push(ifFoundBaggage);
           }
 
-          //if(ifFoundTraveller.seat){
+          if(ifFoundTraveller.seat){
             console.log("allFlightSeats",allFlightSeats);
             const flightSeats = allFlightSeats[extraInfoKey]
-            //const sInfo = flightSeats.sInfo;
-            //console.log('sInfo', sInfo);
-            //values.travellerInfo.ssrSeatInfos.push(ifFoundBaggage);
-          //}
-          
-          // here check seat
-          //${ifFoundTraveller.seat}
+            const sInfo = flightSeats.sInfo;
+            const ifFoundSeat = sInfo.find(seat => {
+              return (seat.seatNo == ifFoundTraveller.seat)
+            });
+            if(ifFoundSeat){
+              ssrSeatInfos.push(ifFoundSeat)
+            }
+          }
         }
       });
       passanger.ssrMealInfos = ssrMealInfos;
       passanger.ssrBaggageInfos = ssrBaggageInfos;
+      passanger.ssrSeatInfos = ssrSeatInfos;
     });
 
     console.log("values",values);
@@ -563,6 +570,7 @@ export default function AgentFlightReviewBook() {
                         <FlightDetail
                           listOfFlight={bookingReviewData.listOfFlight}
                           fareDetail={bookingReviewData.fareDetail}
+                          layover ={bookingReviewData.layover}
                         />
                       }
 
@@ -608,7 +616,6 @@ export default function AgentFlightReviewBook() {
                                           name="travellerInfo"
                                           render={arrayHelpers => {
                                             const travellerInfo = values.travellerInfo;
-                                           
                                             return (
                                               <div>
                                                   {
@@ -834,7 +841,7 @@ export default function AgentFlightReviewBook() {
                                                           </div>
                                                           <div className='col-lg-4'>
                                                               <p className='mb-0'>
-                                                                {extra.seats?extra.seats:"Seat Not Selected"}
+                                                                {extra.seats? extra.seats:"Seat Not Selected"}
                                                               </p>
                                                           </div>
                                                           <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12">
@@ -1018,6 +1025,7 @@ export default function AgentFlightReviewBook() {
                 fareDetail={bookingReviewData.fareDetail}
                 reInitialValues={reInitialValues}
                 totalPrices = {totalPrices}
+                layover={bookingReviewData.layover}
               />
             }
              

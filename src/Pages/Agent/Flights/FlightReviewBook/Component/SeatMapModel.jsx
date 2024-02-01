@@ -92,6 +92,8 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                 //console.log("reInitialValues2",reInitialValues);
                 //let newReInitialValues = [...reInitialValues] //copy the object
                 reInitialValues.extraInfo[flightMapIndex].mealBaggageInfo[selectPassangerKey].seat = seatInfo.seat.seatNo;
+
+                console.log("reInitialValues",reInitialValues);
                 setReInitialValues(reInitialValues);
             }
         }

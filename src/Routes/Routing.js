@@ -397,10 +397,6 @@ const Routing = () => {
     <Route exact path="BookingSuccess" element={<BookingSuccess />}></Route>
     <Route exact path="agentreview" element={<AgentReview />}></Route>
     <Route exact path="BookingHold" element={<BookingHold />}></Route>
-
-
-    
-          
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}
             {/* <Route exact path='/' element={<AdminDash />}></Route>
             <Route exact path='/adlist' element={<AdList />}></Route>

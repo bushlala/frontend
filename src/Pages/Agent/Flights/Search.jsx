@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
-import { Form, Formik } from "formik";
+import { Form, Formik, Field } from "formik";
 import * as Yup from "yup";
 //import AgentLayout from '../../../Component/Layout/Agent/AgentLayout';
 import Header from '../../../Component/Layout/Agent/Header/SearchHeader';
@@ -14,6 +14,7 @@ import FlightSearchList from './Component/FlightSearchList';
 import Moment from 'moment';
 import { TailSpin } from "react-loader-spinner";
 import axios from 'axios';
+import Select from "react-select";
 
 
 
@@ -27,27 +28,28 @@ function taskDate(dateMilli) {
 var datemilli = Date.parse('Sun May 11,2014');
 
 
-export default function AgentFlightSearch() {
+const AgentFlightSearch = () => {
     const userData = JSON.parse(localStorage.getItem('userData'));
     //console.log("userData",userData.data.token)
     const jwtToken = userData?.data?.token || " ";
+    let BASE_URL = '';
+    if (process.env.REACT_APP_SERVER_ENV === 'Local') {
+        BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
+    } else if (process.env.REACT_APP_SERVER_ENV === 'Live') {
+        BASE_URL = process.env.REACT_APP_LIVE_API_URL;
+    }
+
     const [dates, setDates] = useState([]);
     const [departureDate, setDepartureDate] = useState(new Date());
     const [minDate] = useState(new Date());
     const [returnDate, setReturnDate] = useState();
     const [loading, setLoading] = useState(false);
     const [citySwapArrowStatus, setCitySwapArrowStatus] = useState(true);
-    const [cityList, setCityList] = useState([]);
-    const [dropDown, setDropDown] = useState(false);
     const [fromSearch, setFromSearch] = useState("BLR - Bengaluru");
-    const [searchTo, setSearchTo] = useState(" DEL - Delhi");
-    const [dropToDown, setDropTODown] = useState(false);
+    const [searchTo, setSearchTo] = useState("DEL - Delhi");
     const [error, setError] = useState("");
-
-    const [searchFromList, setSearchFromList] = useState(false);
-    const [toCityList, setToCityList] = useState("");
-    const [fromDestinationFlight, setFromDestinationFlight] = useState("");
-    const [toDestinationFlight, setToDestinationFlight] = useState("");
+    const [fromDestinationFlight, setFromDestinationFlight] = useState("BLR - India");
+    const [toDestinationFlight, setToDestinationFlight] = useState("DEL - India");
     const [journeyDateOne, setJourneyDateOne] = useState(new Date());
     const [adult, setADULT] = useState("1");
     const [child, setChild] = useState("0");
@@ -56,16 +58,20 @@ export default function AgentFlightSearch() {
     const [previllageForTicket, setPrevillageForTicket] = useState();
     const [dateList, setDateList] = useState([]);
     const [pc, setPC] = useState("Economy");
-    const [fromError,setFromError]= useState("");
-    const [toError,setToError]= useState("");
-    let BASE_URL = '';
-    if (process.env.REACT_APP_SERVER_ENV === 'Local') {
-        BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
-    } else if (process.env.REACT_APP_SERVER_ENV === 'Live') {
-        BASE_URL = process.env.REACT_APP_LIVE_API_URL;
-    }
+    const [fromError, setFromError] = useState("");
+    const [toError, setToError] = useState("");
+    const [selectedNationality, setSelectedNationality] = useState({
+        label: "BLR - Bengaluru"
+    });
+    const [selectedTo, setSelectedTO] = useState({label: "DEL - Delhi"});;
 
-
+    const customStyles = {
+        option: (provided, state) => ({
+          ...provided,
+          backgroundColor: state.isSelected ? '#6c5ffc' : 'white', // Set red background for selected option
+        }),
+      };
+      
     const initialValues = {
         tripType: "1",
         fromCityDestination: "",
@@ -90,16 +96,6 @@ export default function AgentFlightSearch() {
         }
     }
 
-    // const cityList = [
-    //     {
-    //         city : "DEL - NEW DELHI",
-    //         destinationFlight : "DEL-India"
-    //     },
-    //     {
-    //         city : "BOM - MUMBAI",
-    //         destinationFlight : "BOM-India"
-    //     }
-    // ]
 
     const seatNunmberAdult = [
         {
@@ -211,7 +207,7 @@ export default function AgentFlightSearch() {
     const [travellersModelShow, setTravellersModelShow] = useState(false);
     const [tripList, setTripList] = useState([]);
     const [dateForHorizontal, setDateForHorizontal] = useState();
-
+    const [cityList, setCityList] = useState([]);
 
     const handleChangeDepartureDate = (range, setFieldValue) => {
         setJourneyDateOne(range);
@@ -318,25 +314,22 @@ export default function AgentFlightSearch() {
         }
     }
 
-    const handleClickCitySwap = (from, to) => {
-        // console.log()
-        console.log(from, to)
+    const handleClickCitySwap = (from, to, setFieldValue) => {
         if (from && from) {
             if (citySwapArrowStatus) {
                 setCitySwapArrowStatus(false);
             } else {
                 setCitySwapArrowStatus(true);
             }
-            setFromSearch(to);
-            setSearchTo(from);
-            // setFieldValue("fromCityDestination", toCityDestination);
-            // setFieldValue("toCityDestination", fromCityDestination);
+            setSelectedNationality(to);
+            setSelectedTO(from);
+            setFieldValue("fromCityDestination", from.label);
+            setFieldValue("toCityDestination", to.label);
         }
     }
 
     const handleChangeDate = (date) => {
         setDateForHorizontal(date);
-      
         const valuesss = {
             "tripType": tripType,
             "previllageForTicket": previllageForTicket == 3 ? "SENIOR_CITIZEN" : previllageForTicket == 2 ? "STUDENT" : "",
@@ -344,7 +337,7 @@ export default function AgentFlightSearch() {
             "fromDestinationFlight": fromDestinationFlight ? fromDestinationFlight : "",
             "toCityDestination": searchTo,
             "toDestinationFlight": toDestinationFlight ? toDestinationFlight : "",
-            "journeyDateOne": Moment(date).format('DD-MM-YYYY'),
+            "journeyDateOne": date,
             "travellersshow": travellersArr,
             "ADULT": adult,
             "CHILD": child,
@@ -375,38 +368,24 @@ export default function AgentFlightSearch() {
         });
 
     }
-
     const handleSubmit = async (event) => {
-        event.preventDefault();
+  event.preventDefault();
         setLoading(true);
         setTravellersModelShow(false);
 
-        if(!fromSearch){
+        if (!fromSearch) {
             setFromError("city is Required");
         }
-        if(!searchTo){
+        if (!selectedTo) {
             setToError("city is Required");
         }
-        const checkFromCityDestination = cityList.find(obj => {
-            return obj.city === fromSearch;
-        });
 
-        // if (checkFromCityDestination) {
-        //     setFromDestinationFlight(checkFromCityDestination.destinationFlight)
-
-        // }
-
-        // For To 
-        const checkToCityDestination = cityList.find(obj => {
-            return obj.city === searchTo;
-        });
         let startDate;
         let endDate;
         if (journeyDateOne) {
             startDate = Moment(journeyDateOne).format('YYYY-MM-DD');
             endDate = Moment(startDate, "YYYY-MM-DD").add(7, 'days').format('YYYY-MM-DD');
             // journeyDateOne = Moment(journeyDateOne).format('DD-MM-YYYY')
-            console.warn("startDate", startDate);
             var dates = [];
             const start = Moment(startDate);
             const end = Moment(endDate);
@@ -442,14 +421,11 @@ export default function AgentFlightSearch() {
         FlightSearchService.Search(valuesss).then(async (response) => {
             setLoading(true);
             if (response.status === 200) {
-
                 if (response.data.status) {
-
                     setTripList(response.data.data)
 
                 } else {
-                   let errData = response?.data?.message || "Some thing went wrong. Please contact with admin Thank you!"
-                
+                    let errData = response?.data?.message?.message || "Some thing went wrong. Please contact with admin Thank you!"
                     toast.error(errData);
                 }
             } else {
@@ -457,153 +433,65 @@ export default function AgentFlightSearch() {
                 toast.error("Something went wrong");
             }
 
-
             setLoading(false);
-        }).catch((e) => {
-            console.log(e);
-            toast.error('Something went wrong');
+        }).catch((error) => {
+            toast.error(error);
             setLoading(false);
         });
 
 
     };
 
-
-
-
-
-    useEffect(() => {
+   useEffect(() => {
         fetchAirportList();
-        fetchAirportCity();
+
     }, [])
 
-    const fetchAirportCity = (countryCode) => {
-        const url = `${BASE_URL}api/airport/?search=${countryCode ? countryCode : ""}`;
-        const headers = {
-            Authorization: `Bearer ${jwtToken}`
-        };
-
-        axios.get(url, { headers })
-            .then((response) => {
-                setToCityList(response.data.data.rows);
-
-            })
-            .catch((error) => {
-                setError(error);
-            });
-    }
 
     const fetchAirportList = (countryCode) => {
-        const url = `${BASE_URL}api/airport/?search=${countryCode ? countryCode : ""}`;
-        const headers = {
-            Authorization: `Bearer ${jwtToken}`
-        };
+        const valuesss = {
+            "search": countryCode
+        }
+        FlightSearchService.AirPort(valuesss).then(async (response) => {
 
-        axios.get(url, { headers })
-            .then((response) => {
-                setCityList(response.data.data.rows);
-            })
-            .catch((error) => {
-                setError(error);
-            });
-    };
-    const handleSelectedCity = (value) => {
-        setSearchFromList(true);
-        setFromSearch(value);
-        setDropDown(false);
-        fetchAirportList(value);
-        if (value) {
-            const checkFromCityDestination = cityList.find(obj => {
-                return obj.city === value;
-            });
-
-            if (checkFromCityDestination) {
-                setFromDestinationFlight(checkFromCityDestination.destinationFlight)
+            if (response.status === 200) {
+                let result = response.data.data.rows;
+                setCityList(result);
+            } else {
+                setCityList([]);
 
             }
-        }
+        }).catch((e) => {
+            console.log(e);
+        });
+
     };
 
-    const handleSelectedToCity = (value) => {
-        setSearchFromList(true);
-        setSearchTo(value);
-        setDropTODown(false);
-        fetchAirportCity(value);
-        if (value) {
-            const checkFromCityDestination = toCityList.find(obj => {
-                return obj.city === value;
-            });
+    const optionValues = cityList.map((item) => ({
+        value: item.destinationFlight,
+        label: item.city,
+        image: item.flagUrl
+    }));
 
-            if (checkFromCityDestination) {
-                setToDestinationFlight(checkFromCityDestination.destinationFlight)
 
-            }
-        }
-
-    }
-    const handleToChange = (e) => {
-        setToError("");
-        if (dropDown === true) {
-            setDropDown(false)
-            setDropTODown(true);
-        }
-        fetchAirportCity(e.target.value);
-        // setDropTODown(true);
-        // setDropDown(false)
-        if (searchTo) {
-            setSearchTo("");
-            setDropDown(false)
-            fetchAirportCity();
-
-        } else {
-            setSearchTo(e.target.value);
-            setDropDown(false)
-            fetchAirportCity(e.target.value);
-        }
-
-        if (!searchFromList) {
-            fetchAirportList(e.target.value);
-            setSearchTo(e.target.value);
-            setDropTODown(true);
-            setDropDown(false)
-        } else {
-            setSearchFromList(false);
-            setSearchTo("");
-            setDropDown(false);
-            fetchAirportList(e.target.value);
-        }
-    };
-
-    const handleInputChange = (e) => {
+    const handleSelectedOptions = (selectedOption) => {
         setFromError("");
-        if (dropToDown === true) {
-            setDropTODown(false)
-            fetchAirportList(e.target.value);
-            setDropDown(true);
-
-        }
-        if (fromSearch) {
-            setFromSearch();
-            fetchAirportList();
-        } else {
-            setFromSearch(e.target.value);
-            fetchAirportList(e.target.value);
-        }
-
-        if (!searchFromList) {
-            setFromSearch(e.target.value);
-            setDropDown(true);
-            fetchAirportList(e.target.value);
-        } else {
-            setSearchFromList(false);
-            setFromSearch("");
-            fetchAirportList(e.target.value);
-        }
+        setSelectedNationality(selectedOption)
+        setFromSearch(selectedOption.label)
+        setFromDestinationFlight(selectedOption.value)
+    }
+    const handleSelectedTOOptions = (selectedOption) => {
+        setToError("");
+        setSelectedTO(selectedOption)
+        setSearchTo(selectedOption.label)
+        setToDestinationFlight(selectedOption.value)
+    }
+    const handleInputChange = (inputValue) => {
+        // setSearchKey(inputValue);
+        fetchAirportList(inputValue);
     };
 
-const handleSwipCity =(value)=>{
-    alert(value)
-}
+  
     return (
         <>
 
@@ -640,59 +528,65 @@ const handleSwipCity =(value)=>{
                                                     <Grid container spacing={2}>
 
                                                         <Grid item className='col'>
-                                                            <div className='form-group field-label'>
+                                                            <div className='form-group field-label search-fild'>
                                                                 <InputLabel className=''>From</InputLabel>
-                                                                <div className={`swapbtn ${citySwapArrowStatus ? 'down' : ''}`} onClick={() => handleClickCitySwap(fromSearch, searchTo)}>
+                                                                <div className={`swapbtn ${citySwapArrowStatus ? 'down' : ''}`} onClick={() => handleClickCitySwap(selectedNationality, selectedTo, setFieldValue)}>
                                                                     <i className="fa fa-exchange" aria-hidden="true"></i>
                                                                 </div>
-                                                                <input
-                                                                    type="text"
-                                                                    //    autoComplete='off'
-                                                                    className='form-control'
-                                                                    value={fromSearch}  // Assuming you meant "search" instead of "serach"
-                                                                    onChange={handleInputChange}// Change onClick to onChange
-                                                                    autofocus
-                                                                    onClick={handleInputChange}
+                                                                <Field
+                                                                    as={Select}
+                                                                    className='form-control active'
+                                                                    name='fromCityDestination'
+                                                                    value={selectedNationality}
+                                                                    onChange={(selectedNationality)=>handleSelectedOptions(selectedNationality)}
+                                                                    options={optionValues}
+                                                                    styles={customStyles}
+                                                                    formatOptionLabel={(country, { context }) => (
+                                                                            <div className="searchdestinationboxclass list d-flex ">
+                                                                                <div className='search-text'>
+                                                                                    <div>
+                                                                                        {context === "menu" && country.value}
+                                                                                    </div>    
+                                                                                    {country.label}
+                                                                                </div>
+                                                                                {context === "menu" && <div className='search-img'><img className="flagimage" src={country.image} /></div>}
+                                                                            </div>
+                                                                        // </div>
 
+                                                                    )}
+                                                                    onInputChange={handleInputChange}
                                                                 />
-                                                                {fromError &&<span style={{color:"red"}}>{fromError}</span>}
-                                                                {dropDown == true && <div className='searchdestinationboxclass' style={{ height: "200px", overflow: "auto" }}>
-                                                                    {cityList && cityList.map((value, key) => (
-                                                                        <div className='list' key={key} >
-                                                                            {value.destinationFlight}
-                                                                            <div className='' style={{ color: "#666666", fontSize: "11px" }} onClick={() => handleSelectedCity(value.city)}>{value.city}</div>
-                                                                            <img className='flag' src={auFlag} />
-                                                                        </div>
-                                                                    ))}
-
-                                                                </div>}
+                                                                {fromError && <span style={{ color: "red" }}>{fromError}</span>}
 
                                                             </div>
                                                         </Grid>
 
                                                         <Grid item className='col'>
-                                                            <div className='form-group field-label'>
+                                                            <div className='form-group field-label search-fild'>
                                                                 <InputLabel className=''>To</InputLabel>
-                                                                <input
-                                                                    type="text"
-                                                                    autoFocus={dropToDown}
+                                                                <Field
+                                                                    as={Select}
                                                                     className='form-control'
-                                                                    value={searchTo}  // Assuming you meant "search" instead of "serach"
-                                                                    onChange={handleToChange}// Change onClick to onChange
-                                                                    onClick={handleToChange}
+                                                                    name='toCityDestination'
+                                                                    value={selectedTo}
+                                                                    onChange={handleSelectedTOOptions}
+                                                                    options={optionValues}
+                                                                    styles={customStyles}
+                                                                    formatOptionLabel={(country, { context }) => (
+                                                                        <div className="searchdestinationboxclass list d-flex ">
+                                                                                <div className='search-text'>
+                                                                                    <div>
+                                                                                        {context === "menu" &&    country.value}
+                                                                                    </div>    
+                                                                                    {country.label}
+                                                                                </div>
+                                                                                {context === "menu" && <div><img className="flagimage" src={country.image} /></div>}
+                                                                            </div>
+                                                                       
+                                                                    )}
+                                                                    onInputChange={handleInputChange}
                                                                 />
-                                                                {toError &&<span style={{color:"red"}}>{toError}</span>}
-                                                                {dropToDown == true && <div className='searchdestinationboxclass' style={{ height: "200px", overflow: "auto" }}>
-                                                                    {toCityList && toCityList.map((value, key) => (
-                                                                        <div className='list ' key={key} >
-                                                                            {value.destinationFlight}
-                                                                            <div className='' style={{ color: "#666666", fontSize: "11px" }} onClick={() => handleSelectedToCity(value.city)}>{value.city}</div>
-                                                                            <img className='flag' src={auFlag} />
-                                                                        </div>
-                                                                    ))}
-
-                                                                </div>}
-
+                                                                {toError && <span style={{ color: "red" }}>{toError}</span>}
                                                             </div>
                                                         </Grid>
                                                         <Grid item className='col'>
@@ -744,9 +638,8 @@ const handleSwipCity =(value)=>{
                                                                                 <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
                                                                                     {
                                                                                         seatNunmberAdult && seatNunmberAdult.map((value, key) => (
-                                                                                          
+
                                                                                             <div key={key}>
-                                                                                             
                                                                                                 <input
                                                                                                     type="radio"
                                                                                                     className="btn-check"
@@ -1022,3 +915,4 @@ const handleSwipCity =(value)=>{
         </>
     )
 }
+export default AgentFlightSearch;
