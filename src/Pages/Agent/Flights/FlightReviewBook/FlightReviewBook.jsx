@@ -13,6 +13,7 @@ import { FieldArray,Form, Formik } from "formik";
 import * as Yup from "yup";
 import SeatMapModel from './Component/SeatMapModel';
 import BookingReview from './Component/BookingReview';
+import FareSummary from './Component/FareSummary';
 import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab'
 
@@ -52,12 +53,10 @@ export default function AgentFlightReviewBook() {
         fee : '0',
         saveDetailStatus : "",
         isSave : false,
-        ssrMealInfos : [
-          {
-            code:"",
-            key:"",
-          }
-        ],
+        ssrMealInfos : [],
+        ssrBaggageInfos : [],
+        ssrSeatInfos : [],
+        
       },
     ],
     extraInfo : [
@@ -113,6 +112,7 @@ export default function AgentFlightReviewBook() {
     total : 0,
   });
   const [activeStep,setActiveStep] = React.useState('first')
+  const [allFlightSeats, setAllFlightSeats] = React.useState();
   // for timers
   const [countdown, setcountdown] = React.useState(60 * 5);
   //const [runtimer, setruntimer] = React.useState(true);
@@ -269,17 +269,9 @@ export default function AgentFlightReviewBook() {
               fee : '0',
               saveDetailStatus :"",
               isSave : false,
-              ssrMealInfos: [
-                {
-                  code: "AVML",
-                  key: "308"
-                },
-                {
-                  code: "AVML",
-                  key: "309"
-                }
-              ]
-              
+              ssrMealInfos: [],
+              ssrBaggageInfos : [],
+              ssrSeatInfos : [],
             }
             travellerInfo.push(tmp)
           }
@@ -296,16 +288,9 @@ export default function AgentFlightReviewBook() {
               fee : '0',
               saveDetailStatus :"",
               isSave : false,
-              ssrMealInfos: [
-                {
-                  code: "AVML",
-                  key: "308"
-                },
-                {
-                  code: "AVML",
-                  key: "309"
-                }
-              ]
+              ssrMealInfos: [],
+              ssrBaggageInfos : [],
+              ssrSeatInfos : [],
             }
             travellerInfo.push(tmp)
           }
@@ -322,21 +307,14 @@ export default function AgentFlightReviewBook() {
               fee : '0',
               saveDetailStatus :"",
               isSave : false,
-              ssrMealInfos: [
-                {
-                  code: "AVML",
-                  key: "308"
-                },
-                {
-                  code: "AVML",
-                  key: "309"
-                }
-              ]
+              ssrMealInfos: [],
+              ssrBaggageInfos : [],
+              ssrSeatInfos : [],
             }
             travellerInfo.push(tmp)
           }
           console.log("result",result);
-          console.log("result.fareDetail1",result.fareDetail);
+          //console.log("result.fareDetail1",result.fareDetail);
           reInitialValues.travellerInfo = travellerInfo;
           reInitialValues.extraInfo = extraInfo;
           reInitialValues.isDomestic = result?.seasionDetail?.isDomestic;
@@ -348,6 +326,7 @@ export default function AgentFlightReviewBook() {
           reInitialValues.flightStops = 1; // How to get
           reInitialValues.listOfFlight = result.listOfFlight;
           reInitialValues.fareDetail = result?.fareDetail;
+          reInitialValues.routeInfo = result?.routeInfo;
           setReInitialValues(reInitialValues);
           totalPrices.baseFarePrice = result?.fareDetail?.baseFare;
           totalPrices.taxesFee = result?.fareDetail?.taxesAndFees;
@@ -465,9 +444,55 @@ export default function AgentFlightReviewBook() {
   }
 
   const handleOnSubmit = async (values, { resetForm }) => {
+    
+    let ssrMealInfos = [];
+    let ssrBaggageInfos = [];
+    let ssrSeatInfos = [];
+    values.travellerInfo.forEach((passanger, passangerKey) => {
+      values.extraInfo.forEach((extraInfo, extraInfoKey) => {
+        //let flightFormTo = `${extraInfo.from} - ${extraInfo.to} :`;
+        const ifFoundTraveller = extraInfo.mealBaggageInfo.find(mealBaggage => {
+          return (mealBaggage.memberName == passanger.passangerTypeName)
+        });
+        const listOfMeals = extraInfo.mealList;
+        const listOfBaggage = extraInfo.baggageList;
+        // Here check traveller check
+        if(ifFoundTraveller){
+          // here check meal 
+          const ifFoundMeals = listOfMeals.find(meal => {
+            return (meal.code == ifFoundTraveller.meals)
+          });
+          if(ifFoundMeals){
+            ssrMealInfos.push(ifFoundMeals);
+          }
+
+          // here check baggae 
+          const ifFoundBaggage = listOfBaggage.find(baggage => {
+            return (baggage.code == ifFoundTraveller.baggage)
+          });
+          if(ifFoundBaggage){
+            ssrBaggageInfos.push(ifFoundBaggage);
+          }
+
+          //if(ifFoundTraveller.seat){
+            console.log("allFlightSeats",allFlightSeats);
+            const flightSeats = allFlightSeats[extraInfoKey]
+            //const sInfo = flightSeats.sInfo;
+            //console.log('sInfo', sInfo);
+            //values.travellerInfo.ssrSeatInfos.push(ifFoundBaggage);
+          //}
+          
+          // here check seat
+          //${ifFoundTraveller.seat}
+        }
+      });
+      passanger.ssrMealInfos = ssrMealInfos;
+      passanger.ssrBaggageInfos = ssrBaggageInfos;
+    });
+
     console.log("values",values);
     setReInitialValues(values);
-    setActiveStep("third");
+    //setActiveStep("third");
     FlightSearchService.BookingAddPassenger(values).then(async (response) => {
       if(response.data.status){
         const result =  response.data.data;
@@ -549,72 +574,9 @@ export default function AgentFlightReviewBook() {
                      </div>  
 
                     </div>
-
-                    <div className='col-3 mt-5'>
-                        <div className='re-card'>
-                            <div className=''>
-                            <div className='list-group list-group-flush'>
-                                <div className='list-group-item'>
-                                    <h6>Fare Summary</h6>
-                                </div>  
-                                <div className='list-group-item'>
-                                    <div className='row d-flex'>
-                                      <div className="col">
-                                        <h6 className=''>Base fare</h6>
-                                      </div>
-                                      <div className="col">
-                                        <h6 className='float-end'>
-                                          <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.baseFarePrice}
-                                        </h6>
-                                      </div>
-                                    </div>
-
-                                    <hr></hr>
-                                    <div className='row d-flex'>
-                                      <div className="col">
-                                        <h6 className=''>Taxes and fees</h6>
-                                      </div>
-                                      <div className="col">
-                                        <h6 className='float-end'>
-                                          <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.taxesFee}
-                                        </h6>
-                                      </div>
-                                    </div>
-
-                                    <hr></hr>
-                                    <div className='row d-flex'>
-                                      <div className="col">
-                                        <h6 className=''>Amount to Pay</h6>
-                                      </div>
-                                      <div className="col">
-                                        <h6 className='float-end'>
-                                          <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.total}
-                                        </h6>
-                                      </div>
-                                    </div>
-                                  <hr></hr>
-                                  <div className="graysmalltext text-danger mb-3"> <i className="fa-solid fa-circle-info"></i> You dont't have sufficient balance</div>
-                                </div>   
-                              </div>   
-                            </div>
-                        </div>
-                        <div className='re-card mt-3'>
-                            <div className=''>
-                            <div className='list-group list-group-flush'>
-                                <div className='list-group-item'>
-                                    <h6>Select a Discount Coupan</h6>
-                                </div>  
-                                <div className='list-group-item'>
-                                    <div className='d-flex mt-2'>
-                                        <input type="text" className="form-control " id="input-label"/>
-                                        <button className='btn btn-danger btn-coupan'>Apply</button>
-                                    </div>
-                                    <p className='text-center graysmalltext mt-3'>No Discount Coupan Available</p>
-                                </div>   
-                              </div>   
-                            </div>
-                        </div>
-                    </div>
+                    <FareSummary
+                      totalPrices = {totalPrices}
+                    />
                 </div>
               </div>
             </div>
@@ -684,9 +646,9 @@ export default function AgentFlightReviewBook() {
                                                                         value={values.travellerInfo[index].title}
                                                                       >
                                                                         <option selected="">Select</option>
-                                                                        <option value="1">Mr.</option>
-                                                                        <option value="2">Mrs.</option>
-                                                                        <option value="3">Ms.</option>
+                                                                        <option value="Mr">Mr.</option>
+                                                                        <option value="Mrs">Mrs.</option>
+                                                                        <option value="Ms">Ms.</option>
                                                                       </select>
                                                                   </div>
 
@@ -1032,83 +994,9 @@ export default function AgentFlightReviewBook() {
                                   )}
                                 </Formik>
                               </div>
-
-                              <div className='col-3 mt-5'>
-                                  <div className='re-card'>
-                                      <div className=''>
-                                      <div className='list-group list-group-flush'>
-                                          <div className='list-group-item'>
-                                              <h6>Fare Summary</h6>
-                                          </div>
-                                          <div className='list-group-item'>
-                                              <div className='row d-flex'>
-                                                <div className="col">
-                                                  <h6 className=''>Base fare</h6>
-                                                </div>
-                                                <div className="col">
-                                                  <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.baseFarePrice}
-                                                  </h6>
-                                                </div>
-                                              </div>
-
-                                              <hr></hr>
-                                              <div className='row d-flex'>
-                                                <div className="col">
-                                                  <h6 className=''>Taxes and fees</h6>
-                                                </div>
-                                                <div className="col">
-                                                  <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.taxesFee}
-                                                  </h6>
-                                                </div>
-                                              </div>
-
-                                              <div className='row d-flex'>
-                                                <div className="col">
-                                                  <h6 className=''>Extra Meals & Baggage</h6>
-                                                </div>
-                                                <div className="col">
-                                                  <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.mealBaggageFee}
-                                                  </h6>
-                                                </div>
-                                              </div>
-
-                                              <hr></hr>
-                                              <div className='row d-flex'>
-                                                <div className="col">
-                                                  <h6 className=''>Amount to Pay</h6>
-                                                </div>
-                                                <div className="col">
-                                                  <h6 className='float-end'>
-                                                    <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.total}
-                                                  </h6>
-                                                </div>
-                                              </div>
-                                            <hr></hr>
-                                            <div className="graysmalltext text-danger mb-3"> <i className="fa-solid fa-circle-info"></i> You dont't have sufficient balance</div>
-                                          </div>
-                                        </div>   
-                                      </div>
-                                  </div>
-                                  <div className='re-card mt-3'>
-                                      <div className=''>
-                                      <div className='list-group list-group-flush'>
-                                          <div className='list-group-item'>
-                                              <h6>Select a Discount Coupan</h6>
-                                          </div>  
-                                          <div className='list-group-item'>
-                                              <div className='d-flex mt-2'>
-                                                  <input type="text" className="form-control " id="input-label"/>
-                                                  <button className='btn btn-danger btn-coupan'>Apply</button>
-                                              </div>
-                                              <p className='text-center graysmalltext mt-3'>No Discount Coupan Available</p>
-                                          </div>   
-                                        </div>   
-                                      </div>
-                                  </div>
-                              </div>
+                              <FareSummary
+                                totalPrices = {totalPrices}
+                              />
                           </div>
 
                           <div className="open-button text-center">
@@ -1125,9 +1013,11 @@ export default function AgentFlightReviewBook() {
               bookingReviewData.listOfFlight &&
               bookingReviewData.listOfFlight.length !=0 &&
               <BookingReview
+                seasionDetail = {bookingReviewData.seasionDetail}
                 listOfFlight={bookingReviewData.listOfFlight}
                 fareDetail={bookingReviewData.fareDetail}
                 reInitialValues={reInitialValues}
+                totalPrices = {totalPrices}
               />
             }
              
@@ -1153,6 +1043,7 @@ export default function AgentFlightReviewBook() {
         setPassangerInfo = {setPassangerInfo}
         reInitialValues = {reInitialValues}
         setReInitialValues = {setReInitialValues}
+        setAllFlightSeats = {setAllFlightSeats}
         //selectPassanger = {selectPassanger}
       />
     }

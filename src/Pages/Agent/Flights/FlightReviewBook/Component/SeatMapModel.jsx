@@ -7,8 +7,8 @@ import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.
 import toast from 'react-hot-toast';
 import FlightDetailModel from '../../Component/FlightDetailModel';
 //import Moment from 'moment';
-export default function SeatMapModel({showModal, handleClose,proceedForSeat, bookingId, flightMapInfo, flightMapIndex, passangerInfo,setPassangerInfo,reInitialValues,setReInitialValues}) {
-    console.log("reInitialValues1",reInitialValues);
+export default function SeatMapModel({showModal, handleClose,proceedForSeat, bookingId, flightMapInfo, flightMapIndex, passangerInfo,setPassangerInfo,reInitialValues,setReInitialValues,setAllFlightSeats}) {
+    //console.log("reInitialValues1",reInitialValues);
     //const [passangerInfoModel, setPassangerInfoModel] = React.useState(passangerInfo);
     //const [bookingSeatMap, setBookingSeatMap] = React.useState();
     const [selectPassanger,setSelectPassanger] = React.useState(0);
@@ -35,6 +35,7 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                 const result =  response.data.data[flightMapIndex];
                 const sInfo = result.sInfo;
                 setPrices(result.prices)
+                setAllFlightSeats(response.data.data);
                 var customSeatMap = [];
                 for (var row=1; row <= result.sData.row; row++) {
                     var tmp = {column: []}
