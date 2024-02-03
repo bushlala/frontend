@@ -76,6 +76,30 @@ export const FlightSearchService = {
         }
       })
     },
+
+    BookingConfirm: async function (request, cancel = false) {
+      return await apiConfig.request({
+        url: `booking/confirmBooking`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+      })
+    },
+
+    BookingCheckValidationOfBookingId: async function (request, cancel = false) {
+      return await apiConfig.request({
+        url: `booking/checkValidationOfBookingId`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+      })
+    },
+
+    
     BookTicket: async function (request, cancel = false) {
       return await apiConfig.request({
       url: `user/bookTicket`,

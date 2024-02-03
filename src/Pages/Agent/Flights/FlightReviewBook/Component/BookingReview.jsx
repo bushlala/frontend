@@ -4,13 +4,13 @@ import Moment from 'moment';
 import FareSummary from './FareSummary';
 
 //import Moment from 'moment';
-export default function BookingReview({ seasionDetail, listOfFlight, fareDetail, reInitialValues, totalPrices, layover }) {
+export default function BookingReview({ seasionDetail, listOfFlight, fareDetail, reInitialValues, totalPrices, layover,BookingCheckValidationOfBookingId}) {
   //console.log('listOfFlight',listOfFlight);
   //console.log('fareDetail',fareDetail);
   //console.log('reInitialValues',reInitialValues);
   //const paxInfo = seasionDetail.paxInfo;
   let listOfTravellerInfo = [];
-  console.log("kopiouuiouioiuouio", layover)
+  //console.log("kopiouuiouioiuouio", layover)
   reInitialValues.travellerInfo.forEach((passanger, passangerKey) => {
     let tmp = {
       fullName: `${passanger.title} ${passanger.firstName} ${passanger.lastName}`,
@@ -204,12 +204,21 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
                                     <td className='fw-bold'>{flightValue.fullName}</td>
                                     <td className='fw-bold'>{flightValue.flightNameWithSeat}</td>
                                     <td>
-                                      <div className='graysmalltext'>
-                                        <i class="fa-solid fa-suitcase me-1"></i>{flightValue.flightWithBaggae}
-                                      </div>
-                                      <div className='graysmalltext'>
-                                        <i class="fa-solid fa-utensils"></i> {flightValue.flighWithMeal}
-                                      </div>
+                                      {
+                                        flightValue.flightWithBaggae &&
+                                        <div className='graysmalltext'>
+                                          <i class="fa-solid fa-suitcase me-1"></i>{flightValue.flightWithBaggae}
+                                        </div>
+                                      }
+
+                                      {
+                                        flightValue.flighWithMeal &&
+                                        <div className='graysmalltext'>
+                                          <i class="fa-solid fa-utensils"></i> {flightValue.flighWithMeal}
+                                        </div>
+                                      }
+                                      
+                    
                                     </td>
                                   </tr>
                                 ))
@@ -239,7 +248,7 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
                           <Link to={'/BookingHold'}>
                             <button className='btn btn-dark float-end mx-2'> Block</button>
                           </Link>
-                          <button className='btn btn-danger float-end'> Proceed To Pay</button>
+                          <button className='btn btn-danger float-end' onClick={()=>BookingCheckValidationOfBookingId()}> Proceed To Pay</button>
                         </div>
                       </div>
                     </div>

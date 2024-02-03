@@ -129,19 +129,19 @@ export default function AgentFlightReviewBook() {
       BASE_URL = process.env.REACT_APP_LIVE_API_URL;
   }
 
-  let amount=5000
-  const checkoutHandler = async (amount) => {
-
-  let getapiurl=`${BASE_URL}api/payment/getkey`
-  let checkoutapiurl=`${BASE_URL}api/payment/checkout`
-
-  const { data: { data } } = await axios.get(getapiurl)
-  const { data: { order } } = await axios.post(checkoutapiurl,{amount})
-
-
-  const options = {
+  //let amount=5000
+  const checkoutHandler = async (bookingRequest) => {
+    localStorage.setItem('bookingRequest', JSON.stringify(bookingRequest));
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    console.log("bookingRequest",bookingRequest);
+    let getapiurl=`${BASE_URL}api/payment/getkey`;
+    let checkoutapiurl=`${BASE_URL}api/payment/checkout`;
+    const amount = bookingRequest.amount
+    const { data: { data } } = await axios.get(getapiurl)
+    const { data: { order } } = await axios.post(checkoutapiurl,{amount})
+    const options = {
       key:data.RAZORPAY_API_KEY,
-      amount: order.amount,
+      amount: bookingRequest.amount,
       currency: "INR",
       name: "wizotrip booking",
       description: "Air Ticket Booking",
@@ -149,16 +149,16 @@ export default function AgentFlightReviewBook() {
       order_id: order.id,
       callback_url: `${BASE_URL}api/payment/paymentVerification/`,
       prefill: {
-          name: "Nishit",
-          email: "nishitengineer0@gmail.com",
-          contact: "9662989748"
+        name: userData?.data?.firstName+" "+userData?.data?.lastName,
+        email: userData?.data?.email,
+        contact: userData?.data?.mobileNumber,
       },
       notes: {
-          "address": "Iswarkrupa Society, Hatkeshwar"
+        "address": "Iswarkrupa Society, Hatkeshwar"
       },
       theme: {
-          "color": "#121212"
-        }
+        "color": "#121212"
+      }
     };
     const razor = new window.Razorpay(options);
     razor.open();
@@ -499,7 +499,7 @@ export default function AgentFlightReviewBook() {
 
     console.log("values",values);
     setReInitialValues(values);
-    //setActiveStep("third");
+    setActiveStep("third");
     FlightSearchService.BookingAddPassenger(values).then(async (response) => {
       if(response.data.status){
         const result =  response.data.data;
@@ -512,6 +512,56 @@ export default function AgentFlightReviewBook() {
       toast.error('Something went wrong');
     });
   };
+
+  
+  const BookingCheckValidationOfBookingId = async () =>{
+    const bookingCheckValidationOfBookingId = {
+      bookingId : reInitialValues.bookingId,
+    }
+    const bookingRequest = {
+      bookingId : reInitialValues.bookingId,
+      amount : totalPrices.total,
+      personalPhone : reInitialValues.personalPhone,
+      personalEmail : reInitialValues.personalEmail,
+      gstNumber : reInitialValues.gstNumber,
+      gstEmail : reInitialValues.gstEmail,
+      registeredName : reInitialValues.registeredName,
+      mobile : reInitialValues.mobile,
+      address : reInitialValues.address,
+      isGst : reInitialValues.isGst,
+      bookingId : reInitialValues.bookingId,
+      travellerInfo : reInitialValues.travellerInfo
+    }
+    checkoutHandler(bookingRequest);
+    return false;
+    FlightSearchService.BookingCheckValidationOfBookingId(bookingCheckValidationOfBookingId).then(async (response) => {
+      if(response.data.status){
+        const result =  response.data.data;
+        const bookingRequest = {
+          bookingId : reInitialValues.bookingId,
+          amount : totalPrices.total,
+          personalPhone : reInitialValues.personalPhone,
+          personalEmail : reInitialValues.personalEmail,
+          gstNumber : reInitialValues.gstNumber,
+          gstEmail : reInitialValues.gstEmail,
+          registeredName : reInitialValues.registeredName,
+          mobile : reInitialValues.mobile,
+          address : reInitialValues.address,
+          isGst : reInitialValues.isGst,
+          bookingId : reInitialValues.bookingId,
+          travellerInfo : reInitialValues.travellerInfo
+        }
+        checkoutHandler(bookingRequest);
+        console.log("result",result);
+      }else{
+        toast.error('Something went wrong');
+      }
+    }).catch((e) => {
+      console.log(e);
+      toast.error('Something went wrong');
+    });
+  }
+  
 
   return (
     <>
@@ -1026,6 +1076,7 @@ export default function AgentFlightReviewBook() {
                 reInitialValues={reInitialValues}
                 totalPrices = {totalPrices}
                 layover={bookingReviewData.layover}
+                BookingCheckValidationOfBookingId = {BookingCheckValidationOfBookingId}
               />
             }
              
