@@ -15,7 +15,8 @@ import Moment from 'moment';
 import { TailSpin } from "react-loader-spinner";
 import axios from 'axios';
 import Select from "react-select";
-
+import Modal from 'react-bootstrap/Modal';
+// import Cookies from 'js-cookie';
 
 
 function taskDate(dateMilli) {
@@ -38,62 +39,46 @@ const AgentFlightSearch = () => {
     } else if (process.env.REACT_APP_SERVER_ENV === 'Live') {
         BASE_URL = process.env.REACT_APP_LIVE_API_URL;
     }
-
-    const [dates, setDates] = useState([]);
     const [departureDate, setDepartureDate] = useState(new Date());
     const [minDate] = useState(new Date());
     const [returnDate, setReturnDate] = useState();
     const [loading, setLoading] = useState(false);
     const [citySwapArrowStatus, setCitySwapArrowStatus] = useState(true);
-    const [fromSearch, setFromSearch] = useState("BLR - Bengaluru");
-    const [searchTo, setSearchTo] = useState("DEL - Delhi");
-    const [error, setError] = useState("");
-    const [fromDestinationFlight, setFromDestinationFlight] = useState("BLR - India");
-    const [toDestinationFlight, setToDestinationFlight] = useState("DEL - India");
+    const [fromCityDestination, setFromCityDestination] = useState();
+    const [toCityDestination, setToCityDestination] = useState();
     const [journeyDateOne, setJourneyDateOne] = useState(new Date());
-    const [adult, setADULT] = useState("1");
-    const [child, setChild] = useState("0");
-    const [infant, setInfant] = useState("0");
-    const [travellersArr, setTravellersArr] = useState();
-    const [previllageForTicket, setPrevillageForTicket] = useState();
-    const [dateList, setDateList] = useState([]);
-    const [pc, setPC] = useState("Economy");
-    const [fromError, setFromError] = useState("");
-    const [toError, setToError] = useState("");
-    const [selectedNationality, setSelectedNationality] = useState({
-        label: "BLR - Bengaluru"
-    });
-    const [selectedTo, setSelectedTO] = useState({label: "DEL - Delhi"});;
+    const [travellersArr, setTravellersArr] = useState("1 Pax, Economy");
+    const [pc, setPc] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleIsClose = () => {
+        setIsOpen(false);
+    }
 
     const customStyles = {
         option: (provided, state) => ({
-          ...provided,
-          backgroundColor: state.isSelected ? '#6c5ffc' : 'white', // Set red background for selected option
+            ...provided,
+            backgroundColor: state.isSelected ? '#6c5ffc' : 'white', // Set red background for selected option
         }),
-      };
-      
+    };
+
     const initialValues = {
         tripType: "1",
         fromCityDestination: "",
+        previllageForTicket: "REGULAR",
         fromDestinationFlight: "",
         toCityDestination: "",
         toDestinationFlight: "",
         journeyDateOne: departureDate,
         journeyDateRound: "",
-        travellersShow: "1 Pax, Economy",
+        travellersShow: "1 Pax, ECONOMY",
         ADULT: "1",
         CHILD: "0",
         INFANT: "0",
         PC: "Economy",
         isDirectFlight: false,
         isConnectingFlight: false,
-        travellersClass: {
-            adults: "1",
-            childrens: "",
-            infants: "",
-            prefferedClass: "Economy",
-            resultFareType: "",
-        }
+
     }
 
 
@@ -161,16 +146,12 @@ const AgentFlightSearch = () => {
             sortName: "Economy"
         },
         {
-            name: "PremiumEconomy Class",
-            sortName: "PremiumEconomy"
+            name: "Premium Economy Class",
+            sortName: "Premium Economy"
         },
         {
             name: "Business Class",
             sortName: "Business"
-        },
-        {
-            name: "PremiumBusiness Class",
-            sortName: "PremiumBusiness"
         },
         {
             name: "First Class",
@@ -192,7 +173,9 @@ const AgentFlightSearch = () => {
             sortName: "3"
         },
     ];
-
+    const handleInputChange = (inputValue) => {
+        fetchAirportList(inputValue)
+    }
     const validationSchema = Yup.object().shape({
         fromCityDestination: Yup.string()
             .required("Form city is required"),
@@ -200,7 +183,6 @@ const AgentFlightSearch = () => {
         toCityDestination: Yup.string()
             .required("To city is required")
     });
-
     const nameForm = useRef(null)
     const [reInitialValues, setReInitialValues] = useState(initialValues);
     const [tripType, setTripType] = useState(1);
@@ -234,48 +216,62 @@ const AgentFlightSearch = () => {
         }
     }
 
+    const handleFareType = (event, setFieldValue, values, fieldNamme) => {
+        let count = event.target.value;
+        if (count === "2") {
+            setFieldValue(fieldNamme, "STUDENT");
+        } else if (count === "3") {
+            setFieldValue(fieldNamme, "SENIOR_CITIZEN");
+        }
+        else {
+            setFieldValue(fieldNamme, "REGULAR");
+        }
+
+    }
+
+    const handlePrefferedClass = (event, setFieldValue, values) => {
+
+        let result = event.target.value;
+        setPc(result);
+        if (result === "Economy") {
+            setFieldValue("PC", "ECONOMY");
+        }
+        else if (result === "Premium Economy") {
+            setFieldValue("PC", "PREMIUM ECONOMY");
+        }
+        else if (result === "Business") {
+            setFieldValue("PC", "BUSINESS");
+        }
+        else if (result === "First") {
+            setFieldValue("PC", "FIRST");
+        }
+        setFieldValue("travellersShow", values.travellersShow[0] + " Pax" + ", " + result.toUpperCase());
+        setTravellersArr(values.travellersShow[0] + " Pax" + ", " + result);
+    }
+
     const handleChangeTravellersValue = (event, setFieldValue, values, fieldNamme) => {
-        setPrevillageForTicket(event.target.value)
-        setFieldValue(fieldNamme, event.target.value);
-        if (fieldNamme === "travellersClass.prefferedClass"
-            || fieldNamme === "travellersClass.adults"
-            || fieldNamme === "travellersClass.childrens"
-            || fieldNamme === "travellersClass.infants") {
-
+        setFieldValue("previllageForTicket", event.target.value);
+        if (fieldNamme === "ADULT"
+            || fieldNamme === "CHILD"
+            || fieldNamme === "INFANT") {
             let seatCount = 0;
-            let travellersShowArr = reInitialValues.travellersShow.split(',');
-            if (fieldNamme === "travellersClass.prefferedClass") {
-                travellersShowArr[1] = event.target.value;
-            } else if (fieldNamme === "travellersClass.adults") {
-
-                setFieldValue("travellersClass.adults", event.target.value);
+            if (fieldNamme === "ADULT") {
                 setFieldValue("ADULT", event.target.value);
-                setADULT(event.target.value);
-
                 let adultCount = parseInt(event.target.value);
                 if (adultCount) {
                     seatCount += adultCount;
                 }
-                let childrenCount = parseInt(values.travellersClass.childrens);
-
+                let childrenCount = parseInt(values.CHILD);
                 if (childrenCount) {
                     seatCount += childrenCount;
-                    setChild(childrenCount);
-
                 }
-                let infantCount = parseInt(values.travellersClass.infants);
+                let infantCount = parseInt(values.INFANT);
                 if (infantCount) {
                     seatCount += infantCount;
                 }
-
-
-            } else if (fieldNamme === "travellersClass.childrens") {
-
-
-                setFieldValue("travellersClass.childrens", event.target.value);
+            } else if (fieldNamme === "CHILD") {
                 setFieldValue("CHILD", event.target.value);
-                setChild(event.target.value)
-                let adultCount = parseInt(values.travellersClass.adults);
+                let adultCount = parseInt(values.ADULT);
                 if (adultCount) {
                     seatCount += adultCount;
                 }
@@ -284,20 +280,17 @@ const AgentFlightSearch = () => {
                 if (childrenCount) {
                     seatCount += childrenCount;
                 }
-                let infantCount = parseInt(values.travellersClass.infants);
+                let infantCount = parseInt(values.INFANT);
                 if (infantCount) {
                     seatCount += infantCount;
                 }
-            } else if (fieldNamme === "travellersClass.infants") {
-                setFieldValue("travellersClass.infants", event.target.value);
+            } else if (fieldNamme === "INFANT") {
                 setFieldValue("INFANT", event.target.value);
-                setInfant(event.target.value);
-                let adultCount = parseInt(values.travellersClass.adults);
+                let adultCount = parseInt(values.ADULT);
                 if (adultCount) {
                     seatCount += adultCount;
                 }
-
-                let childrenCount = parseInt(values.travellersClass.childrens);
+                let childrenCount = parseInt(values.CHILD);
 
                 if (childrenCount) {
                     seatCount += childrenCount;
@@ -307,156 +300,87 @@ const AgentFlightSearch = () => {
                     seatCount += infantCount;
                 }
             }
-            travellersShowArr[0] = seatCount + " Pax";
-            setFieldValue("travellersShow", travellersShowArr[0] + "," + travellersShowArr[1]);
-            setTravellersArr(travellersShowArr[0] + "," + travellersShowArr[1]);
-            setPC(travellersShowArr[1]);
+            setFieldValue("travellersShow", seatCount + " Pax" + ", " + values.PC);
+            setTravellersArr(seatCount + " Pax" + ", " + pc);
         }
     }
+    const handleClickCitySwap = (fromCityDestination, toCityDestination, setFieldValue) => {
+        setFromCityDestination(toCityDestination);
+        setToCityDestination(fromCityDestination);
 
-    const handleClickCitySwap = (from, to, setFieldValue) => {
-        if (from && from) {
+        if (fromCityDestination && toCityDestination) {
             if (citySwapArrowStatus) {
                 setCitySwapArrowStatus(false);
             } else {
                 setCitySwapArrowStatus(true);
             }
-            setSelectedNationality(to);
-            setSelectedTO(from);
-            setFieldValue("fromCityDestination", from.label);
-            setFieldValue("toCityDestination", to.label);
+            setFieldValue('fromCityDestination', toCityDestination.value);
+            setFieldValue('fromDestinationFlight', toCityDestination.label);
+            setFieldValue("toCityDestination", fromCityDestination.value);
+            setFieldValue("toCityDestinationFlight", fromCityDestination.label);
         }
     }
+
 
     const handleChangeDate = (date) => {
-        setDateForHorizontal(date);
-        const valuesss = {
-            "tripType": tripType,
-            "previllageForTicket": previllageForTicket == 3 ? "SENIOR_CITIZEN" : previllageForTicket == 2 ? "STUDENT" : "",
-            "fromCityDestination": fromSearch,
-            "fromDestinationFlight": fromDestinationFlight ? fromDestinationFlight : "",
-            "toCityDestination": searchTo,
-            "toDestinationFlight": toDestinationFlight ? toDestinationFlight : "",
-            "journeyDateOne": date,
-            "travellersshow": travellersArr,
-            "ADULT": adult,
-            "CHILD": child,
-            "INFANT": infant,
-            "PC": pc,
-            "isDirectFlight": false,
-            "isConnectingFlight": false,
-            "preferredAirline": [],
+        reInitialValues.journeyDateOne = date;
 
-        };
+        //    setReInitialValues(values);
+        setDateForHorizontal(date);
         setLoading(true);
         //return false;
-        FlightSearchService.Search(valuesss).then(async (response) => {
+        FlightSearchService.Search(reInitialValues).then(async (response) => {
             if (response.status === 200) {
                 if (response.data.status) {
                     setTripList(response.data.data)
+                    setIsOpen(false)
+
                 } else {
-                    toast.error(response.data.message.message);
+                    let errorMessage = response.data.message.message;
+                    // toast.error(response.data.message.message);
+                    setTripList([])
+                    setIsOpen(true)
+                    setErrorMsg(errorMessage);
+
                 }
             } else {
-                toast.error("Something went wrong");
+                // toast.error(response.data.message);
+                let errorMessage = response.data.message
+                setIsOpen(true)
+                setErrorMsg(errorMessage);
+
             }
             setLoading(false);
-        }).catch((e) => {
-            console.log(e);
-            toast.error('Something went wrong');
+        }).catch((error) => {
+            let errorMessage = error.message
+
+            // toast.error('Something went wrong');
             setLoading(false);
+            setIsOpen(true)
+            setErrorMsg(errorMessage);
         });
 
     }
-    const handleSubmit = async (event) => {
-  event.preventDefault();
-        setLoading(true);
-        setTravellersModelShow(false);
 
-        if (!fromSearch) {
-            setFromError("city is Required");
-        }
-        if (!selectedTo) {
-            setToError("city is Required");
-        }
-
-        let startDate;
-        let endDate;
-        if (journeyDateOne) {
-            startDate = Moment(journeyDateOne).format('YYYY-MM-DD');
-            endDate = Moment(startDate, "YYYY-MM-DD").add(7, 'days').format('YYYY-MM-DD');
-            // journeyDateOne = Moment(journeyDateOne).format('DD-MM-YYYY')
-            var dates = [];
-            const start = Moment(startDate);
-            const end = Moment(endDate);
-            while (!start.isSame(end)) {
-                dates.push(start.format("DD-MM-YYYY"));
-                start.add(1, 'day');
-            }
-            setDateList(dates);
-            //    setReInitialValues(values);
-
-
-        }
-
-        const valuesss = {
-            "tripType": tripType,
-            "previllageForTicket": previllageForTicket == 3 ? "SENIOR_CITIZEN" : previllageForTicket == 2 ? "STUDENT" : "",
-            "fromCityDestination": fromSearch,
-            "fromDestinationFlight": fromDestinationFlight ? fromDestinationFlight : "",
-            "toCityDestination": searchTo,
-            "toDestinationFlight": toDestinationFlight ? toDestinationFlight : "",
-            "journeyDateOne": Moment(journeyDateOne).format('DD-MM-YYYY'),
-            "travellersshow": travellersArr,
-            "ADULT": adult || '0',
-            "CHILD": child || '0',
-            "INFANT": infant || '0',
-            "PC": pc,
-            "isDirectFlight": false,
-            "isConnectingFlight": false,
-            "preferredAirline": [],
-
-        };
-
-        FlightSearchService.Search(valuesss).then(async (response) => {
-            setLoading(true);
-            if (response.status === 200) {
-                if (response.data.status) {
-                    setTripList(response.data.data)
-
-                } else {
-                    let errData = response?.data?.message?.message || "Some thing went wrong. Please contact with admin Thank you!"
-                    toast.error(errData);
-                }
-            } else {
-                setTripList([]);
-                toast.error("Something went wrong");
-            }
-
-            setLoading(false);
-        }).catch((error) => {
-            toast.error(error);
-            setLoading(false);
-        });
-
-
-    };
-
-   useEffect(() => {
+    useEffect(() => {
         fetchAirportList();
 
     }, [])
 
+    const handleOptionTOValues = (inputValue) => {
+        fetchAirportList(inputValue);
+    }
 
-    const fetchAirportList = (countryCode) => {
+    const fetchAirportList = (value) => {
         const valuesss = {
-            "search": countryCode
+            "search": value
         }
         FlightSearchService.AirPort(valuesss).then(async (response) => {
-
             if (response.status === 200) {
                 let result = response.data.data.rows;
                 setCityList(result);
+                console.log("result", result)
+
             } else {
                 setCityList([]);
 
@@ -467,31 +391,88 @@ const AgentFlightSearch = () => {
 
     };
 
-    const optionValues = cityList.map((item) => ({
+    const handleOnSubmit = async (values, { resetForm }) => {
+
+        setLoading(true);
+        setTravellersModelShow(false);
+
+        let startDate;
+        let endDate;
+        if (values.journeyDateOne) {
+
+            startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD');
+            endDate = Moment(startDate, "YYYY-MM-DD").add(7, 'days').format('YYYY-MM-DD');
+            values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
+            var dates = [];
+            const start = Moment(startDate);
+            const end = Moment(endDate);
+            while (!start.isSame(end)) {
+                dates.push(start.format("DD-MM-YYYY"));
+                start.add(1, 'day');
+            }
+            values.dateArr = dates;
+            setDateForHorizontal(values.journeyDateOne);
+            setReInitialValues(values);
+
+        }
+        FlightSearchService.Search(values).then(async (response) => {
+            setLoading(true);
+            if (response.status === 200) {
+
+                if (response.data.status === true) {
+                    setTripList(response.data.data)
+                    setIsOpen(false)
+
+                } else {
+                    console.log("errorMessage", response.data)
+                    let errorMessage = response.data.message ? response.data.message : "someting wrong"
+                    // toast.error(response.data.message);
+                    setIsOpen(true)
+                    setErrorMsg(errorMessage);
+                }
+            } else {
+                let errorMessage = response.data.message;
+                // toast.error(errorMessage);
+                console.log("values6");
+                setIsOpen(true)
+                setErrorMsg(errorMessage);
+            }
+            setLoading(false);
+        }).catch((error) => {
+            let errorMessage = error.message
+            // toast.error(errors);
+            console.log("values7");
+            setLoading(false);
+            setIsOpen(true)
+            setErrorMsg(errorMessage);
+        });
+    };
+
+    //modify code 
+    const optionFromValues = cityList.map((item) => ({
         value: item.destinationFlight,
         label: item.city,
         image: item.flagUrl
     }));
 
+    const optionTOValues = cityList.map((item) => ({
+        value: item.destinationFlight,
+        label: item.city,
+        image: item.flagUrl
+    }));
 
-    const handleSelectedOptions = (selectedOption) => {
-        setFromError("");
-        setSelectedNationality(selectedOption)
-        setFromSearch(selectedOption.label)
-        setFromDestinationFlight(selectedOption.value)
-    }
-    const handleSelectedTOOptions = (selectedOption) => {
-        setToError("");
-        setSelectedTO(selectedOption)
-        setSearchTo(selectedOption.label)
-        setToDestinationFlight(selectedOption.value)
-    }
-    const handleInputChange = (inputValue) => {
-        // setSearchKey(inputValue);
-        fetchAirportList(inputValue);
-    };
+    const handleChangeDestination = (selectedOptions, setFieldValue, fieldName) => {
+        if (fieldName === "fromCityDestination") {
+            setFromCityDestination(selectedOptions);
+            setFieldValue('fromCityDestination', selectedOptions.value);
+            setFieldValue('fromDestinationFlight', selectedOptions.label);
+        } else {
+            setToCityDestination(selectedOptions);
+            setFieldValue('toCityDestination', selectedOptions.value);
+            setFieldValue('toDestinationFlight', selectedOptions.label);
+        }
 
-  
+    }
     return (
         <>
 
@@ -504,17 +485,16 @@ const AgentFlightSearch = () => {
                             <Formik
                                 initialValues={reInitialValues}
                                 validationSchema={validationSchema}
-                                dateList={dateList}
-                                // onSubmit={handleOnSubmit}
+                                onSubmit={handleOnSubmit}
                                 enableReinitialize={true}
-
                             >
                                 {({ classes, errors, touched, values, handleChange, setFieldValue }) => (
-                                    <Form ref={nameForm} >
+                                    <Form ref={nameForm}>
                                         <div className='container'>
                                             <h4 className='text-center text-white'>Book flights and explore the world with us.</h4>
                                             <Box className='card home-flightsear-card'>
                                                 <Box className='card-body'>
+
                                                     <ul className="nav nav-pills One-Way-tab">
                                                         <li className="nav-item">
                                                             <Link className={`nav-link ${tripType === 1 ? "active" : ""}`} aria-current="page" href="#" onClick={() => changeTripType(1)}>One-Way</Link>
@@ -530,63 +510,68 @@ const AgentFlightSearch = () => {
                                                         <Grid item className='col'>
                                                             <div className='form-group field-label search-fild'>
                                                                 <InputLabel className=''>From</InputLabel>
-                                                                <div className={`swapbtn ${citySwapArrowStatus ? 'down' : ''}`} onClick={() => handleClickCitySwap(selectedNationality, selectedTo, setFieldValue)}>
+                                                                <div className={`swapbtn ${citySwapArrowStatus ? 'down' : ''}`} onClick={() => handleClickCitySwap(fromCityDestination, toCityDestination, setFieldValue)}>
                                                                     <i className="fa fa-exchange" aria-hidden="true"></i>
                                                                 </div>
-                                                                <Field
-                                                                    as={Select}
+
+                                                                <Select
                                                                     className='form-control active'
                                                                     name='fromCityDestination'
-                                                                    value={selectedNationality}
-                                                                    onChange={(selectedNationality)=>handleSelectedOptions(selectedNationality)}
-                                                                    options={optionValues}
+                                                                    value={fromCityDestination}
+                                                                    onChange={(e) => {
+                                                                        handleChangeDestination(e, setFieldValue, "fromCityDestination");
+                                                                    }}
+                                                                    options={optionFromValues}
                                                                     styles={customStyles}
-                                                                    formatOptionLabel={(country, { context }) => (
-                                                                            <div className="searchdestinationboxclass list d-flex ">
-                                                                                <div className='search-text'>
-                                                                                    <div>
-                                                                                        {context === "menu" && country.value}
-                                                                                    </div>    
-                                                                                    {country.label}
-                                                                                </div>
-                                                                                {context === "menu" && <div className='search-img'><img className="flagimage" src={country.image} /></div>}
-                                                                            </div>
-                                                                        // </div>
+                                                                    maxLength={5}
 
+                                                                    formatOptionLabel={(country, { context }) => (
+                                                                        <div className="searchdestinationboxclass list d-flex ">
+                                                                            <div className='search-text'>
+                                                                                <div>
+                                                                                    {context === "menu" && country.value}
+                                                                                </div>
+                                                                                {country.label}
+                                                                            </div>
+                                                                            {context === "menu" && <div className='search-img'><img className="flagimage" src={country.image} /></div>}
+                                                                        </div>
                                                                     )}
                                                                     onInputChange={handleInputChange}
                                                                 />
-                                                                {fromError && <span style={{ color: "red" }}>{fromError}</span>}
-
+                                                                {
+                                                                    errors.fromCityDestination && <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.fromCityDestination}</Box>
+                                                                }
                                                             </div>
                                                         </Grid>
 
                                                         <Grid item className='col'>
                                                             <div className='form-group field-label search-fild'>
                                                                 <InputLabel className=''>To</InputLabel>
-                                                                <Field
-                                                                    as={Select}
+                                                                <Select
                                                                     className='form-control'
                                                                     name='toCityDestination'
-                                                                    value={selectedTo}
-                                                                    onChange={handleSelectedTOOptions}
-                                                                    options={optionValues}
+                                                                    value={toCityDestination}
+                                                                    onChange={(e) => {
+                                                                        handleChangeDestination(e, setFieldValue, "toCityDestination");
+                                                                    }}
+                                                                    options={optionTOValues}
                                                                     styles={customStyles}
                                                                     formatOptionLabel={(country, { context }) => (
                                                                         <div className="searchdestinationboxclass list d-flex ">
-                                                                                <div className='search-text'>
-                                                                                    <div>
-                                                                                        {context === "menu" &&    country.value}
-                                                                                    </div>    
-                                                                                    {country.label}
+                                                                            <div className='search-text'>
+                                                                                <div>
+                                                                                    {context === "menu" && country.value}
                                                                                 </div>
-                                                                                {context === "menu" && <div><img className="flagimage" src={country.image} /></div>}
+                                                                                {country.label}
                                                                             </div>
-                                                                       
+                                                                            {context === "menu" && <div><img className="flagimage" src={country.image} /></div>}
+                                                                        </div>
                                                                     )}
-                                                                    onInputChange={handleInputChange}
+                                                                    onInputChange={handleOptionTOValues}
                                                                 />
-                                                                {toError && <span style={{ color: "red" }}>{toError}</span>}
+                                                                {
+                                                                    errors.toCityDestination && <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.toCityDestination}</Box>
+                                                                }
                                                             </div>
                                                         </Grid>
                                                         <Grid item className='col'>
@@ -623,7 +608,7 @@ const AgentFlightSearch = () => {
                                                         <Grid item className='col'>
                                                             <div className='form-group field-label'>
                                                                 <InputLabel className=''>Travellers & Class</InputLabel>
-                                                                <input className='form-control' name='travellersShow' id='travellersShow' type='text' value={values.travellersShow} onClick={() => onChangeTravellersShow()} />
+                                                                <input className='form-control' name='travellersShow' id='travellersShow' type='text' value={travellersArr} onClick={() => onChangeTravellersShow()} />
                                                                 {
                                                                     travellersModelShow &&
                                                                     <div className='travellersshow'>
@@ -636,25 +621,23 @@ const AgentFlightSearch = () => {
                                                                             <span className='small'>Adults</span>
                                                                             <div className='boxselectpax'>
                                                                                 <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                                                                    {
-                                                                                        seatNunmberAdult && seatNunmberAdult.map((value, key) => (
-
-                                                                                            <div key={key}>
-                                                                                                <input
-                                                                                                    type="radio"
-                                                                                                    className="btn-check"
-                                                                                                    autoComplete="off"
-                                                                                                    name="travellersClass.adults"
-                                                                                                    id={`travellersClass.adults${key}`}
-                                                                                                    checked={values.travellersClass.adults === value.name ? "checked" : ""}
-                                                                                                    value={value.name}
-                                                                                                    onChange={(e) => {
-                                                                                                        handleChangeTravellersValue(e, setFieldValue, values, "travellersClass.adults");
-                                                                                                    }}
-                                                                                                />
-                                                                                                <label className="btn search-check-box" htmlFor={`travellersClass.adults${key}`}>{value.name}</label>
-                                                                                            </div>
-                                                                                        ))
+                                                                                    {seatNunmberAdult && seatNunmberAdult.map((value, key) => (
+                                                                                        <div key={key}>
+                                                                                            <input
+                                                                                                type="radio"
+                                                                                                className="btn-check"
+                                                                                                autoComplete="off"
+                                                                                                name="ADULT"
+                                                                                                id={`ADULT${key}`}
+                                                                                                checked={values.ADULT === value.name ? "checked" : ""}
+                                                                                                value={value.name}
+                                                                                                onChange={(e) => {
+                                                                                                    handleChangeTravellersValue(e, setFieldValue, values, "ADULT");
+                                                                                                }}
+                                                                                            />
+                                                                                            <label className="btn search-check-box" htmlFor={`ADULT${key}`}>{value.name}</label>
+                                                                                        </div>
+                                                                                    ))
                                                                                     }
                                                                                 </div>
                                                                             </div>
@@ -671,15 +654,15 @@ const AgentFlightSearch = () => {
                                                                                                     type="radio"
                                                                                                     className="btn-check"
                                                                                                     autoComplete="off"
-                                                                                                    name="travellersClass.childrens"
-                                                                                                    id={`travellersClass.childrens${key}`}
-                                                                                                    checked={values.travellersClass.childrens === value.name ? "checked" : ""}
+                                                                                                    name="CHILD"
+                                                                                                    id={`CHILD${key}`}
+                                                                                                    checked={values.CHILD === value.name ? "checked" : ""}
                                                                                                     value={value.name}
                                                                                                     onChange={(e) => {
-                                                                                                        handleChangeTravellersValue(e, setFieldValue, values, "travellersClass.childrens");
+                                                                                                        handleChangeTravellersValue(e, setFieldValue, values, "CHILD");
                                                                                                     }}
                                                                                                 />
-                                                                                                <label className="btn search-check-box" htmlFor={`travellersClass.childrens${key}`}>{value.name}</label>
+                                                                                                <label className="btn search-check-box" htmlFor={`CHILD${key}`}>{value.name}</label>
                                                                                             </div>
                                                                                         ))
                                                                                     }
@@ -697,15 +680,15 @@ const AgentFlightSearch = () => {
                                                                                                     type="radio"
                                                                                                     className="btn-check"
                                                                                                     autoComplete="off"
-                                                                                                    name="travellersClass.infants"
-                                                                                                    id={`travellersClass.infants${key}`}
-                                                                                                    checked={values.travellersClass.infants === value.name ? "checked" : ""}
+                                                                                                    name="INFANT"
+                                                                                                    id={`INFANT${key}`}
+                                                                                                    checked={values.INFANT === value.name ? "checked" : ""}
                                                                                                     value={value.name}
                                                                                                     onChange={(e) => {
-                                                                                                        handleChangeTravellersValue(e, setFieldValue, values, "travellersClass.infants");
+                                                                                                        handleChangeTravellersValue(e, setFieldValue, values, "INFANT");
                                                                                                     }}
                                                                                                 />
-                                                                                                <label className="btn search-check-box" htmlFor={`travellersClass.infants${key}`}>{value.name}</label>
+                                                                                                <label className="btn search-check-box" htmlFor={`INFANT${key}`}>{value.name}</label>
                                                                                             </div>
                                                                                         ))
                                                                                     }
@@ -716,12 +699,11 @@ const AgentFlightSearch = () => {
                                                                             <span className="small">Preffered Class</span>
                                                                             <select
                                                                                 className="form-select"
-                                                                                name='travellersClass.prefferedClass'
-                                                                                id='travellersClass.prefferedClass'
-                                                                                value={values.travellersClass.prefferedClass}
-                                                                                defaultValue={values.travellersClass.prefferedClass}
+                                                                                name='PC'
+                                                                                id='PC'
+                                                                                value={pc}
                                                                                 onChange={(e) => {
-                                                                                    handleChangeTravellersValue(e, setFieldValue, values, "travellersClass.prefferedClass");
+                                                                                    handlePrefferedClass(e, setFieldValue, values);
                                                                                 }}
                                                                             >
                                                                                 {
@@ -739,12 +721,12 @@ const AgentFlightSearch = () => {
                                                                             <span className="small">Result Fare Type</span>
                                                                             <select
                                                                                 className="form-select"
-                                                                                name='travellersClass.resultFareType'
-                                                                                id='travellersClass.resultFareType'
-                                                                                value={values.travellersClass.resultFareType}
-                                                                                defaultValue={values.travellersClass.resultFareType}
+                                                                                name='previllageForTicket'
+                                                                                id='previllageForTicket'
+                                                                                value={values.previllageForTicket}
+                                                                                defaultValue={values.previllageForTicket}
                                                                                 onChange={(e) => {
-                                                                                    handleChangeTravellersValue(e, setFieldValue, values, "travellersClass.resultFareType");
+                                                                                    handleFareType(e, setFieldValue, values, "previllageForTicket");
                                                                                 }}
                                                                             >
                                                                                 {
@@ -775,11 +757,12 @@ const AgentFlightSearch = () => {
 
                                                                         :
                                                                         <button
-                                                                            onClick={handleSubmit}
                                                                             className='btn search-flights'
                                                                             type='submit'
                                                                             disabled={loading ? 'disabled' : ''}
                                                                         > SEARCH FLIGHTS</button>
+
+
                                                                 }
 
                                                             </div>
@@ -803,19 +786,19 @@ const AgentFlightSearch = () => {
                             </Formik>
                         </div>
                     </div>
-                    <div className='flighttopbarblk'>
+                    {tripList && tripList.length > 1 && <div className='flighttopbarblk'>
                         <div className='container'>
                             <div className='d-flex'>
                                 <div className='me-xl-5'>
-                                    <div class="headtext">{fromSearch} </div>
-                                    <div class="subtext">{fromDestinationFlight}</div>
+                                    <div class="headtext">{fromCityDestination && fromCityDestination.value} </div>
+                                    <div class="subtext">{fromCityDestination && fromCityDestination.value}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                 </div>
                                 <div className='me-xl-5'>
-                                    <div class="headtext">{searchTo} </div>
-                                    <div class="subtext"> {toDestinationFlight}</div>
+                                    <div class="headtext">{toCityDestination && toCityDestination.text} </div>
+                                    <div class="subtext"> {toCityDestination && toCityDestination.value}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <div class="headtext">Departure Date </div>
@@ -823,11 +806,12 @@ const AgentFlightSearch = () => {
                                 </div>
                                 <div className=''>
                                     <div class="headtext">Passengers & Class </div>
-                                    <div class="subtext"> {adult} Adult , {pc}</div>
+                                    <div class="subtext"> {travellersArr}</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>}
+
                     {
                         loading ? <TailSpin color="red" radius={"8px"} />
                             :
@@ -838,13 +822,24 @@ const AgentFlightSearch = () => {
                                     dateForHorizontal={dateForHorizontal}
                                     tripList={tripList}
                                     reInitialValues={reInitialValues}
-                                    dateList={dateList}
                                     handleChangeDate={handleChangeDate}
-
                                 />
                             </div>
                     }
                 </div>
+                <Modal size="sm" show={isOpen} onHide={handleIsClose} centered>
+                    <div className='modal-content'>
+                        <div className="errmodal-header text-center">
+                            <h2 className="errmodal-title w-100 fw-bold text-danger">Sorry!</h2>
+                        </div>
+                        <div className="modal-body">
+                            <p className="text-center">{errorMsg && errorMsg}</p>
+                        </div>
+                        <div className='errmodal-footer text-center'>
+                            <button className="btn btn-danger btn-block w-25 mb-3" onClick={handleIsClose}>OK</button>
+                        </div>
+                    </div>
+                </Modal>
             </div>
             {/* <FlightSearchList
         searchListData = "Test"

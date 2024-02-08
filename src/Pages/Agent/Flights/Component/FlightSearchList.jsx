@@ -7,12 +7,11 @@ import Button from 'react-bootstrap/Button';
 import FlightDetailModel from './FlightDetailModel';
 import Moment from 'moment';
 
-export default function FlightSearchList({dateForHorizontal,tripList,handleChangeDate,dateList}) {
+export default function FlightSearchList({dateForHorizontal,tripList,reInitialValues,handleChangeDate}) {
 
    
 
 
-    //console.log("departureDate",departureDate);
     //departureDate = Moment(departureDate).format('DD-MM-YYYY');
     //console.log("departureDate1",departureDate);
     //console.log("tripList",tripList);
@@ -122,16 +121,15 @@ export default function FlightSearchList({dateForHorizontal,tripList,handleChang
                         <div className='flight-search-calouter mb-4 mt-2'>
                             <div className='btn-group'>
                                 
-                               {dateList && dateList.map((value,key) => (
-                              <div className=''>
-                                   <input type="radio" class="btn-check" onChange={()=>handleChangeDate(value)} autocomplete="off" name="travellersClass.adults" id={`datesbox${key}`} value="1" 
-                                       checked={dateForHorizontal==value ? 'checked':''}
-                                        />
-                                       <label class="btn search-check-box"  for={`datesbox${key}`}>{value}</label>
-                                   </div>
-                               )
-                        
-                                )}
+                            {  reInitialValues.dateArr && reInitialValues.dateArr.length!=0  && reInitialValues.dateArr.map((value, key) => (
+                                    <div className=''>
+                                        <input type="radio" class="btn-check" onChange={()=>handleChangeDate(value)} autocomplete="off" name="travellersClass.adults" id={`datesbox${key}`} value="1" 
+                                        checked={dateForHorizontal==value ? 'checked':''}
+                                         />
+                                        <label class="btn search-check-box"  for={`datesbox${key}`}>{value}</label>
+                                    </div>
+                                ))
+                            }
                             </div>
                         </div>
 

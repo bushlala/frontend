@@ -130,6 +130,11 @@ import AgentGenerateInvoice from "../Pages/Agent/Generate-Invoice/GenerateInvoic
 import AgentProfile from "../Pages/Agent/Agent-Profile/AgentProfile.jsx"
 
 
+// Agent RoundTrip 
+import FlightRoundSearchList from "../Pages/Agent/Flights/Component/Roundtriplist/FlightRoundSearchList.jsx";
+
+// Ticket 
+ import TicketPdf from "../Pages/Agent/Ticket-Pdf/TicketPdf.jsx";
 
 import Nopage from "./NoPage.jsx";
 //import Flight from "@mui/icons-material/Flight.js";
@@ -405,6 +410,9 @@ const Routing = () => {
             <Route exact path='/AdForm' element={<AdForm />}></Route>
             <Route exact path='/BookingList' element={<Bookinglist />}></Route> 
             <Route exact path='/CancellationList' element={<CancellationList />}></Route>  */}
+{/* Agent Round Trip  */}
+    <Route exact path="Agent/FlightRoundSearchList" element={<FlightRoundSearchList />}></Route>
+    <Route exact path="agent/ticketpdf" element={<TicketPdf />}></Route>
 
             </Routes>
             {/* </BrowserRouter> */}

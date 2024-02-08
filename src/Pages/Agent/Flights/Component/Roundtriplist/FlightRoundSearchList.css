@@ -1,0 +1,18 @@
+.search-footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+}
+.vl-line{
+    height: 50px;
+    border-left: 1px solid white;   
+}
+.booking-btn{
+    background-color: #6c757d;
+    color: white;
+}
+.main-row{
+    margin-bottom: 90px;
+}

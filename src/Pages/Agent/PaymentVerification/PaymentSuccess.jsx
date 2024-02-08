@@ -1,10 +1,17 @@
+import React,{useState,useEffect} from 'react';
 import { Box, Heading, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
-import { useSearchParams } from "react-router-dom"
-const PaymentSuccess = () => {
+import { useSearchParams } from "react-router-dom";
+
+
+
+
+const PaymentSuccess = ({ cookies }) => {
     const seachQuery = useSearchParams()[0]
     const referenceNum = seachQuery.get("reference");
 
+
+      
+      
     //const handleBookingConfirm = async () =>{
         // const confirmBookingRequest = {
         //     bookingId : reInitialValues.bookingId,
@@ -47,4 +54,5 @@ const PaymentSuccess = () => {
         </Box>
     )
 }
-export default PaymentSuccess
+
+export default PaymentSuccess;

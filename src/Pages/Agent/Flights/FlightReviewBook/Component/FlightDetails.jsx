@@ -109,12 +109,12 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover }) {
                                             Show Fare Rules
                                         </a>
                                     </p>
-                                    {/* <Button onClick={handleShow1}>gdfhd</Button> */}
-                                    <Modal size="lg" show={showModal1} onHide={handleClose1} centered>
+                                    <Button onClick={handleShow1}>Base fare alert</Button>
+                                    <Modal size="md" show={showModal1} onHide={handleClose1} centered>
                                         <Modal.Header>
-                                            <div>
-                                                <h2 className='text-center'>CONFIRM TO PROCEED</h2>
-                                                <h5 className='text-center'>Fare have changed</h5>
+                                            <div className='text-center'>
+                                                <h3>CONFIRM TO PROCEED</h3>
+                                                <h6>Fare have changed</h6>
                                             </div>
                                         </Modal.Header>
                                         <Modal.Body>
@@ -123,6 +123,17 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover }) {
                                                 <h4>New Fare is <spna></spna></h4>
                                             </div>
                                         </Modal.Body>
+                                        <Modal.Footer>
+                                            <div className='row'>
+                                                <div></div>
+                                            </div>
+                                            <Button variant="" onClick={handleClose}>
+                                                Back
+                                            </Button>
+                                            <Button variant="dark" onClick={handleClose}>
+                                                Continue
+                                            </Button>
+                                        </Modal.Footer>
                                     </Modal>
                                     <div class="collapse" id="collapseExample">
                                         <div class="card card-body">
