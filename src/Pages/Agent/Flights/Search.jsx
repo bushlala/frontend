@@ -16,7 +16,7 @@ import { TailSpin } from "react-loader-spinner";
 import axios from 'axios';
 import Select from "react-select";
 import Modal from 'react-bootstrap/Modal';
-// import Cookies from 'js-cookie';
+
 
 
 function taskDate(dateMilli) {
@@ -50,7 +50,7 @@ const AgentFlightSearch = () => {
     const [travellersArr, setTravellersArr] = useState("1 Pax, Economy");
     const [pc, setPc] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [errorMsg, setErrorMsg] = useState("");
+    const [errorMsg , setErrorMsg]= useState("");
     const handleIsClose = () => {
         setIsOpen(false);
     }
@@ -64,11 +64,11 @@ const AgentFlightSearch = () => {
 
     const initialValues = {
         tripType: "1",
-        fromCityDestination: "",
+        fromCityDestination: "BLR - India",
         previllageForTicket: "REGULAR",
-        fromDestinationFlight: "",
-        toCityDestination: "",
-        toDestinationFlight: "",
+        fromDestinationFlight:"BLR - Bengaluru",
+        toCityDestination: "DEL - India",
+        toDestinationFlight: "DEL - Delhi",
         journeyDateOne: departureDate,
         journeyDateRound: "",
         travellersShow: "1 Pax, ECONOMY",
@@ -77,7 +77,7 @@ const AgentFlightSearch = () => {
         INFANT: "0",
         PC: "Economy",
         isDirectFlight: false,
-        isConnectingFlight: false,
+        isConnectingFlight: true,
 
     }
 
@@ -161,6 +161,10 @@ const AgentFlightSearch = () => {
 
     const resultFareType = [
         {
+            name: "select options",
+            sortName: "0"
+        },
+        {
             name: "Regular Fare",
             sortName: "1"
         },
@@ -173,7 +177,9 @@ const AgentFlightSearch = () => {
             sortName: "3"
         },
     ];
-    const handleInputChange = (inputValue) => {
+
+
+    const handleInputChange =(inputValue)=>{
         fetchAirportList(inputValue)
     }
     const validationSchema = Yup.object().shape({
@@ -183,6 +189,7 @@ const AgentFlightSearch = () => {
         toCityDestination: Yup.string()
             .required("To city is required")
     });
+
     const nameForm = useRef(null)
     const [reInitialValues, setReInitialValues] = useState(initialValues);
     const [tripType, setTripType] = useState(1);
@@ -219,6 +226,7 @@ const AgentFlightSearch = () => {
     const handleFareType = (event, setFieldValue, values, fieldNamme) => {
         let count = event.target.value;
         if (count === "2") {
+           
             setFieldValue(fieldNamme, "STUDENT");
         } else if (count === "3") {
             setFieldValue(fieldNamme, "SENIOR_CITIZEN");
@@ -226,11 +234,12 @@ const AgentFlightSearch = () => {
         else {
             setFieldValue(fieldNamme, "REGULAR");
         }
-
+        setTravellersArr(values.travellersShow[0] + " Pax" + ", " + values.PC);
+       
     }
 
     const handlePrefferedClass = (event, setFieldValue, values) => {
-
+        
         let result = event.target.value;
         setPc(result);
         if (result === "Economy") {
@@ -247,7 +256,8 @@ const AgentFlightSearch = () => {
         }
         setFieldValue("travellersShow", values.travellersShow[0] + " Pax" + ", " + result.toUpperCase());
         setTravellersArr(values.travellersShow[0] + " Pax" + ", " + result);
-    }
+     
+  }
 
     const handleChangeTravellersValue = (event, setFieldValue, values, fieldNamme) => {
         setFieldValue("previllageForTicket", event.target.value);
@@ -345,7 +355,7 @@ const AgentFlightSearch = () => {
                 }
             } else {
                 // toast.error(response.data.message);
-                let errorMessage = response.data.message
+               let errorMessage = response.data.message
                 setIsOpen(true)
                 setErrorMsg(errorMessage);
 
@@ -353,7 +363,7 @@ const AgentFlightSearch = () => {
             setLoading(false);
         }).catch((error) => {
             let errorMessage = error.message
-
+         
             // toast.error('Something went wrong');
             setLoading(false);
             setIsOpen(true)
@@ -367,9 +377,9 @@ const AgentFlightSearch = () => {
 
     }, [])
 
-    const handleOptionTOValues = (inputValue) => {
-        fetchAirportList(inputValue);
-    }
+const handleOptionTOValues =(inputValue)=>{
+    fetchAirportList(inputValue);
+}
 
     const fetchAirportList = (value) => {
         const valuesss = {
@@ -379,8 +389,8 @@ const AgentFlightSearch = () => {
             if (response.status === 200) {
                 let result = response.data.data.rows;
                 setCityList(result);
-                console.log("result", result)
-
+                console.log("result",result)
+                
             } else {
                 setCityList([]);
 
@@ -391,15 +401,15 @@ const AgentFlightSearch = () => {
 
     };
 
-    const handleOnSubmit = async (values, { resetForm }) => {
-
+   const handleOnSubmit = async (values, { resetForm }) => {
+  
         setLoading(true);
         setTravellersModelShow(false);
-
+       
         let startDate;
         let endDate;
         if (values.journeyDateOne) {
-
+           
             startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD');
             endDate = Moment(startDate, "YYYY-MM-DD").add(7, 'days').format('YYYY-MM-DD');
             values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
@@ -413,23 +423,23 @@ const AgentFlightSearch = () => {
             values.dateArr = dates;
             setDateForHorizontal(values.journeyDateOne);
             setReInitialValues(values);
-
+            
         }
         FlightSearchService.Search(values).then(async (response) => {
             setLoading(true);
             if (response.status === 200) {
-
+             
                 if (response.data.status === true) {
                     setTripList(response.data.data)
                     setIsOpen(false)
-
+                  
                 } else {
                     console.log("errorMessage", response.data)
                     let errorMessage = response.data.message ? response.data.message : "someting wrong"
                     // toast.error(response.data.message);
                     setIsOpen(true)
                     setErrorMsg(errorMessage);
-                }
+                  }
             } else {
                 let errorMessage = response.data.message;
                 // toast.error(errorMessage);
@@ -460,7 +470,7 @@ const AgentFlightSearch = () => {
         label: item.city,
         image: item.flagUrl
     }));
-
+  
     const handleChangeDestination = (selectedOptions, setFieldValue, fieldName) => {
         if (fieldName === "fromCityDestination") {
             setFromCityDestination(selectedOptions);
@@ -523,7 +533,7 @@ const AgentFlightSearch = () => {
                                                                     }}
                                                                     options={optionFromValues}
                                                                     styles={customStyles}
-                                                                    maxLength={5}
+                                                                     maxLength={5}
 
                                                                     formatOptionLabel={(country, { context }) => (
                                                                         <div className="searchdestinationboxclass list d-flex ">
@@ -786,19 +796,19 @@ const AgentFlightSearch = () => {
                             </Formik>
                         </div>
                     </div>
-                    {tripList && tripList.length > 1 && <div className='flighttopbarblk'>
+                    {tripList&& tripList.length > 1 && <div className='flighttopbarblk'>
                         <div className='container'>
                             <div className='d-flex'>
                                 <div className='me-xl-5'>
                                     <div class="headtext">{fromCityDestination && fromCityDestination.value} </div>
-                                    <div class="subtext">{fromCityDestination && fromCityDestination.value}</div>
+                                    <div class="subtext">{fromCityDestination && fromCityDestination.label}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                 </div>
                                 <div className='me-xl-5'>
-                                    <div class="headtext">{toCityDestination && toCityDestination.text} </div>
-                                    <div class="subtext"> {toCityDestination && toCityDestination.value}</div>
+                                    <div class="headtext">{toCityDestination && toCityDestination.value} </div>
+                                    <div class="subtext"> {toCityDestination && toCityDestination.label}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <div class="headtext">Departure Date </div>
@@ -820,7 +830,7 @@ const AgentFlightSearch = () => {
                                 {/* <h1>Ganeshs</h1> */}
                                 <FlightSearchList
                                     dateForHorizontal={dateForHorizontal}
-                                    tripList={tripList}
+                                    tripList={tripList }
                                     reInitialValues={reInitialValues}
                                     handleChangeDate={handleChangeDate}
                                 />

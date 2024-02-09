@@ -1,58 +1,84 @@
-import React,{useState,useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Box, Heading, Text, VStack } from '@chakra-ui/react'
 import { useSearchParams } from "react-router-dom";
+import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
+import { useNavigate } from "react-router-dom";
+
+
+const PaymentSuccess = () => {
+  const seachQuery = useSearchParams()[0]
+  const referenceNum = seachQuery.get("reference");
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+     let dataList = JSON.parse(localStorage.getItem("bookingRequest"));
+    BookingConfirm(dataList);
+  }, [])
 
 
 
+  const BookingConfirm = async (dataList) => {
+ let newobject = dataList.travellerInfo.map(item => {
+      return item
+    })
 
-const PaymentSuccess = ({ cookies }) => {
-    const seachQuery = useSearchParams()[0]
-    const referenceNum = seachQuery.get("reference");
+    for (let i = 0; i < newobject.length; i++) {
+      // Remove 'amount' and 'desc' keys from ssrMealInfos array
+      newobject[i].ssrMealInfos.forEach(info => {
+        delete info.amount;
+        delete info.desc;
+      });
+
+      // Remove 'amount' and 'desc' keys from ssrBaggageInfos array
+      newobject[i].ssrBaggageInfos.forEach(info => {
+        delete info.amount;
+        delete info.desc;
+      });
+      newobject[i].ssrSeatInfos.forEach(info => {
+        delete info.amount;
+        delete info.color;
+        delete info.isBooked;
+        delete info.seatNo;
+        delete info.seatPosition;
+      });
+      newobject[i].ssrMealInfos.forEach(info => {
+        delete info.amount;
+        delete info.desc;
+      });
+    }
+  FlightSearchService.BookingConfirm(dataList).then(async (response) => {
+      if (response.data.status) {
+        const result = response.data.data;
+        setTimeout(() => {
+          navigate(`/booking-success/${dataList.bookingId}`);
+        }, 200)
+      } else {
+        alert("Something went wrong")
 
 
-      
-      
-    //const handleBookingConfirm = async () =>{
-        // const confirmBookingRequest = {
-        //     bookingId : reInitialValues.bookingId,
-        //     amount : totalPrices.total,
-        //     personalPhone : reInitialValues.personalPhone,
-        //     personalEmail : reInitialValues.personalEmail,
-        //     gstNumber : reInitialValues.gstNumber,
-        //     gstEmail : reInitialValues.gstEmail,
-        //     registeredName : reInitialValues.registeredName,
-        //     mobile : reInitialValues.mobile,
-        //     address : reInitialValues.address,
-        //     isGst : reInitialValues.isGst,
-        //     bookingId : reInitialValues.bookingId,
-        //     travellerInfo : reInitialValues.travellerInfo
-        // }
-        //console.log("confirmBookingRequest",confirmBookingRequest);
-        // FlightSearchService.BookingConfirm(confirmBookingRequest).then(async (response) => {
-        //   if(response.data.status){
-        //     const result =  response.data.data;
-        //     console.log("result",result);
-        //   }else{
-        //     toast.error('Something went wrong');
-        //   }
-        // }).catch((e) => {
-        //   console.log(e);
-        //   toast.error('Something went wrong');
-        // });
-      //}
-    return (
-        <Box>
-            <VStack h="100vh" justifyContent={"center"}>
+      }
+    }).catch((e) => {
+      console.log(e);
+      alert("Something went wrong")
 
-                <Heading textTransform={"uppercase"}> Order Successfull</Heading>
+    });
+  }
 
-                <Text>
-                    Reference No.{referenceNum}
-                </Text>
 
-            </VStack>
-        </Box>
-    )
+  return (
+    <Box>
+      <VStack h="100vh" justifyContent={"center"}>
+
+        <Heading textTransform={"uppercase"}> Order Successfull</Heading>
+
+        <Text>
+          Reference No.{referenceNum}
+        </Text>
+
+      </VStack>
+    </Box>
+  )
 }
 
 export default PaymentSuccess;

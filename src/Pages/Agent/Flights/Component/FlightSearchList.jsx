@@ -14,7 +14,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
 
     //departureDate = Moment(departureDate).format('DD-MM-YYYY');
     //console.log("departureDate1",departureDate);
-    //console.log("tripList",tripList);
+    console.log("tripList",tripList);
     // console.log("reInitialValues",reInitialValues);
    
  

@@ -8,6 +8,7 @@ import Select from 'react-select'
 import { Search } from '@mui/icons-material';
 import Moment from 'moment';
 
+
 const options = [
     { value: '0', label: 'UNCONFIRMED' },
     { value: '1', label: 'CONFIRM' },
@@ -217,7 +218,7 @@ const handleSerachData =()=>{
                                                         {bookTicketList && bookTicketList.map((item, index) => (
                                                             <tr key={index}>
                                                                 <td>{Moment(item.createdAt).format('DD-MM-YYYY')}</td>
-                                                                <td>{item.id}</td>
+                                                                <td><Link to={`/booking-success/${item.id}`}>{item.id}</Link></td>
                                                                 <td>{item.PNR === null ? "not available" : ""}</td>
 
                                                                

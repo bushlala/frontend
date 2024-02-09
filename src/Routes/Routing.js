@@ -388,6 +388,8 @@ const Routing = () => {
     <Route exact path="admin/All-Queries" element={<AdQueries />}></Route>
     <Route exact path="admin/Add-Queries" element={<AdminAddQueries />}></Route>
 
+
+
 {/* Admin Hotel Enquiry */}
     <Route exact path="admin/HotelEnquiry" element={<AdHotelEnquiry />}></Route>
 
@@ -398,8 +400,29 @@ const Routing = () => {
     <Route exact path="admin/Package-Itinerary" element={< AdPackageItinerary />}></Route>
    
     {/* Payment Details */}
-    <Route exact path="PaymentSuccess" element={<PaymentSuccess />}></Route>
-    <Route exact path="BookingSuccess" element={<BookingSuccess />}></Route>
+
+     {/* Payment Details */}
+  
+   
+
+     <Route
+     path="/PaymentSuccess"
+     element={
+         <PrivateRoute>
+             <PaymentSuccess />
+         </PrivateRoute>
+     }
+ />
+  
+     <Route
+     path="/booking-success/:bookingId"
+     element={
+         <PrivateRoute>
+             <BookingSuccess />
+         </PrivateRoute>
+     }
+ />
+  
     <Route exact path="agentreview" element={<AgentReview />}></Route>
     <Route exact path="BookingHold" element={<BookingHold />}></Route>
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}

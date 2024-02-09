@@ -1,12 +1,8 @@
 import React, {useState } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
-import Moment from 'moment';
-import Indigo from '../../../../../assets/images/indigo.png';
 import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.Service'; 
 import toast from 'react-hot-toast';
-import FlightDetailModel from '../../Component/FlightDetailModel';
-//import Moment from 'moment';
 export default function SeatMapModel({showModal, handleClose,proceedForSeat, bookingId, flightMapInfo, flightMapIndex, passangerInfo,setPassangerInfo,reInitialValues,setReInitialValues,setAllFlightSeats}) {
     //console.log("reInitialValues1",reInitialValues);
     //const [passangerInfoModel, setPassangerInfoModel] = React.useState(passangerInfo);
@@ -89,10 +85,8 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                 setTotalSeats(totalSeats);
                 setPassangerInfo(newData);
                 // here set extra info
-                //console.log("reInitialValues2",reInitialValues);
-                //let newReInitialValues = [...reInitialValues] //copy the object
+                
                 reInitialValues.extraInfo[flightMapIndex].mealBaggageInfo[selectPassangerKey].seat = seatInfo.seat.seatNo;
-
                 console.log("reInitialValues",reInitialValues);
                 setReInitialValues(reInitialValues);
             }
@@ -127,7 +121,7 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                                 </thead>
                                 <tbody>
                                     {
-                                        passangerInfo && passangerInfo.length !== 0 && passangerInfo.map((passanger, passangerKey) => (
+                                        reInitialValues.travellerInfo && reInitialValues.travellerInfo.length !== 0 && reInitialValues.travellerInfo.map((passanger, passangerKey) => (
                                             
                                             <tr key={passangerKey} onClick={()=>handleClickSetPassanger(passangerKey,null,false)}>
                                                 <td>{passanger.passangerTypeName}</td>

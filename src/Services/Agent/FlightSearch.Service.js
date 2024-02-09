@@ -120,6 +120,16 @@ export const FlightSearchService = {
     }
   })
 },
+getTicketDetails: async function (request, cancel = false) {
+  return await apiConfig.request({
+  url: `booking/getTicketDetails`,
+  method: "POST",
+  data: request,
+  headers: { 
+      Authorization: `Bearer ${jwtToken}`
+  }
+})
+},
 
     
 }

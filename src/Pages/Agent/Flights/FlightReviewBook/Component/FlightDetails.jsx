@@ -127,10 +127,10 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover }) {
                                             <div className='row'>
                                                 <div></div>
                                             </div>
-                                            <Button variant="" onClick={handleClose}>
+                                            <Button variant="" onClick={handleClose1}>
                                                 Back
                                             </Button>
-                                            <Button variant="dark" onClick={handleClose}>
+                                            <Button variant="dark" onClick={handleClose1}>
                                                 Continue
                                             </Button>
                                         </Modal.Footer>
