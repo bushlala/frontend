@@ -44,21 +44,40 @@ export default function FareSummary({totalPrices}) {
                                         </h6>
                                     </div>
                                 </div>
+                                <hr></hr>
                                 {
                                     totalPrices.mealBaggageFee !== 0 && 
-                                    <div className='row d-flex'>
-                                        <div className="col">
-                                            <h6 className=''>Extra Meals & Baggage</h6>
+                                    <>
+                                        <div className='row d-flex'>
+                                            <div className="col">
+                                                <h6 className=''>Extra Meals & Baggage</h6>
+                                            </div>
+                                            <div className="col">
+                                                <h6 className='float-end'>
+                                                <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.mealBaggageFee}
+                                                </h6>
+                                            </div>
                                         </div>
-                                        <div className="col">
-                                            <h6 className='float-end'>
-                                            <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.mealBaggageFee}
-                                            </h6>
-                                        </div>
-                                    </div>
+                                        <hr></hr>
+                                    </>
                                 }
-                                <hr></hr>
-
+                                {
+                                    totalPrices.seatPrice !== 0 && 
+                                    <>
+                                        <div className='row d-flex'>
+                                            <div className="col">
+                                                <h6 className=''>Seat Prices</h6>
+                                            </div>
+                                            <div className="col">
+                                                <h6 className='float-end'>
+                                                <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.seatPrice}
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <hr></hr>
+                                    </>
+                                }
+                                
                                 <div className='row d-flex'>
                                     <div className="col">
                                         <h6 className=''>Amount to Pay</h6>

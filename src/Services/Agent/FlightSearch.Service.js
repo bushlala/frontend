@@ -21,6 +21,24 @@ export const FlightSearchService = {
       // returning the product returned by the API
       //return response
     },
+     
+    RoundTrip: async function (request, cancel = false) {
+      // var requestParam = {
+      //     params: request
+      // };
+      return await apiConfig.request({
+        url: `flight/roundTrip`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+        // retrieving the signal value by using the property name
+        //signal: cancel ? apiConfig[this.get.name].handleRequestCancellation().signal : undefined,
+      })
+      // returning the product returned by the API
+      //return response
+    },
 
     SearchRule: async function (request, cancel = false) {
       return await apiConfig.request({
@@ -130,6 +148,15 @@ getTicketDetails: async function (request, cancel = false) {
   }
 })
 },
-
+UpdateTransactions: async function (request, cancel = false) {
+  return await apiConfig.request({
+  url: `payment/updateTransactions`,
+  method: "POST",
+  data: request,
+  headers: { 
+      Authorization: `Bearer ${jwtToken}`
+  }
+})
+},
     
 }

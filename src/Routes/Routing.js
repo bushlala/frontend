@@ -131,7 +131,7 @@ import AgentProfile from "../Pages/Agent/Agent-Profile/AgentProfile.jsx"
 
 
 // Agent RoundTrip 
-import FlightRoundSearchList from "../Pages/Agent/Flights/Component/Roundtriplist/FlightRoundSearchList.jsx";
+import FlightRoundSearchList from "../Pages/Agent/Flights/Component/FlightRoundSearchList.jsx";
 
 // Ticket 
  import TicketPdf from "../Pages/Agent/Ticket-Pdf/TicketPdf.jsx";
@@ -424,7 +424,14 @@ const Routing = () => {
  />
   
     <Route exact path="agentreview" element={<AgentReview />}></Route>
-    <Route exact path="BookingHold" element={<BookingHold />}></Route>
+    <Route
+    path="/agent/flight/booking-hold"
+    element={
+        <PrivateRoute>
+            <BookingHold />
+        </PrivateRoute>
+    }
+/>
             {/* <Route exact path='/profile' element={<Profileview />}></Route> */}
             {/* <Route exact path='/' element={<AdminDash />}></Route>
             <Route exact path='/adlist' element={<AdList />}></Route>
@@ -434,8 +441,24 @@ const Routing = () => {
             <Route exact path='/BookingList' element={<Bookinglist />}></Route> 
             <Route exact path='/CancellationList' element={<CancellationList />}></Route>  */}
 {/* Agent Round Trip  */}
-    <Route exact path="Agent/FlightRoundSearchList" element={<FlightRoundSearchList />}></Route>
-    <Route exact path="agent/ticketpdf" element={<TicketPdf />}></Route>
+
+<Route
+path="/agent/FlightRoundSearchList"
+element={
+    <PrivateRoute>
+        <FlightRoundSearchList />
+    </PrivateRoute>
+}
+/>
+<Route
+path="/agent/ticketpdf"
+element={
+    <PrivateRoute>
+        <TicketPdf />
+    </PrivateRoute>
+}
+/>
+  
 
             </Routes>
             {/* </BrowserRouter> */}

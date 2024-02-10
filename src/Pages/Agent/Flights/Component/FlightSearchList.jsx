@@ -7,14 +7,11 @@ import Button from 'react-bootstrap/Button';
 import FlightDetailModel from './FlightDetailModel';
 import Moment from 'moment';
 
-export default function FlightSearchList({dateForHorizontal,tripList,reInitialValues,handleChangeDate}) {
-
-   
-
+export default function FlightSearchList({dateForHorizontal,tripList,reInitialValues,handleChangeDate,currency}) {
 
     //departureDate = Moment(departureDate).format('DD-MM-YYYY');
     //console.log("departureDate1",departureDate);
-    console.log("tripList",tripList);
+    // console.log("tripList",tripList);
     // console.log("reInitialValues",reInitialValues);
    
  
@@ -202,7 +199,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                                     <div  className="pricelistright position-relative text-left d-inline-block" style={{width:"64%"}}>
                                                                         <div className='d-flex justify-content-between'>
                                                                         <div className=''>
-                                                                            <span className="mainprice"> ₹ {fdValue?.payAmount} </span> 
+                                                                            <span className="mainprice"> {currency} {fdValue?.payAmount} </span> 
                                                                             <span className="netpriceshow d-none" style={{color:"#009933"}}>
                                                                             ₹ 11547
                                                                             </span> 
@@ -219,7 +216,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                                             <span className="label label-warning ars-flightlabel ars-refunsleft ars-flightlabel-positionHandle" style={{backgroundColor:"#0099e0", color:"#FFFFFF"}}>
                                                                             {`${fdValue?.fareIdentifier} FARE`}                
                                                                             </span>
-                                                                            <span className="label--text w-100"> Economy,  &nbsp;
+                                                                            <span className="label--text w-100"> {fdValue.cabinClass},  &nbsp;
                                                                             <span className="rdable">{fdValue.RefundType ===0 ? 'Non Refundable':fdValue.RefundType ===1? 'Refundable' : 'Partial Refundable'  }<span> &nbsp; <i className="fa fa-info-circle fa-info-circle5310" aria-hidden="true" style={{fontSize:"18px,", cursor: "pointer"}}></i></span>
                                                                                 <div className="ymessage ymsgclass5310" >
                                                                                 {`${fdValue?.fareIdentifier} FARE`}                

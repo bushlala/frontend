@@ -6,11 +6,12 @@ import * as Yup from "yup";
 import Header from '../../../Component/Layout/Agent/Header/SearchHeader';
 import auFlag from '../../../assets/images/au.svg'
 import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
-import { Alert, Box, Grid, InputLabel, Link } from '@mui/material';
+import { Alert, Box, Grid, InputLabel, Link,FormGroup,FormControlLabel,Checkbox  } from '@mui/material';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './search.css';
 import FlightSearchList from './Component/FlightSearchList';
+import FlightRoundSearchList from "./Component/FlightRoundSearchList";
 import Moment from 'moment';
 import { TailSpin } from "react-loader-spinner";
 import axios from 'axios';
@@ -31,26 +32,35 @@ var datemilli = Date.parse('Sun May 11,2014');
 
 const AgentFlightSearch = () => {
     const userData = JSON.parse(localStorage.getItem('userData'));
-    //console.log("userData",userData.data.token)
-    const jwtToken = userData?.data?.token || " ";
-    let BASE_URL = '';
-    if (process.env.REACT_APP_SERVER_ENV === 'Local') {
-        BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
-    } else if (process.env.REACT_APP_SERVER_ENV === 'Live') {
-        BASE_URL = process.env.REACT_APP_LIVE_API_URL;
-    }
+     let currency =userData.data.currency;
+   
     const [departureDate, setDepartureDate] = useState(new Date());
     const [minDate] = useState(new Date());
-    const [returnDate, setReturnDate] = useState();
+    const [returnDate, setReturnDate] = useState(new Date());
     const [loading, setLoading] = useState(false);
     const [citySwapArrowStatus, setCitySwapArrowStatus] = useState(true);
-    const [fromCityDestination, setFromCityDestination] = useState();
-    const [toCityDestination, setToCityDestination] = useState();
+    const [fromCityDestination, setFromCityDestination] = useState([{
+        value: "BLR - India",
+        label: "BLR - Bengaluru",
+        image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif"
+    }]);
+    const [toCityDestination, setToCityDestination] = useState([{
+        value: "DEL - India",
+        label: "DEL - Delhi",
+        image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif"
+    }]);
     const [journeyDateOne, setJourneyDateOne] = useState(new Date());
     const [travellersArr, setTravellersArr] = useState("1 Pax, Economy");
     const [pc, setPc] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [errorMsg , setErrorMsg]= useState("");
+    const [errorMsg, setErrorMsg] = useState("");
+    const [errMsg, setErrMsg] = useState("");
+    const [previllageForTicket, setPrevillageForTicket] = useState("REGULAR");
+    const [isChecked, setIsChecked] = useState(false);
+    const[fromCity,setFromCity]= useState(false);
+    const [toCity,setToCity]= useState(false);
+    const[returnTripList,setReturnTripList]= useState([]);
+    const[onwardTripList,setOnwardTripList]= useState([]);
     const handleIsClose = () => {
         setIsOpen(false);
     }
@@ -66,17 +76,17 @@ const AgentFlightSearch = () => {
         tripType: "1",
         fromCityDestination: "BLR - India",
         previllageForTicket: "REGULAR",
-        fromDestinationFlight:"BLR - Bengaluru",
+        fromDestinationFlight: "BLR - Bengaluru",
         toCityDestination: "DEL - India",
         toDestinationFlight: "DEL - Delhi",
         journeyDateOne: departureDate,
-        journeyDateRound: "",
+        journeyDateRound: returnDate,
         travellersShow: "1 Pax, ECONOMY",
         ADULT: "1",
         CHILD: "0",
         INFANT: "0",
         PC: "Economy",
-        isDirectFlight: false,
+        isDirectFlight: isChecked,
         isConnectingFlight: true,
 
     }
@@ -161,10 +171,6 @@ const AgentFlightSearch = () => {
 
     const resultFareType = [
         {
-            name: "select options",
-            sortName: "0"
-        },
-        {
             name: "Regular Fare",
             sortName: "1"
         },
@@ -179,7 +185,7 @@ const AgentFlightSearch = () => {
     ];
 
 
-    const handleInputChange =(inputValue)=>{
+    const handleInputChange = (inputValue) => {
         fetchAirportList(inputValue)
     }
     const validationSchema = Yup.object().shape({
@@ -206,12 +212,13 @@ const AgentFlightSearch = () => {
     }
 
     const handleChangeReturnDate = (date, setFieldValue) => {
-        //setReturnDate(date);
-        setFieldValue("journeyDateRound", date);
+        setReturnDate(date);
+        setFieldValue("journeyDateRound", Moment(date).format('DD-MM-YYYY'));
     };
 
-    const changeTripType = async (tripType) => {
+    const changeTripType =  (tripType,setFieldValue) => {
         //console.log(tripType);
+        setFieldValue("tripType",tripType.toString());
         setTripType(tripType);
     }
 
@@ -224,22 +231,23 @@ const AgentFlightSearch = () => {
     }
 
     const handleFareType = (event, setFieldValue, values, fieldNamme) => {
+        setPrevillageForTicket(event.target.value);
         let count = event.target.value;
         if (count === "2") {
-           
             setFieldValue(fieldNamme, "STUDENT");
         } else if (count === "3") {
             setFieldValue(fieldNamme, "SENIOR_CITIZEN");
         }
         else {
             setFieldValue(fieldNamme, "REGULAR");
+           
         }
         setTravellersArr(values.travellersShow[0] + " Pax" + ", " + values.PC);
-       
+
     }
 
     const handlePrefferedClass = (event, setFieldValue, values) => {
-        
+
         let result = event.target.value;
         setPc(result);
         if (result === "Economy") {
@@ -256,8 +264,8 @@ const AgentFlightSearch = () => {
         }
         setFieldValue("travellersShow", values.travellersShow[0] + " Pax" + ", " + result.toUpperCase());
         setTravellersArr(values.travellersShow[0] + " Pax" + ", " + result);
-     
-  }
+
+    }
 
     const handleChangeTravellersValue = (event, setFieldValue, values, fieldNamme) => {
         setFieldValue("previllageForTicket", event.target.value);
@@ -315,6 +323,7 @@ const AgentFlightSearch = () => {
         }
     }
     const handleClickCitySwap = (fromCityDestination, toCityDestination, setFieldValue) => {
+       
         setFromCityDestination(toCityDestination);
         setToCityDestination(fromCityDestination);
 
@@ -339,36 +348,66 @@ const AgentFlightSearch = () => {
         setDateForHorizontal(date);
         setLoading(true);
         //return false;
-        FlightSearchService.Search(reInitialValues).then(async (response) => {
-            if (response.status === 200) {
-                if (response.data.status) {
-                    setTripList(response.data.data)
-                    setIsOpen(false)
-
+        if(tripType === 2 ){
+            FlightSearchService.RoundTrip(reInitialValues).then(async (response) => {
+                setLoading(true);
+                if (response.status === 200) {
+                          if (response.data.status === true) {
+                        setOnwardTripList(response.data.data.Onward);
+                        setReturnTripList(response.data.data.Return)
+                        setIsOpen(false)
+    
+                    } else {
+                        let errorMessage = response.data.message ? response.data.message : "someting wrong"
+                        // toast.error(response.data.message);
+                        setIsOpen(true)
+                        setErrorMsg(errorMessage);
+                        setOnwardTripList([]);
+                        setReturnTripList([]);
+                    }
                 } else {
-                    let errorMessage = response.data.message.message;
-                    // toast.error(response.data.message.message);
-                    setTripList([])
+                    let errorMessage = response.data.message;
                     setIsOpen(true)
                     setErrorMsg(errorMessage);
-
                 }
-            } else {
-                // toast.error(response.data.message);
-               let errorMessage = response.data.message
+                setLoading(false);
+            }).catch((error) => {
+                let errorMessage = error.message
+                setLoading(false);
                 setIsOpen(true)
                 setErrorMsg(errorMessage);
-
-            }
-            setLoading(false);
-        }).catch((error) => {
-            let errorMessage = error.message
-         
-            // toast.error('Something went wrong');
-            setLoading(false);
-            setIsOpen(true)
-            setErrorMsg(errorMessage);
-        });
+            });
+        }else{
+            FlightSearchService.Search(reInitialValues).then(async (response) => {
+                if (response.status === 200) {
+                    if (response.data.status) {
+                        setTripList(response.data.data)
+                        setIsOpen(false)
+    
+                    } else {
+                        let errorMessage = response.data.message.message;
+                        // toast.error(response.data.message.message);
+                        setTripList([])
+                        setIsOpen(true)
+                        setErrorMsg(errorMessage);
+    
+                    }
+                } else {
+                    // toast.error(response.data.message);
+                    let errorMessage = response.data.message
+                    setIsOpen(true)
+                    setErrorMsg(errorMessage);
+    
+                }
+                setLoading(false);
+            }).catch((error) => {
+                let errorMessage = error.message
+      setLoading(false);
+                setIsOpen(true)
+                setErrorMsg(errorMessage);
+            });
+        }
+        
 
     }
 
@@ -377,40 +416,39 @@ const AgentFlightSearch = () => {
 
     }, [])
 
-const handleOptionTOValues =(inputValue)=>{
-    fetchAirportList(inputValue);
-}
+    const handleOptionTOValues = (inputValue) => {
+        fetchAirportList(inputValue);
+    }
 
     const fetchAirportList = (value) => {
-        const valuesss = {
-            "search": value
-        }
-        FlightSearchService.AirPort(valuesss).then(async (response) => {
-            if (response.status === 200) {
-                let result = response.data.data.rows;
-                setCityList(result);
-                console.log("result",result)
-                
-            } else {
-                setCityList([]);
-
+        if(value && value.length >= 3){
+            const valuesss = {
+                "search": value
             }
-        }).catch((e) => {
-            console.log(e);
-        });
+            FlightSearchService.AirPort(valuesss).then(async (response) => {
+                if (response.status === 200) {
+                    let result = response.data.data.rows;
+                    setCityList(result);
+                    console.log("result",result)
+                    
+                } else {
+                    setCityList([]);
+    
+                }
+            }).catch((e) => {
+                console.log(e);
+            });
+        }
 
     };
 
-   const handleOnSubmit = async (values, { resetForm }) => {
-  
-        setLoading(true);
+    const handleOnSubmit = async (values, { resetForm }) => {
+    setLoading(true);
         setTravellersModelShow(false);
-       
         let startDate;
         let endDate;
         if (values.journeyDateOne) {
-           
-            startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD');
+           startDate = Moment(values.journeyDateOne).format('YYYY-MM-DD');
             endDate = Moment(startDate, "YYYY-MM-DD").add(7, 'days').format('YYYY-MM-DD');
             values.journeyDateOne = Moment(values.journeyDateOne).format('DD-MM-YYYY')
             var dates = [];
@@ -423,39 +461,68 @@ const handleOptionTOValues =(inputValue)=>{
             values.dateArr = dates;
             setDateForHorizontal(values.journeyDateOne);
             setReInitialValues(values);
-            
+
         }
-        FlightSearchService.Search(values).then(async (response) => {
+       if(tripType === 2 ){
+        FlightSearchService.RoundTrip(values).then(async (response) => {
             setLoading(true);
             if (response.status === 200) {
-             
+
                 if (response.data.status === true) {
-                    setTripList(response.data.data)
+                    setOnwardTripList(response.data.data.Onward);
+                    setReturnTripList(response.data.data.Return)
                     setIsOpen(false)
-                  
+
                 } else {
-                    console.log("errorMessage", response.data)
                     let errorMessage = response.data.message ? response.data.message : "someting wrong"
                     // toast.error(response.data.message);
                     setIsOpen(true)
                     setErrorMsg(errorMessage);
-                  }
+                    setOnwardTripList([]);
+                    setReturnTripList([]);
+                }
             } else {
                 let errorMessage = response.data.message;
-                // toast.error(errorMessage);
-                console.log("values6");
                 setIsOpen(true)
                 setErrorMsg(errorMessage);
             }
             setLoading(false);
         }).catch((error) => {
             let errorMessage = error.message
-            // toast.error(errors);
-            console.log("values7");
             setLoading(false);
             setIsOpen(true)
             setErrorMsg(errorMessage);
         });
+       }else{
+        FlightSearchService.Search(values).then(async (response) => {
+            setLoading(true);
+            if (response.status === 200) {
+
+                if (response.data.status === true) {
+                    setTripList(response.data.data)
+                    setIsOpen(false)
+
+                } else {
+                    let errorMessage = response.data.message ? response.data.message : "someting wrong"
+                    // toast.error(response.data.message);
+                    setIsOpen(true)
+                    setErrorMsg(errorMessage);
+                }
+            } else {
+                let errorMessage = response.data.message;
+                setIsOpen(true)
+                setErrorMsg(errorMessage);
+            }
+            setLoading(false);
+        }).catch((error) => {
+            let errorMessage = error.message
+            setLoading(false);
+            setIsOpen(true)
+            setErrorMsg(errorMessage);
+        });
+       }
+
+       
     };
 
     //modify code 
@@ -470,19 +537,34 @@ const handleOptionTOValues =(inputValue)=>{
         label: item.city,
         image: item.flagUrl
     }));
-  
+
     const handleChangeDestination = (selectedOptions, setFieldValue, fieldName) => {
+        console.log("selectedOptions", selectedOptions)
         if (fieldName === "fromCityDestination") {
+            setFromCity(true);
             setFromCityDestination(selectedOptions);
             setFieldValue('fromCityDestination', selectedOptions.value);
             setFieldValue('fromDestinationFlight', selectedOptions.label);
         } else {
+            setToCity(true);
             setToCityDestination(selectedOptions);
             setFieldValue('toCityDestination', selectedOptions.value);
             setFieldValue('toDestinationFlight', selectedOptions.label);
         }
 
     }
+
+    const handleDirectFlightCheckbox = (e, setFieldValue) => {
+        console.log(e.target.checked)
+        setIsChecked(e.target.checked);
+        setFieldValue("isDirectFlight",e.target.checked)
+        if(e.target.checked === false){
+            setFieldValue("isConnectingFlight",true)
+        }else{
+            setFieldValue("isConnectingFlight",false)
+        }
+      };
+
     return (
         <>
 
@@ -507,16 +589,14 @@ const handleOptionTOValues =(inputValue)=>{
 
                                                     <ul className="nav nav-pills One-Way-tab">
                                                         <li className="nav-item">
-                                                            <Link className={`nav-link ${tripType === 1 ? "active" : ""}`} aria-current="page" href="#" onClick={() => changeTripType(1)}>One-Way</Link>
+                                                            <Link className={`nav-link ${tripType === 1 ? "active" : ""}`} aria-current="page" href="#" onClick={() => changeTripType(1,setFieldValue)}>One-Way</Link>
                                                         </li>
-
                                                         <li className="nav-item">
-                                                            <Link className={`nav-link ${tripType === 2 ? "active" : ""}`} href="#" onClick={() => changeTripType(2)}>Round-Trip</Link>
+                                                            <Link className={`nav-link ${tripType === 2 ? "active" : ""}`} href="#" onClick={() => changeTripType(2,setFieldValue)}>Round-Trip</Link>
                                                         </li>
                                                     </ul>
 
                                                     <Grid container spacing={2}>
-
                                                         <Grid item className='col'>
                                                             <div className='form-group field-label search-fild'>
                                                                 <InputLabel className=''>From</InputLabel>
@@ -533,7 +613,7 @@ const handleOptionTOValues =(inputValue)=>{
                                                                     }}
                                                                     options={optionFromValues}
                                                                     styles={customStyles}
-                                                                     maxLength={5}
+                                                                    maxLength={5}
 
                                                                     formatOptionLabel={(country, { context }) => (
                                                                         <div className="searchdestinationboxclass list d-flex ">
@@ -608,6 +688,7 @@ const handleOptionTOValues =(inputValue)=>{
                                                                         className='form-control'
                                                                         name='journeyDateRound'
                                                                         selected={returnDate}
+                                                                        dateFormat="dd-MM-yy"
                                                                         minDate={departureDate}
                                                                         onChange={(date) => handleChangeReturnDate(date, setFieldValue)}
                                                                     />
@@ -733,10 +814,10 @@ const handleOptionTOValues =(inputValue)=>{
                                                                                 className="form-select"
                                                                                 name='previllageForTicket'
                                                                                 id='previllageForTicket'
-                                                                                value={values.previllageForTicket}
-                                                                                defaultValue={values.previllageForTicket}
+                                                                                value={previllageForTicket}
+                                                                                defaultValue={previllageForTicket}
                                                                                 onChange={(e) => {
-                                                                                    handleFareType(e, setFieldValue, values, "previllageForTicket");
+                                                                                    handleFareType(e, setFieldValue, values);
                                                                                 }}
                                                                             >
                                                                                 {
@@ -778,37 +859,45 @@ const handleOptionTOValues =(inputValue)=>{
                                                             </div>
                                                         </Grid>
                                                     </Grid>
+                                                    <FormGroup>
+                                                    <FormControlLabel
+      control={<Checkbox checked={isChecked} onChange={(e)=>handleDirectFlightCheckbox(e, setFieldValue)} />}
+      label="Direct Flight"
+    />
+                                                    </FormGroup>
                                                 </Box>
+                                                
                                             </Box>
-                                            {/* <div className='row'>
+                                           
+                                           {/*  <div className='row'>
                                             <div className='col-2'>
                                                 <div className='card'>
                                                     <div className='card-body'>
-                                                        
+                                                       
                                                     </div>
                                                 </div>      
-                                            </div>   
-                                        </div>    */}
-                                        </div>
+                                                            </div>  
+                                        </div>   */} 
+                                        </div> 
 
                                     </Form>
                                 )}
                             </Formik>
                         </div>
                     </div>
-                    {tripList&& tripList.length > 1 && <div className='flighttopbarblk'>
+                    <div className='flighttopbarblk'>
                         <div className='container'>
                             <div className='d-flex'>
                                 <div className='me-xl-5'>
-                                    <div class="headtext">{fromCityDestination && fromCityDestination.value} </div>
-                                    <div class="subtext">{fromCityDestination && fromCityDestination.label}</div>
+                                    <div class="headtext">{fromCity ? fromCityDestination.value:fromCityDestination[0].value} </div>
+                                    <div class="subtext">{fromCity ? fromCityDestination.label:fromCityDestination[0].label}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                 </div>
                                 <div className='me-xl-5'>
-                                    <div class="headtext">{toCityDestination && toCityDestination.value} </div>
-                                    <div class="subtext"> {toCityDestination && toCityDestination.label}</div>
+                                    <div class="headtext">{toCity? toCityDestination.value:toCityDestination[0].value} </div>
+                                    <div class="subtext"> {toCity ?toCityDestination.label:toCityDestination[0].label}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <div class="headtext">Departure Date </div>
@@ -820,7 +909,7 @@ const handleOptionTOValues =(inputValue)=>{
                                 </div>
                             </div>
                         </div>
-                    </div>}
+                    </div>
 
                     {
                         loading ? <TailSpin color="red" radius={"8px"} />
@@ -830,8 +919,25 @@ const handleOptionTOValues =(inputValue)=>{
                                 {/* <h1>Ganeshs</h1> */}
                                 <FlightSearchList
                                     dateForHorizontal={dateForHorizontal}
-                                    tripList={tripList }
+                                    tripList={tripList}
                                     reInitialValues={reInitialValues}
+                                    handleChangeDate={handleChangeDate}
+                                    currency={currency}
+                                />
+                            </div>
+                    }
+                    {
+                        loading ? <TailSpin color="red" radius={"8px"} />
+                            :
+                            onwardTripList && onwardTripList.length != 0 &&
+                            <div className='container'>
+                                {/* <h1>Raksha</h1> */}
+                                <FlightRoundSearchList
+                                    dateForHorizontal={dateForHorizontal}
+                                    returnTripList={returnTripList}
+                                    onwardTripList={onwardTripList}
+                                    reInitialValues={reInitialValues}
+                                    currency={currency}
                                     handleChangeDate={handleChangeDate}
                                 />
                             </div>

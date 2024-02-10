@@ -5,7 +5,7 @@ export default function TicketPdf() {
 
   return (
     <>
-        <div className='card mt-5 ticketpdf'>
+        <div className='card ticketpdf'>
           <div className='row mt-2'>
             <div className='col-8 text-center'>
               <h3>Logo</h3>

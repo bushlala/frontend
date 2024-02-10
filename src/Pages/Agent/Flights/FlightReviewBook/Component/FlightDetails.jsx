@@ -12,7 +12,7 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover }) {
     const [showModal1, setShowModal1] = useState(false);
     const handleClose1 = () => setShowModal1(false);
     const handleShow1 = () => setShowModal1(true);
-    console.log('layover', layover);
+    //console.log('layover', layover);
 
     // console.log(listOfFlight.length,"################################################");
     listOfFlight.map((flightValue, flightKey, index) => {

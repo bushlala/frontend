@@ -16,3 +16,10 @@
 .main-row{
     margin-bottom: 90px;
 }
+.flight-item-list .flight-scroll{
+    width: 50%;
+    padding: 10px;
+    overflow: auto;
+    height: 75vh;
+    cursor: pointer;
+}

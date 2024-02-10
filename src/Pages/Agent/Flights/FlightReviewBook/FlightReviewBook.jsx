@@ -56,8 +56,8 @@ export default function AgentFlightReviewBook() {
         dateOfBirth: "",
         passengerType : 'ADULT-1',
         passangerTypeName : '',
-        fee : '0',
-        // saveDetailStatus : "",
+        //fee : '0',
+        //saveDetailStatus : "",
         isSave : "",
         ssrMealInfos : [],
         ssrBaggageInfos : [],
@@ -79,6 +79,7 @@ export default function AgentFlightReviewBook() {
       }
     ]
   }
+
   const validationSchema = Yup.object().shape({
     passangerInfo: Yup.array().of(
       Yup.object().shape({
@@ -102,6 +103,7 @@ export default function AgentFlightReviewBook() {
     //     }
     // ),
   });
+
   const nameForm = useRef(null)
   const navigate = useNavigate();
   const { ruleId } = useParams();
@@ -116,6 +118,7 @@ export default function AgentFlightReviewBook() {
     taxesFee : 0,
     mealBaggageFee : 0,
     total : 0,
+    seatPrice : 0,
   });
  
   const [activeStep,setActiveStep] = useState('first')
@@ -177,9 +180,35 @@ export default function AgentFlightReviewBook() {
     const razor = new window.Razorpay(options);
     razor.on('payment.failed', function (response){
       alert("Payment Failed");
-    
-      // console.log("responseresponseresponseresponse",response);
-      // window.location("/error")
+      let values ={
+        bookingId: bookingRequest.bookingId,
+        orderId: order.id, // Assuming order.id is available in the scope
+        status: 2
+      }
+      FlightSearchService.UpdateTransactions(values).then(async (response) => {
+         if (response.status === 200) {
+
+            if (response.data.status === true) {
+              console.log("response",response.data.data)
+              alert(response.data.message)
+              setTimeout(()=>{
+                navigate("/Error")
+              },200)
+
+            } else {
+                let errorMessage = response.data.message ? response.data.message : "someting wrong"
+                 console.log(errorMessage)
+            }
+        } else {
+            let errorMessage = response.data.message;
+            console.log(errorMessage)
+        }
+       
+    }).catch((error) => {
+        let errorMessage = error.message
+        console.log(errorMessage)
+    });
+     
     });
       
     razor.open();
@@ -229,6 +258,7 @@ export default function AgentFlightReviewBook() {
   }, [ruleId])
   
   const[layover,setLayover]=useState([]);
+
   const getBookingReviewData = async (ruleId) => {
     var requestData = {
       priceIds : [ruleId]
@@ -297,8 +327,8 @@ export default function AgentFlightReviewBook() {
               dateOfBirth: "",
               passengerType : 'ADULT',
               passangerTypeName : `ADULT ${i+1}`,
-              seat : '',
-              fee : '0',
+              //seat : '',
+              //fee : '0',
               // saveDetailStatus :"",
               isSave : "",
               ssrMealInfos: [],
@@ -316,9 +346,9 @@ export default function AgentFlightReviewBook() {
               dateOfBirth: "",
               passengerType : 'CHILD',
               passangerTypeName : `CHILD ${i+1}`,
-              seat : '',
-              fee : '0',
-              // saveDetailStatus :"",
+              //seat : '',
+              //fee : '0',
+              //saveDetailStatus :"",
               isSave : "",
               ssrMealInfos: [],
               ssrBaggageInfos : [],
@@ -335,9 +365,9 @@ export default function AgentFlightReviewBook() {
               dateOfBirth: "",
               passengerType : 'INFANT',
               passangerTypeName : `INFANT ${i+1}`,
-              seat : '',
-              fee : '0',
-              // saveDetailStatus :"",
+              //seat : '',
+              //fee : '0',
+              //saveDetailStatus :"",
               isSave : "",
               ssrMealInfos: [],
               ssrBaggageInfos : [],
@@ -365,13 +395,13 @@ export default function AgentFlightReviewBook() {
           totalPrices.total = result?.fareDetail?.payAmount;
           
           setPassangerInfo(travellerInfo);
-          console.log("travellerInfo",travellerInfo)
+          //console.log("travellerInfo",travellerInfo)
           setBookingReviewData(result);
         
           setTotalPrices(totalPrices);
         }else{
           toast.error('Something went wrong');
-          console.log("response", response.data)
+          //console.log("response", response.data)
         }
     }).catch((error) => {
         console.log(error);
@@ -382,19 +412,29 @@ export default function AgentFlightReviewBook() {
 
   
 
-  const openSeatMapModel = (flightMapInfo,index) => {
+  const openSeatMapModel = (flightMapInfo,index,values) => {
     setShowModal(true);
     setFlightMapInfo(flightMapInfo);
     setFlightMapIndex(index);
+    setReInitialValues(values);
   }
 
   const proceedForSeat = (totalSeats,totalFee,passangerInfoModel)=>{
     // setTotalSeats(totalSeats);
-    console.log(totalSeats,totalFee,passangerInfoModel)
+    console.log("passangerInfoModel",totalSeats,totalFee,passangerInfoModel)
     reInitialValues.extraInfo[flightMapIndex].seats = totalSeats;
-    reInitialValues.travellerInfo = passangerInfoModel;
+    //reInitialValues.travellerInfo = passangerInfoModel;
     setReInitialValues(reInitialValues);
     console.log("procces reInitialValues " ,reInitialValues);
+    
+    if(totalFee){
+      console.log("totalFee",totalFee);
+      setTotalPrices({ ...totalPrices,
+        seatPrice: totalFee,
+        total : parseInt(totalFee)+totalPrices.total
+      });
+    }
+    
     setShowModal(false);
 
   }
@@ -408,12 +448,14 @@ export default function AgentFlightReviewBook() {
   }
 
   const handleChangeMealBaggageValue = (event,setFieldValue,values,fieldNamme,commonFieldName,indexKey,indexKey2) => {
+    console.log("indexKey",indexKey);
+    console.log("indexKey2",indexKey2);
     let extraPrice = 0;
     values.extraInfo.forEach((extra, extraIndex) => {
       const mealList = extra.mealList;
       const baggageList = extra.baggageList;
       extra.mealBaggageInfo.forEach((mealBaggage, mealBaggageIndex) => {
-        if(indexKey2 !==mealBaggageIndex || commonFieldName !=="baggage"){
+        if(indexKey !==extraIndex || indexKey2 !==mealBaggageIndex || commonFieldName !=="baggage"){
           if(mealBaggage.baggage){
             const baggageFound = baggageList.find(baggage => {
               return baggage.code === mealBaggage.baggage;
@@ -423,8 +465,8 @@ export default function AgentFlightReviewBook() {
             }
           }
         }
-        
-        if(indexKey2 !==mealBaggageIndex || commonFieldName !=="meal"){
+        //console.log("indexKey2",indexKey2);
+        if(indexKey !==extraIndex || indexKey2 !==mealBaggageIndex || commonFieldName !=="meal"){
           if(mealBaggage.meals){
             const mealFound = mealList.find(baggage => {
               return baggage.code === mealBaggage.meals;
@@ -437,7 +479,7 @@ export default function AgentFlightReviewBook() {
         
       });
     });
-  
+    console.log("extraPrice",extraPrice);
     if(commonFieldName === 'baggage'){
       const baggageList = reInitialValues.extraInfo[indexKey].baggageList;
       if(baggageList && baggageList.length !== 0){
@@ -934,7 +976,7 @@ export default function AgentFlightReviewBook() {
                                                           <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12">
                                                             <Button 
                                                               className="btn-danger re-seat" 
-                                                              onClick={()=>openSeatMapModel(extra,index)}
+                                                              onClick={()=>openSeatMapModel(extra,index,values)}
                                                             >Show Sheet Map</Button>
                                                           </div>
                                                         </div>
@@ -1135,8 +1177,8 @@ export default function AgentFlightReviewBook() {
         flightMapInfo = {flightMapInfo}
         flightMapIndex = {flightMapIndex}
 
-        passangerInfo = {passangerInfo}
-        setPassangerInfo = {setPassangerInfo}
+        //passangerInfo = {passangerInfo}
+        //setPassangerInfo = {setPassangerInfo}
         reInitialValues = {reInitialValues}
         setReInitialValues = {setReInitialValues}
         setAllFlightSeats = {setAllFlightSeats}
