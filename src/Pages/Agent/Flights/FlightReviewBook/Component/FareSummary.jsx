@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import FlightDetailModel from '../../Component/FlightDetailModel';
 //import Moment from 'moment';
 export default function FareSummary({totalPrices}) {
-    //console.log('listOfFlight',listOfFlight);
+    console.log('listOfFlight',totalPrices);
 
     return (
         <>

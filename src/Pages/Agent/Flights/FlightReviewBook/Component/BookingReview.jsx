@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Moment from 'moment';
 import FareSummary from './FareSummary';
+import BookingTimerOff from './BookingTimerOff';
 
 //import Moment from 'moment';
 export default function BookingReview({ seasionDetail, listOfFlight, fareDetail, reInitialValues, totalPrices, layover,BookingCheckValidationOfBookingId}) {
@@ -14,9 +15,9 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
   reInitialValues.travellerInfo.forEach((passanger, passangerKey) => {
     let tmp = {
       fullName: `${passanger.title} ${passanger.firstName} ${passanger.lastName}`,
-      flightNameWithSeat: '',
-      flightWithBaggae: '',
-      flighWithMeal: ''
+      flightNameWithSeat: [],
+      flightWithBaggae: [],
+      flighWithMeal: []
     };
     reInitialValues.extraInfo.forEach((extraInfo, extraInfoKey) => {
       //passanger.passangerTypeName
@@ -31,7 +32,7 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
       const listOfMeals = extraInfo.mealList;
       const listOfBaggage = extraInfo.baggageList;
       //console.log("ifFoundTraveller",ifFoundTraveller);
-      if (reInitialValues.extraInfo.length - 1 == extraInfoKey) {// Here check count is equal to index
+      if (reInitialValues.extraInfo.length) {// Here check count is equal to index
         // Here check traveller check
         if (ifFoundTraveller) {
           // here check meal 
@@ -39,7 +40,7 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
             return (meal.code == ifFoundTraveller.meals)
           });
           if (ifFoundMeals) {
-            tmp.flighWithMeal = `${flightFormTo} ${ifFoundMeals.desc}`;
+            tmp.flighWithMeal.push(`${flightFormTo} ${ifFoundMeals.desc}`);
           }
 
           // here check baggae 
@@ -48,40 +49,17 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
           });
 
           if (ifFoundBaggage) {
-            tmp.flightWithBaggae = `${flightFormTo} ${ifFoundBaggage.desc}`;
+            tmp.flightWithBaggae.push(`${flightFormTo} ${ifFoundBaggage.desc}`);
           }
 
-          tmp.flightNameWithSeat = `${flightFormTo} ${ifFoundTraveller.seat}`;
+          tmp.flightNameWithSeat.push(`${flightFormTo} ${ifFoundTraveller.seat}`);
         } else {
-          tmp.flightNameWithSeat = `${flightFormTo}`;
-        }
-      } else {// When count is more then one
-        // Here check traveller check 
-        if (ifFoundTraveller) {
-          // here check meal 
-          const ifFoundMeals = listOfMeals.find(meal => {
-            return (meal.code == ifFoundTraveller.meals)
-          });
-          if (ifFoundMeals) {
-            tmp.flighWithMeal = `${flightFormTo} ${ifFoundMeals.desc}`;
-          }
-
-          // here check baggae 
-          const ifFoundBaggage = listOfBaggage.find(baggage => {
-            return (baggage.code == ifFoundTraveller.baggage)
-          });
-
-          if (ifFoundBaggage) {
-            tmp.flightWithBaggae = `${flightFormTo} ${ifFoundBaggage.desc}`;
-          }
-
-          tmp.flightNameWithSeat = `${flightFormTo} ${ifFoundTraveller.seat},`;
-        } else {
-          tmp.flightNameWithSeat = `${flightFormTo},`;
-        }
+          tmp.flightNameWithSeat.push(`${flightFormTo}`);
+        } 
       }
     });
     listOfTravellerInfo.push(tmp);
+    //console.log("listOfTravellerInfo",listOfTravellerInfo);
   });
   //const [listOfTravellerInfo]
   //console.log("listOfTravellerInfo",listOfTravellerInfo);
@@ -202,23 +180,21 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
                                   <tr>
                                     <td className='fw-bold'>{flightKey + 1}</td>
                                     <td className='fw-bold'>{flightValue.fullName}</td>
-                                    <td className='fw-bold'>{flightValue.flightNameWithSeat}</td>
+                                    <td className='fw-bold'>{flightValue.flightNameWithSeat.toString()}</td>
                                     <td>
                                       {
-                                        flightValue.flightWithBaggae &&
+                                        flightValue.flightWithBaggae && flightValue.flightWithBaggae.length!==0 &&
                                         <div className='graysmalltext'>
-                                          <i class="fa-solid fa-suitcase me-1"></i>{flightValue.flightWithBaggae}
+                                          <i class="fa-solid fa-suitcase me-1"></i>{flightValue.flightWithBaggae.toString()}
                                         </div>
                                       }
 
                                       {
-                                        flightValue.flighWithMeal &&
+                                        flightValue.flighWithMeal && flightValue.flighWithMeal.length !==0 &&
                                         <div className='graysmalltext'>
-                                          <i class="fa-solid fa-utensils"></i> {flightValue.flighWithMeal}
+                                          <i class="fa-solid fa-utensils"></i> {flightValue.flighWithMeal.toString()}
                                         </div>
                                       }
-                                      
-                    
                                     </td>
                                   </tr>
                                 ))
@@ -262,6 +238,7 @@ export default function BookingReview({ seasionDetail, listOfFlight, fareDetail,
             />
           </div>
         </div>
+        {/* <BookingTimerOff/> */}
       </div>
     </>
   )

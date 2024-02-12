@@ -4,17 +4,11 @@ import Modal from 'react-bootstrap/Modal';
 import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.Service'; 
 import toast from 'react-hot-toast';
 export default function SeatMapModel({showModal, handleClose,proceedForSeat, bookingId, flightMapInfo, flightMapIndex,reInitialValues,setReInitialValues,setAllFlightSeats}) {
-    //console.log("reInitialValues1",reInitialValues);
-    const [passangerInfoModel, setPassangerInfoModel] = React.useState(reInitialValues.travellerInfo);
-    //const [bookingSeatMap, setBookingSeatMap] = React.useState();
+    const [passangerInfoModel, setPassangerInfoModel] = React.useState(reInitialValues.extraInfo);
     const [selectPassanger,setSelectPassanger] = React.useState(0);
-    
     const [customSeatMap,setCustomSeatMap] = React.useState();
     const [prices,setPrices] = React.useState([]);
-    const [totalFee, setTotalFee] = React.useState(0);
-    const [totalSeats,setTotalSeats] = React.useState();
-    
-    
+
     React.useEffect(() => {
         if(bookingId){
             getBookingSeatMap(bookingId);
@@ -72,14 +66,10 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
             if(seatInfo.seatStatus === 'full'){
                 // here set passanger infor
                 let newData = [...passangerInfoModel] //copy the object
-                
-                newData[selectPassangerKey].seat = seatInfo.seat.seatNo;
-                newData[selectPassangerKey].fee = seatInfo.seat.amount;
-                //console.log("newData",newData);
-                
-                let feeSum = newData.reduce(function(prev, current) {
-                    //console.log("prev",prev);
-                    //console.log("current.fee",current);
+                newData[flightMapIndex].mealBaggageInfo[selectPassangerKey].seat = seatInfo.seat.seatNo;
+                newData[flightMapIndex].mealBaggageInfo[selectPassangerKey].fee = seatInfo.seat.amount;
+
+                let totalSelectSeatFee = newData[flightMapIndex].mealBaggageInfo.reduce(function(prev, current) {
                     if(current.fee){
                         return prev + current.fee
                     }else{
@@ -87,16 +77,12 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                     }
                 }, 0);
                 
-                let totalSeats = Array.prototype.map.call(newData, function(item) { return item.seat; }).join(",")
-                console.log("feeSum",feeSum);
-                setTotalFee(feeSum);
-                setTotalSeats(totalSeats);
+                let totalSelectSeat = Array.prototype.map.call(newData[flightMapIndex].mealBaggageInfo, function(item) { return item.seat; }).join(",")
+                console.log("totalSelectSeat",totalSelectSeat);
+                console.log("totalSelectSeatFee",totalSelectSeatFee);
+                newData[flightMapIndex].totalSelectSeat = totalSelectSeat;
+                newData[flightMapIndex].totalSelectSeatFee = totalSelectSeatFee;
                 setPassangerInfoModel(newData);
-                // here set extra info
-                
-                reInitialValues.extraInfo[flightMapIndex].mealBaggageInfo[selectPassangerKey].seat = seatInfo.seat.seatNo;
-                //console.log("reInitialValues",reInitialValues);
-                setReInitialValues(reInitialValues);
             }
         }
         setSelectPassanger(selectPassangerKey);
@@ -129,24 +115,24 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                                 </thead>
                                 <tbody>
                                     {
-                                        passangerInfoModel && passangerInfoModel.length !== 0 && passangerInfoModel.map((passanger, passangerKey) => (
+                                        passangerInfoModel[flightMapIndex].mealBaggageInfo && passangerInfoModel[flightMapIndex].mealBaggageInfo.length !== 0 && passangerInfoModel[flightMapIndex].mealBaggageInfo.map((passanger, passangerKey) => (
                                             
                                             <tr key={passangerKey} onClick={()=>handleClickSetPassanger(passangerKey,null,false)}>
-                                                <td>{passanger.passangerTypeName}</td>
+                                                <td>{passanger.memberName}</td>
                                                 <td>{passanger.seat}</td>
-                                                <td>{passanger.fee}</td>
+                                                <td>{passanger?.fee}</td>
                                             </tr>
                                         ))
                                     }
                                     <tr>
                                         <td>Total</td>
-                                        <td>{totalSeats}</td>
-                                        <td>{totalFee}</td>
+                                        <td>{passangerInfoModel[flightMapIndex].totalSelectSeat}</td>
+                                        <td>{passangerInfoModel[flightMapIndex].totalSelectSeatFee}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <button className='btn btn-dark w-100' onClick={()=> proceedForSeat(totalSeats,totalFee,passangerInfoModel)}>Proceed</button>
+                        <button className='btn btn-dark w-100' onClick={()=> proceedForSeat(passangerInfoModel)}>Proceed</button>
                         <h6 className='fw-bold flightname mt-4'>Proceed Without Seats </h6>
                         <p className='flightnumber'>* Conditions apply. We will try our best to accomodate your seat preferences, however due to operational considerations we can't guarantee this selection. The seat map shown may not be the exact replica of flight layout, we shall not responsible for losses arising from the same. Thank you for your understanding</p>
                     </div>

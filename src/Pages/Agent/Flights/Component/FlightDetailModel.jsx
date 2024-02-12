@@ -6,8 +6,8 @@ import Indigo from '../../../../assets/images/indigo.png';
 import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service'; 
 import toast from 'react-hot-toast';
 export default function FlightDetailModel({show,handleClose,flightDetail,fareDetail}) {
-    //console.log('flightDetail',flightDetail);
-    //console.log('fareDetail',fareDetail);
+    console.log('flightDetail',flightDetail);
+    console.log('fareDetail',fareDetail);
     //var fareDetail = tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0];
     //console.log("fareDetail",fareDetail);
     const [searchRule, setSearchRule] = React.useState();
@@ -145,7 +145,7 @@ export default function FlightDetailModel({show,handleClose,flightDetail,fareDet
                                             <tr>
                                                 <th>
                                                     <div className='d-flex'>
-                                                        <img className='flight-flag' src={Indigo} alt=''/>
+                                                        <img className='flight-flag' src={flightDetail?.flightLogo} alt=''/>
                                                         <div className=''>
                                                             <div 
                                                                 className="flightname" 

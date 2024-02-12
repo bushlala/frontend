@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
@@ -8,12 +8,10 @@ import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.
 import toast from 'react-hot-toast';
 import FlightDetailModel from '../../Component/FlightDetailModel';
 //import Moment from 'moment';
-export default function FlightDetail({ listOfFlight, fareDetail, layover }) {
+export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFareAlert }) {
     const [showModal1, setShowModal1] = useState(false);
     const handleClose1 = () => setShowModal1(false);
-    const handleShow1 = () => setShowModal1(true);
-    //console.log('layover', layover);
-
+ 
     // console.log(listOfFlight.length,"################################################");
     listOfFlight.map((flightValue, flightKey, index) => {
         // console.log(flightKey,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
@@ -25,6 +23,12 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover }) {
         setShow(true);
         //setTripDetails(listOfFlight);
     }
+
+    useEffect(()=>{
+        if(baseFareAlert.length >0) {
+            setShowModal1(true);
+           }
+    },[])
     return (
         <>
             <div className='flight-item-list card'>
@@ -109,18 +113,20 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover }) {
                                             Show Fare Rules
                                         </a>
                                     </p>
-                                    <Button onClick={handleShow1}>Base fare alert</Button>
+                                  
+                                 
                                     <Modal size="md" show={showModal1} onHide={handleClose1} centered>
                                         <Modal.Header>
                                             <div className='text-center'>
-                                                <h3>CONFIRM TO PROCEED</h3>
+                                                <div className='' style={{color:"red"}}>{baseFareAlert[0].type}</div>
+                                                <h5>CONFIRM TO PROCEED</h5>
                                                 <h6>Fare have changed</h6>
                                             </div>
                                         </Modal.Header>
                                         <Modal.Body>
                                             <div>
-                                                <h4>Old Fare was - $1254.54</h4>
-                                                <h4>New Fare is <spna></spna></h4>
+                                                <h5>Old Fare was - {baseFareAlert[0].oldFare}</h5>
+                                                <h5>New Fare is {baseFareAlert[0].newFare}<spna></spna></h5>
                                             </div>
                                         </Modal.Body>
                                         <Modal.Footer>

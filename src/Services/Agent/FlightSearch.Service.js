@@ -61,6 +61,7 @@ export const FlightSearchService = {
         }
       })
     },
+    
 
     BookingSeatMap: async function (request, cancel = false) {
       return await apiConfig.request({

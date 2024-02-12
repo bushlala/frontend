@@ -17,7 +17,8 @@ import { TailSpin } from "react-loader-spinner";
 import axios from 'axios';
 import Select from "react-select";
 import Modal from 'react-bootstrap/Modal';
-
+import { AuthAPI } from '../../../Services/Auth.Service';
+import { useNavigate } from 'react-router-dom';
 
 
 function taskDate(dateMilli) {
@@ -61,6 +62,7 @@ const AgentFlightSearch = () => {
     const [toCity,setToCity]= useState(false);
     const[returnTripList,setReturnTripList]= useState([]);
     const[onwardTripList,setOnwardTripList]= useState([]);
+    const navigate = useNavigate();
     const handleIsClose = () => {
         setIsOpen(false);
     }
@@ -443,7 +445,7 @@ const AgentFlightSearch = () => {
     };
 
     const handleOnSubmit = async (values, { resetForm }) => {
-    setLoading(true);
+     setLoading(true);
         setTravellersModelShow(false);
         let startDate;
         let endDate;
@@ -482,6 +484,7 @@ const AgentFlightSearch = () => {
                     setReturnTripList([]);
                 }
             } else {
+               
                 let errorMessage = response.data.message;
                 setIsOpen(true)
                 setErrorMsg(errorMessage);
@@ -492,12 +495,13 @@ const AgentFlightSearch = () => {
             setLoading(false);
             setIsOpen(true)
             setErrorMsg(errorMessage);
+            alert("jjj")
         });
        }else{
-        FlightSearchService.Search(values).then(async (response) => {
+       FlightSearchService.Search(values).then(async (response) => {
             setLoading(true);
             if (response.status === 200) {
-
+              
                 if (response.data.status === true) {
                     setTripList(response.data.data)
                     setIsOpen(false)
@@ -507,11 +511,18 @@ const AgentFlightSearch = () => {
                     // toast.error(response.data.message);
                     setIsOpen(true)
                     setErrorMsg(errorMessage);
+                    if(errorMessage ==="invalid token" ){
+                        setTimeout(()=>{
+                            AuthAPI.logout();
+                            navigate("/");
+                        },1000)
+                    }
                 }
             } else {
                 let errorMessage = response.data.message;
                 setIsOpen(true)
                 setErrorMsg(errorMessage);
+                
             }
             setLoading(false);
         }).catch((error) => {
@@ -519,6 +530,7 @@ const AgentFlightSearch = () => {
             setLoading(false);
             setIsOpen(true)
             setErrorMsg(errorMessage);
+           
         });
        }
 
