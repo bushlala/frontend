@@ -5,9 +5,9 @@ import './FlightRoundSearchList.css';
 import ShareFlightPop from './ShareFlightPop';
 import FlightDetailModel from './FlightDetailModel';
 import { Link } from 'react-router-dom';
-export default function FlightRoundSearchList({ dateForHorizontal, onwardTripList, returnTripList, reInitialValues, handleChangeDate, currency }) {
-  console.log(dateForHorizontal, returnTripList, reInitialValues, handleChangeDate);
-  const [selectedValue, setSelectedValue] = useState('');
+export default function FlightRoundSearchList({onwardTripList, returnTripList, currency }) {
+
+
   const [isActive, setIsActive] = useState(false);
 
   const [shareTrips, setShareTrips] = React.useState([]);
@@ -103,8 +103,6 @@ const combinedIds = `${onwardFareRuleId},${returnFareRuleId}`;
     // Toggle between two sets of styles based on the current state
     setIsActive(!isActive);
   };
-
-
   const dynamicStyles = {
     // Define your styles here
     height: isActive ? '93px' : 'auto',
@@ -114,25 +112,11 @@ const combinedIds = `${onwardFareRuleId},${returnFareRuleId}`;
   };
   return (
     <>
-      <div className="main-content px-0 main-top-padding mt-5" >
+      <div className="main-content px-0 main-top-padding" >
         <div className="container-fluid">
           <div className='row main-row'>
             <div className="col-lg-12 col-md-12 m-auto">
-              <div className='flight-search-calouter mb-4 mt-2'>
-                <div className='btn-group'>
-
-                  {reInitialValues.dateArr && reInitialValues.dateArr.length != 0 && reInitialValues.dateArr.map((value, key) => (
-                    <div className=''>
-                      <input type="radio" class="btn-check" onChange={() => handleChangeDate(value)} autocomplete="off" name="travellersClass.adults" id={`datesbox${key}`} value="1"
-                        checked={dateForHorizontal == value ? 'checked' : ''}
-                      />
-                      <label class="btn search-check-box" for={`datesbox${key}`}>{value}</label>
-                    </div>
-                  ))
-                  }
-                </div>
-              </div>
-              <div className='flight-item-list'>
+               <div className='flight-item-list'>
                 <div className='row'>
                   <div className='col-6 flight-scroll'>
                     {
@@ -212,12 +196,9 @@ const combinedIds = `${onwardFareRuleId},${returnFareRuleId}`;
                                               </span>
                                             </div>
                                           </div>
-
-
                                         </div>
                                       ))
                                     }
-
                                   </div>
                                 </div>
                               </div>
@@ -289,7 +270,7 @@ const combinedIds = `${onwardFareRuleId},${returnFareRuleId}`;
                                             <div className="d-flex justify-content-between">
                                               <div className="">
                                                 <span className="mainprice">{currency} <span style={{ marginLeft: "20px" }}>{returnValue?.payAmount}</span> </span>
-                                                <span className="netpriceshow d-none" >₹ 11547</span>
+                                                <span className="netpriceshow d-none" >{currency} 11547</span>
                                               </div>
                                               <div className="">
                                                 <span className="sharechek">
@@ -304,8 +285,6 @@ const combinedIds = `${onwardFareRuleId},${returnFareRuleId}`;
                                               </span>
                                             </div>
                                           </div>
-
-
                                         </div>
                                       ))
                                     }
@@ -325,7 +304,6 @@ const combinedIds = `${onwardFareRuleId},${returnFareRuleId}`;
             }
           </div>
         </div>
-
         {(returnTrip && onwardTripList) &&
           <section className='search-footer'>
             <div className='row bg-dark text-white p-3'>
@@ -407,9 +385,9 @@ const combinedIds = `${onwardFareRuleId},${returnFareRuleId}`;
           </section>}
 
       </div>
-      {
-                show && <FlightDetailModel
+      {  show && <FlightDetailModel
                     show={show}
+                    currency={currency}
                     handleClose={handleClose}
                     flightDetail={tripDetail.flightDatails}
                     fareDetail={tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0]}

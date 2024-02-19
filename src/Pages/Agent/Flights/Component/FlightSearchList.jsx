@@ -201,7 +201,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                                                                         <div className=''>
                                                                             <span className="mainprice"> {currency} {fdValue?.payAmount} </span> 
                                                                             <span className="netpriceshow d-none" style={{color:"#009933"}}>
-                                                                            ₹ 11547
+                                                                            {currency} 11547
                                                                             </span> 
                                                                         </div> 
 
@@ -258,6 +258,7 @@ export default function FlightSearchList({dateForHorizontal,tripList,reInitialVa
                 show && <FlightDetailModel
                     show={show}
                     handleClose={handleClose}
+                    currency={currency}
                     flightDetail={tripDetail.flightDatails}
                     fareDetail={tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0]}
                 />

@@ -5,6 +5,7 @@ import {Modal, Button} from 'react-bootstrap'
 import { Typography } from "@mui/material";
 import { Link } from 'react-router-dom'
 import './HotelBooking.css'
+
 export default function HotelBooking() {
     const [showModal, setShowModal] = useState(false);
     const handleClose = () => setShowModal(false);

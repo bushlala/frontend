@@ -218,7 +218,8 @@ const handleSerachData =()=>{
                                                         {bookTicketList && bookTicketList.map((item, index) => (
                                                             <tr key={index}>
                                                                 <td>{Moment(item.createdAt).format('DD-MM-YYYY')}</td>
-                                                                <td><Link to={`/booking-success/${item.id}`}>{item.id}</Link></td>
+                                                                <td><Link to={`/agent/manage-carts/cart-detail/${item.id}`}>{item.id}</Link> Summary  <Link to={`/booking-success/${item.id}`}>View</Link></td>
+                                                               
                                                                 <td>{item.PNR === null ? "not available" : ""}</td>
 
                                                                

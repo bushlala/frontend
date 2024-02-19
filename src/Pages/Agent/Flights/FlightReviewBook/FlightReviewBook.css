@@ -13,6 +13,9 @@
     box-shadow: 5px ;
     
 }
+.accordion-item .error .accordion-button {
+      color: red !important;
+}
 .flightreview .re-butoon{
     margin-right: 10px;
 }
@@ -26,7 +29,7 @@
 .flightreview .re-seat{
     margin-top: 13px;
 }
-.flightreview .open-button {
+.flightsession.open-button {
     background-color: red;
     color: white;
     padding-top: 13px;
@@ -38,6 +41,7 @@
     right: 28px;
     width: 221px;
     border-radius: 10px;
+    z-index: 999;
   }
 
 .seat-color-box{

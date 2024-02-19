@@ -138,7 +138,8 @@ import FlightRoundSearchList from "../Pages/Agent/Flights/Component/FlightRoundS
 
 import Nopage from "./NoPage.jsx";
 //import Flight from "@mui/icons-material/Flight.js";
-
+import InvoiceGenerate from "../Pages/Agent/BookingSuccess/Invoice.jsx";
+import ManageCarts from "../Pages/Agent/MyBooking/ManageCart.jsx";
 
 /// Calling Arrow Routing Function
 const Routing = () => {
@@ -422,10 +423,18 @@ const Routing = () => {
          </PrivateRoute>
      }
  />
+  <Route
+     path="/agent/invoice/:bookingId"
+     element={
+         <PrivateRoute>
+             <InvoiceGenerate />
+         </PrivateRoute>
+     }
+ />
   
     <Route exact path="agentreview" element={<AgentReview />}></Route>
     <Route
-    path="/agent/flight/booking-hold"
+    path="/agent/flight/booking-hold/:bookingId"
     element={
         <PrivateRoute>
             <BookingHold />
@@ -451,7 +460,7 @@ element={
 }
 />
 <Route
-path="/agent/ticketpdf"
+path="/agent/ticketpdf/:bookingId"
 element={
     <PrivateRoute>
         <TicketPdf />
@@ -459,6 +468,15 @@ element={
 }
 />
   
+
+<Route
+path="/agent/manage-carts/cart-detail/:bookingId"
+element={
+    <PrivateRoute>
+        <ManageCarts />
+    </PrivateRoute>
+}
+/>
 
             </Routes>
             {/* </BrowserRouter> */}

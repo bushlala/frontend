@@ -7,10 +7,8 @@ import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.
 import toast from 'react-hot-toast';
 import FlightDetailModel from '../../Component/FlightDetailModel';
 //import Moment from 'moment';
-export default function FareSummary({totalPrices}) {
-    console.log('listOfFlight',totalPrices);
-
-    return (
+export default function FareSummary({totalPrices,currency}) {
+   return (
         <>
             <div className='col-3 mt-5'>
                 <div className='re-card'>
@@ -27,7 +25,7 @@ export default function FareSummary({totalPrices}) {
                                     </div>
                                     <div className="col">
                                         <h6 className='float-end'>
-                                        <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.baseFarePrice}
+                                       {currency}<span style={{marginLeft:"10px"}}>{totalPrices.baseFarePrice}</span>
                                         </h6>
                                     </div>
                                 </div>
@@ -39,8 +37,8 @@ export default function FareSummary({totalPrices}) {
                                         <h6 className=''>Taxes and fees</h6>
                                     </div>
                                     <div className="col">
-                                        <h6 className='float-end'>
-                                        <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.taxesFee}
+                                        <h6 className='float-end'>{currency}<span style={{marginLeft:"10px"}}> {totalPrices.taxesFee}</span>
+                                     
                                         </h6>
                                     </div>
                                 </div>
@@ -54,7 +52,7 @@ export default function FareSummary({totalPrices}) {
                                             </div>
                                             <div className="col">
                                                 <h6 className='float-end'>
-                                                <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.mealBaggageFee}
+                                                {totalPrices.mealBaggageFee}
                                                 </h6>
                                             </div>
                                         </div>
@@ -83,8 +81,8 @@ export default function FareSummary({totalPrices}) {
                                         <h6 className=''>Amount to Pay</h6>
                                     </div>
                                     <div className="col">
-                                        <h6 className='float-end'>
-                                        <i className="fa-solid fa-indian-rupee-sign"></i>{totalPrices.total}
+                                        <h6 className='float-end'>{currency}
+                                       <span style={{marginLeft:"10px"}}>{totalPrices.total}</span>
                                         </h6>
                                     </div>
                                 </div>

@@ -5,14 +5,11 @@ import Moment from 'moment';
 import Indigo from '../../../../assets/images/indigo.png';
 import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service'; 
 import toast from 'react-hot-toast';
-export default function FlightDetailModel({show,handleClose,flightDetail,fareDetail}) {
-    console.log('flightDetail',flightDetail);
-    console.log('fareDetail',fareDetail);
+export default function FlightDetailModel({show,handleClose,flightDetail,fareDetail,currency}) {
     //var fareDetail = tripDetail.fareDetail.fareDetails[tripDetail.radioCheckKey? tripDetail.radioCheckKey : 0];
-    //console.log("fareDetail",fareDetail);
-    const [searchRule, setSearchRule] = React.useState();
+
+    const [searchRule, setSearchRule] =useState();
     const handleClickGetSearchRule=(fareDetailRule) => {
-        //console.log("fareDetail",fareDetail);
         const requestParam= {
             id:fareDetail.fareRuleId,
             flowType:fareDetail.flowType
@@ -115,15 +112,15 @@ export default function FlightDetailModel({show,handleClose,flightDetail,fareDet
                                         <tbody>
                                             <tr>
                                                 <td width="33%" align="left"><strong>Base Fare</strong></td>
-                                                <td width="33%" align="left">{`₹ ${fareDetail.baseFare}`}</td>
+                                                <td width="33%" align="left">{currency}<span style={{marginLeft:"10px"}}>{fareDetail.baseFare}</span></td>
                                             </tr>
                                             <tr>
                                                 <td align="left"><strong>Surcharges &amp; Taxes</strong></td>
-                                                <td align="left">{`₹ ${fareDetail.taxesAndFees}`}</td>
+                                                <td align="left">{currency}<span style={{marginLeft:"10px"}}>{fareDetail.taxesAndFees}</span></td>
                                             </tr>
                                             <tr>
                                                 <td align="left"><strong>Pay Amount</strong></td>
-                                                <td align="left">{`₹ ${fareDetail.payAmount}`}</td>
+                                                <td align="left">{currency} <span style={{marginLeft:"10px"}}>{fareDetail.payAmount}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -211,7 +208,7 @@ export default function FlightDetailModel({show,handleClose,flightDetail,fareDet
 
                         <div className="tab-pane fade" id="nav-cancellation" role="tabpanel" aria-labelledby="nav-cancellation-tab">
                             {
-                                searchRule && searchRule.DATECHANGE ?
+                                searchRule && searchRule.CANCELLATION ?
                                 <div className="row">
                                     <div className="col-md-6">
                                         <table className="table table-hover table-bordered bg-light">
@@ -222,7 +219,7 @@ export default function FlightDetailModel({show,handleClose,flightDetail,fareDet
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td className="text-center">INR 1998* </td>
+                                                    <td className="text-center">{searchRule.CANCELLATION.DEFAULT.amount }</td>
                                                 </tr>                                    
                                             </tbody>
                                         </table>

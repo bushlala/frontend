@@ -8,14 +8,11 @@ import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.
 import toast from 'react-hot-toast';
 import FlightDetailModel from '../../Component/FlightDetailModel';
 //import Moment from 'moment';
-export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFareAlert }) {
+export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFareAlert,currency }) {
     const [showModal1, setShowModal1] = useState(false);
     const handleClose1 = () => setShowModal1(false);
  
-    // console.log(listOfFlight.length,"################################################");
-    listOfFlight.map((flightValue, flightKey, index) => {
-        // console.log(flightKey,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-    });
+  
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -25,7 +22,7 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
     }
 
     useEffect(()=>{
-        if(baseFareAlert.length >0) {
+        if(baseFareAlert && baseFareAlert.length >0) {
             setShowModal1(true);
            }
     },[])
@@ -117,28 +114,29 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
                                  
                                     <Modal size="md" show={showModal1} onHide={handleClose1} centered>
                                         <Modal.Header>
-                                            <div className='text-center'>
-                                                <div className='' style={{color:"red"}}>{baseFareAlert[0].type}</div>
-                                                <h5>CONFIRM TO PROCEED</h5>
-                                                <h6>Fare have changed</h6>
+                                            <div className='mx-auto'>
+                                                <h4 className='fw-bold text-danger'>{baseFareAlert&& baseFareAlert[0]?.type}</h4>
+                                                {/* <h5>CONFIRM TO PROCEED</h5>
+                                                <h6>Fare have changed</h6> */}
                                             </div>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            <div>
-                                                <h5>Old Fare was - {baseFareAlert[0].oldFare}</h5>
-                                                <h5>New Fare is {baseFareAlert[0].newFare}<spna></spna></h5>
+                                            <div className='text-center'>
+                                                <h5 className='fw-bold'>Old Fare was - <span className='text-secondary'>₹{baseFareAlert&& baseFareAlert[0]?.oldFare}</span></h5>
+                                                <h5 className='fw-bold'>New Fare is - <spna className='text-success'>₹{baseFareAlert&& baseFareAlert[0]?.newFare}</spna></h5>
                                             </div>
                                         </Modal.Body>
                                         <Modal.Footer>
-                                            <div className='row'>
+                                            {/* <div className='row'>
                                                 <div></div>
-                                            </div>
-                                            <Button variant="" onClick={handleClose1}>
-                                                Back
-                                            </Button>
-                                            <Button variant="dark" onClick={handleClose1}>
-                                                Continue
-                                            </Button>
+                                            </div> */}
+                                                <Button variant="dark" className='' onClick={handleClose1}>
+                                                    BACK
+                                                </Button>
+                                                <Button variant="danger" onClick={handleClose1}>
+                                                    CONFIRM TO PROCEED
+                                                </Button>
+                                            
                                         </Modal.Footer>
                                     </Modal>
                                     <div class="collapse" id="collapseExample">
@@ -158,6 +156,7 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
                     handleClose={handleClose}
                     flightDetail={listOfFlight[0]}
                     fareDetail={fareDetail}
+                    currency={currency}
                 />
             }
         </>

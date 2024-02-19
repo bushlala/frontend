@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react'
+import { Link, Navigate } from 'react-router-dom'
 import Layout from '../../../Component/Layout/Agent/AgentLayout'
 import Indigo from '../../../assets/images/indigo.png';
-import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
+import { FlightSearchService } from "../../../Services/Agent/FlightSearch.Service";
 import { useParams } from 'react-router-dom';
 import Moment from 'moment';
-
+import { Form, Formik } from "formik";
+import Modal from 'react-bootstrap/Modal';
+import { useNavigate } from 'react-router-dom';
+import { Alert, Box, Grid, InputLabel, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 export default function BookingSuccess() {
   const [ticketDetails, setTicketDetails] = useState();
   const [listOfFlight, setListOfFlight] = useState([]);
@@ -14,19 +17,28 @@ export default function BookingSuccess() {
   const [fareRule, setFareRule] = useState(false);
   const [fareDetails, setFareDetails] = useState();
   const [fareDetailsId, setFareDetailsId] = useState();
-  const[errorMsg,setErrorMsg]= useState("");
-  const[details,setDetails]= useState([]);
-  
+  const [errorMsg, setErrorMsg] = useState("");
+  const [details, setDetails] = useState([]);
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  let currency = userData.data.currency;
+  const [isOpen, setIsOpen] = useState(false);
+  const[action,setAction]= useState("");
+  const navigate = useNavigate();
 
-
+  const initialValues = {
+    withPrice: false,
+    withAgency: false,
+    withGST: false,
+    oldPrintCopy: false,
+  }
 
 
   useEffect(() => {
     fetchBookingDeatils();
-
   }, [])
 
-
+  const nameForm = useRef(null)
+  const [reInitialValues, setReInitialValues] = useState(initialValues);
   const fetchBookingDeatils = async () => {
     let bookingData = {
       "bookingId": bookingId && bookingId,
@@ -41,15 +53,15 @@ export default function BookingSuccess() {
         setFareDetails(result.fareDetail);
         setListOfFlight(result.listOfFlight);
         setLayover(result.layover);
- let  data = result.travellerInfos.pnrDetails;
-  let pnrlist ="" ;
+        let data = result.travellerInfos.pnrDetails;
+        let pnrlist = "";
         var details = Object.entries(data);
-        for(let i=0;i<details.length; i++){
-          pnrlist+= details[i][0] + "-" +details[i][1]+ ",";
+        for (let i = 0; i < details.length; i++) {
+          pnrlist += details[i][0] + "-" + details[i][1] + ",";
         }
-console.log("pnrlist",pnrlist.split(","))
+        console.log("pnrlist", pnrlist.split(","))
 
-setDetails(pnrlist.split(","));
+        setDetails(pnrlist.split(","));
       } else {
         console.log(response.data.message.message)
         setFareDetails();
@@ -75,7 +87,7 @@ setDetails(pnrlist.split(","));
         console.log(result)
       } else {
         setErrorMsg(response.data.message.message)
-      
+
       }
     }).catch((error) => {
       console.log(error)
@@ -91,6 +103,54 @@ setDetails(pnrlist.split(","));
     setFareRule(false);
 
   }
+
+  const dowanloadModalClose = () => {
+    setIsOpen(false);
+  }
+  
+  const dowanloadModalOpen = (action) => {
+    setIsOpen(true);
+    setAction(action);
+   
+  };
+  
+  const handleOnSubmit = async (values, { resetForm }) => {
+    console.log("evennt", values)
+    switch (action) {
+    case "DownloadPDF":
+      navigate(`/agent/ticketpdf/${bookingId}`)
+      break;
+      case "PrintTicket":
+      navigate("/agent/ticketpdf")
+      break;
+    case "EmailTicket":
+      // Logic for emailing ticket
+      break;
+    case "SMSTicket":
+      // Logic for sending ticket via SMS
+      break;
+    case "InvoiceForAgency":
+      navigate(`/agent/invoice/${bookingId}`)
+      break;
+    case "InvoiceForCustomer":
+      // Logic for showing invoice for customer
+      break;
+    case "GoToCartDetails":
+      navigate(`/agent/manage-carts/cart-detail/${bookingId}`)
+      break;
+    default:
+     
+  }
+
+     setTimeout(() => {
+      // Navigate("/agent/ticketpdf")
+      setIsOpen(false)
+     }, 200);
+     
+  }
+
+ 
+
   return (
     <>
       <Layout />
@@ -102,16 +162,17 @@ setDetails(pnrlist.split(","));
               <p>Booking ID :{bookingId && bookingId}</p>
             </div>
             <div>
-              <button type="button" class="btn btn-primary-ghost dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">More Option</button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-download"></i> Download as PDF</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-print"></i> Print Ticket</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-envelope"></i> Email Ticket</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0);"><i class="fa-regular fa-envelope"></i> SMS Ticket</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-file-invoice"></i> Invoice For Agency</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-file-invoice"></i> Invoice For Customer</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0);"><i class="fa-solid fa-cart-shopping"></i> Go to Cart Details</a></li>
-              </ul>
+              <button type="button" className="btn btn-primary-ghost dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">More Option</button>
+              <ul className="dropdown-menu">
+  <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("DownloadPDF")}><i className="fa-solid fa-download"></i> Download as PDF</a></li>
+  <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("PrintTicket")}><i className="fa-solid fa-print"></i> Print Ticket</a></li>
+  <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("EmailTicket")}><i className="fa-solid fa-envelope"></i> Email Ticket</a></li>
+  <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("SMSTicket")}><i className="fa-regular fa-envelope"></i> SMS Ticket</a></li>
+  <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("InvoiceForAgency")}><i className="fa-solid fa-file-invoice"></i> Invoice For Agency</a></li>
+  <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("InvoiceForCustomer")}><i className="fa-solid fa-file-invoice"></i> Invoice For Customer</a></li>
+  <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("GoToCartDetails")}><i className="fa-solid fa-cart-shopping"></i> Go to Cart Details</a></li>
+</ul>
+
             </div>
           </div>
           <hr></hr>
@@ -173,7 +234,7 @@ setDetails(pnrlist.split(","));
                 <div className='col-6'>
                   {listOfFlight && listOfFlight.length > 0 && listOfFlight[0].flightDetails && // Check if listOfFlight is defined and not empty, and if flightDetails exists
                     <p className='flightname mb-0'>
-                      {listOfFlight[0].flightDetails.departureAirportInformation.city} <i className="fa-solid fa-arrow-right-long"></i> {listOfFlight[0].flightDetails.arrivalAirportInformation.city} <span className='flightnumber'>On {Moment(listOfFlight[0].departureDate).format('ddd, MMM DD YYYY')}</span>
+                      {listOfFlight[0].flightDetails.departureAirportInformation.city} <i className="fa-solid fa-arrow-right-long"></i> {listOfFlight[listOfFlight.length - 1].flightDetails.arrivalAirportInformation.city} <span className='flightnumber'>On {Moment(listOfFlight[0].departureDate).format('ddd, MMM DD YYYY')}</span>
                     </p>
                   }
                 </div>
@@ -243,48 +304,48 @@ setDetails(pnrlist.split(","));
               <div class="card-body">
                 <p><button className='btn btn-info-ghost btn-wave waves-effect waves-light'>Detailed Rules</button></p>
                 {listOfFlight && listOfFlight.length > 0 && listOfFlight[0].flightDetails && // Check if listOfFlight is defined and not empty, and if flightDetails exists
-                <p><button className='btn btn-info-ghost btn-wave waves-effect waves-light'>
-                
-                  {listOfFlight[0].flightDetails.departureAirportInformation.city} - {listOfFlight[0].flightDetails.arrivalAirportInformation.city} <span className='flightnumber'></span>
+                  <p><button className='btn btn-info-ghost btn-wave waves-effect waves-light'>
+
+                    {listOfFlight[0].flightDetails.departureAirportInformation.city} - {listOfFlight[listOfFlight.length - 1].flightDetails.arrivalAirportInformation.city} <span className='flightnumber'></span>
                   </button></p>
-              }
-               
+                }
+
                 <p className='text-danger'>Mentioned fees are Per Pax Per Sector</p>
                 <p className='text-danger'>Apart from airline charges, GST + RAF + applicable charges if any, will be charged. </p>
-                
-                {errorMsg ? errorMsg: <div className="table-responsive mt-5">
-                <table className="table text-nowrap w-100">
-                  <thead>
-                    <tr>
-                      <th>Type</th>
-                      <th>Cancellation Fee</th>
-                      <th>Date Change Fee</th>
-                      <th>No Show</th>
-                      <th>Seat Chargeable</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>All</td>
-                      <td>
-                        <p>3,000 +</p>
-                        <p>Cancellation permitted 25 Hrs before scheduled departure</p>
-                        <p>Cancellation Penalty : INR 3,000/- or basic fare whichever is lower </p>
-                      </td>
-                      <td>
-                        <p>3,000 +</p>
-                        <p>Cancellation permitted 25 Hrs before scheduled departure</p>
-                        <p>Cancellation Penalty : INR 3,000/- or basic fare whichever is lower + Fare Difference </p>
-                      </td>
-                      <td>
-                        <p>Fees As Per Airline Rule + Surcharges</p>
-                      </td>
-                      <td> As Per Airline</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>}
-               
+
+                {errorMsg ? errorMsg : <div className="table-responsive mt-5">
+                  <table className="table text-nowrap w-100">
+                    <thead>
+                      <tr>
+                        <th>Type</th>
+                        <th>Cancellation Fee</th>
+                        <th>Date Change Fee</th>
+                        <th>No Show</th>
+                        <th>Seat Chargeable</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>All</td>
+                        <td>
+                          <p>3,000 +</p>
+                          <p>Cancellation permitted 25 Hrs before scheduled departure</p>
+                          <p>Cancellation Penalty : INR 3,000/- or basic fare whichever is lower </p>
+                        </td>
+                        <td>
+                          <p>3,000 +</p>
+                          <p>Cancellation permitted 25 Hrs before scheduled departure</p>
+                          <p>Cancellation Penalty : INR 3,000/- or basic fare whichever is lower + Fare Difference </p>
+                        </td>
+                        <td>
+                          <p>Fees As Per Airline Rule + Surcharges</p>
+                        </td>
+                        <td> As Per Airline</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>}
+
               </div>
             </div> : ""}
 
@@ -310,18 +371,18 @@ setDetails(pnrlist.split(","));
                     </tr>
                   </thead>
                   <tbody>
-                      <tr>
-                    <td>1</td>
-                    <td><i class="fa-solid fa-print"></i></td>
-                    <td className='fw-bold'>{ticketDetails&& ticketDetails.travellerInfos.title},{ticketDetails&& ticketDetails.travellerInfos.firstName}{ticketDetails&& ticketDetails.travellerInfos.lastName}</td>
-                    <td className='fw-bold'>
-                   <td>{details && details.map((item,index)=>(
-                    <div key={index}>{item}</div>
-                   ))}</td>
-                   </td>
-                    <td className='fw-bold'>DEL-BOM: <span className="graysmalltext">Seat- 55D,</span></td>
-                    <td className='fw-bold'>NA</td>
-                  </tr>
+                    <tr>
+                      <td>1</td>
+                      <td><i class="fa-solid fa-print"></i></td>
+                      <td className='fw-bold'>{ticketDetails && ticketDetails.travellerInfos.title},{ticketDetails && ticketDetails.travellerInfos.firstName}{ticketDetails && ticketDetails.travellerInfos.lastName}</td>
+                      <td className='fw-bold'>
+                        <td>{details && details.map((item, index) => (
+                          <div key={index}>{item}</div>
+                        ))}</td>
+                      </td>
+                      <td className='fw-bold'>DEL-BOM: <span className="graysmalltext">Seat- 55D,</span></td>
+                      <td className='fw-bold'>NA</td>
+                    </tr>
 
                   </tbody>
                 </table>
@@ -337,7 +398,7 @@ setDetails(pnrlist.split(","));
                   <h6>Base fare</h6>
                 </div>
                 <div className='col-6 '>
-                  <p className='float-end'>{fareDetails && fareDetails.baseFare}</p>
+                  <p className='float-end'>{currency} <span style={{ marginLeft: "10px" }}>{fareDetails && fareDetails.baseFare}</span></p>
                 </div>
                 <hr></hr>
               </div>
@@ -346,7 +407,7 @@ setDetails(pnrlist.split(","));
                   <h6>Taxes and fees</h6>
                 </div>
                 <div className='col-6 '>
-                  <p className='float-end'>{fareDetails && fareDetails.texes}</p>
+                  <p className='float-end'>{currency} <span style={{ marginLeft: "10px" }}>{fareDetails && fareDetails.texes}</span></p>
                 </div>
                 <hr></hr>
               </div>
@@ -355,7 +416,7 @@ setDetails(pnrlist.split(","));
                   <h6>Meal, Baggage & Seat</h6>
                 </div>
                 <div className='col-6 '>
-                  <p className='float-end'>null 3,000.85</p>
+                  <p className='float-end'> <span style={{ marginLeft: "10px" }}>not available</span> </p>
                 </div>
                 <hr></hr>
               </div>
@@ -364,7 +425,7 @@ setDetails(pnrlist.split(","));
                   <h6>Total</h6>
                 </div>
                 <div className='col-6 '>
-                  <p className='float-end'>{fareDetails && fareDetails.totalFare}</p>
+                  <p className='float-end'>{currency} <span style={{ marginLeft: "10px" }}>{fareDetails && fareDetails.totalFare}</span></p>
                 </div>
               </div>
             </div>
@@ -384,7 +445,52 @@ setDetails(pnrlist.split(","));
             </div>
           </div>
         </div>
+        {/* /// dowanload pdf Modal  */}
+
+        <Modal size="md" show={isOpen} onHide={dowanloadModalClose} centered>
+        <Formik
+  initialValues={reInitialValues}
+  onSubmit={handleOnSubmit}
+  enableReinitialize={true}
+>
+  {({ classes, errors, touched, values, handleChange, setFieldValue, handleSubmit }) => (
+    <Form ref={nameForm}>
+      <div className='container'>
+        <div className=''>
+          <div className="errmodal-header text-center">
+            <h2 className="errmodal-title w-100 fw-bold">Download PDF</h2>
+           
+              <FormControlLabel
+                control={<Checkbox checked={values.withPrice} onChange={handleChange} name="withPrice" />}
+                label="With Price"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={values.withAgency} onChange={handleChange} name="withAgency" />}
+                label="With Agency"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={values.withGST} onChange={handleChange} name="withGST" />}
+                label="With GST"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={values.oldPrintCopy} onChange={handleChange} name="oldPrintCopy" />}
+                label="Old Print Copy"
+              />
+           
+          </div>
+         
+          <div className='errmodal-footer text-center'>
+            <button type="submit" className="btn text-center btn-success print-ticket">OK</button>
+          </div>
+        </div>
       </div>
+    </Form>
+  )}
+</Formik>
+
+        </Modal>
+      </div>
+
     </>
   )
 }

@@ -356,7 +356,7 @@ export default function AgentFlightReviewBook() {
                                 passangerInfo && passangerInfo.length > 0 
                                 ? passangerInfo.map((user, index) => (
                                     <div className="accordion-item mb-3">
-                                      <h2 className="accordion-header" id={`flush-headingOne${index}`}>
+                                      <h2 className="accordion-header error" id={`flush-headingOne${index}`}>
                                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapseOne${index}`} aria-expanded="false" aria-controls={`flush-collapseOne${index}`}>
                                             {
                                               values.passangerInfo[index].passangerType==='adult' &&

@@ -1,0 +1,10 @@
+.select-passanger {
+    background-color: #e9e7ff !important;
+  }
+  .seat-selected{
+    background-color: green !important;
+    color: white !important; 
+  }
+  .seat label.seat-selected:before{
+    background-color: transparent !important;
+  }

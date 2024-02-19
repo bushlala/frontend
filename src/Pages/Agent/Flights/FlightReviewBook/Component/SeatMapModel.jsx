@@ -1,19 +1,21 @@
-import React, {useState } from 'react';
+import React, {useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.Service'; 
 import toast from 'react-hot-toast';
+import "./SeatMapModel.css";
 export default function SeatMapModel({showModal, handleClose,proceedForSeat, bookingId, flightMapInfo, flightMapIndex,reInitialValues,setReInitialValues,setAllFlightSeats}) {
-    const [passangerInfoModel, setPassangerInfoModel] = React.useState(reInitialValues.extraInfo);
-    const [selectPassanger,setSelectPassanger] = React.useState(0);
-    const [customSeatMap,setCustomSeatMap] = React.useState();
-    const [prices,setPrices] = React.useState([]);
+    const [passangerInfoModel, setPassangerInfoModel] = useState(reInitialValues.extraInfo);
+    const [selectPassanger,setSelectPassanger] = useState(0);
+    const [customSeatMap,setCustomSeatMap] = useState();
+    const [prices,setPrices] = useState([]);
+    const [selectSeat, setSelectSeat] = useState();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if(bookingId){
             getBookingSeatMap(bookingId);
         }
-    }, [bookingId])
+    }, [])
 
     
     const getBookingSeatMap = async (bookingId) => {
@@ -25,7 +27,7 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                 const result =  response.data.data[flightMapIndex];
                 const sInfo = result.sInfo;
                 setPrices(result.prices)
-                setAllFlightSeats(response.data.data);
+                 setAllFlightSeats(response.data.data);
                 var customSeatMap = [];
                 for (var row=1; row <= result.sData.row; row++) {
                     var tmp = {column: []}
@@ -53,7 +55,8 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                 //console.log("customSeatMap",customSeatMap);
                 setCustomSeatMap(customSeatMap)
             }else{
-              toast.error('Something went wrong');
+                alert("else");
+                toast.error('Something went wrong');
             }
         }).catch((e) => {
             console.log(e);
@@ -61,10 +64,15 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
         });
     };
 
+const[seatTab,setSeatTab]= useState(false);
+const [activePassangerKey, setActivePassangerKey] = useState(null);
     const handleClickSetPassanger = (selectPassangerKey, seatInfo, seatStatus) => {
+        setActivePassangerKey(selectPassangerKey);
+        setSeatTab(true)
         if(seatStatus){
             if(seatInfo.seatStatus === 'full'){
                 // here set passanger infor
+                setSelectSeat(seatInfo);
                 let newData = [...passangerInfoModel] //copy the object
                 newData[flightMapIndex].mealBaggageInfo[selectPassangerKey].seat = seatInfo.seat.seatNo;
                 newData[flightMapIndex].mealBaggageInfo[selectPassangerKey].fee = seatInfo.seat.amount;
@@ -78,15 +86,19 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                 }, 0);
                 
                 let totalSelectSeat = Array.prototype.map.call(newData[flightMapIndex].mealBaggageInfo, function(item) { return item.seat; }).join(",")
-                console.log("totalSelectSeat",totalSelectSeat);
-                console.log("totalSelectSeatFee",totalSelectSeatFee);
+                //console.log("totalSelectSeat",totalSelectSeat);
+                //console.log("totalSelectSeatFee",totalSelectSeatFee);
                 newData[flightMapIndex].totalSelectSeat = totalSelectSeat;
                 newData[flightMapIndex].totalSelectSeatFee = totalSelectSeatFee;
                 setPassangerInfoModel(newData);
             }
+        }else{
+            setSelectPassanger(selectPassangerKey);
+            setSelectSeat('');
         }
-        setSelectPassanger(selectPassangerKey);
     };
+       
+   
     return (
         <>
             <Modal size="xl" show={showModal} onHide={handleClose} centered>
@@ -107,20 +119,21 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                         <div className="table-responsive">
                             <table className="table text-nowrap w-100">
                                 <thead>
-                                    <tr>
+                                    <tr>  
                                         <th>Passanger</th>
                                         <th>Seat</th>
                                         <th>Fee</th>
                                     </tr>
-                                </thead>
+
+ </thead>
                                 <tbody>
                                     {
                                         passangerInfoModel[flightMapIndex].mealBaggageInfo && passangerInfoModel[flightMapIndex].mealBaggageInfo.length !== 0 && passangerInfoModel[flightMapIndex].mealBaggageInfo.map((passanger, passangerKey) => (
                                             
-                                            <tr key={passangerKey} onClick={()=>handleClickSetPassanger(passangerKey,null,false)}>
-                                                <td>{passanger.memberName}</td>
-                                                <td>{passanger.seat}</td>
-                                                <td>{passanger?.fee}</td>
+                                            <tr  key={passangerKey} onClick={()=>handleClickSetPassanger(passangerKey,null,false)}>
+                                                <td className={selectPassanger===passangerKey ? "select-passanger":''}>{passanger.memberName}</td>
+                                                <td className={selectPassanger===passangerKey ? "select-passanger":''}>{passanger.seat}</td>
+                                                <td className={selectPassanger===passangerKey ? "select-passanger":''}>{passanger?.fee}</td>
                                             </tr>
                                         ))
                                     }
@@ -147,7 +160,7 @@ export default function SeatMapModel({showModal, handleClose,proceedForSeat, boo
                                             <div className='seat' key={columnKey} >
                                                 <input type="radio" class="" name="options-outlined" id={`${rowKey}-${columnKey}`}  onClick={()=>handleClickSetPassanger(selectPassanger,column,true)} />
 
-                                                <label className={column.seatStatus === 'empty' ? 'empty' : column.seat.isBooked ? 'seat-booked' : 'seat-available' } for={`${rowKey}-${columnKey}`}  style={ column.seatStatus !== 'empty' ? {backgroundColor:column?.seat?.color} : {} } >{column?.seat?.seatNo}</label>
+                                                <label className={column.seatStatus === 'empty' ? 'empty' : column.seat.isBooked ? 'seat-booked' : selectSeat && selectSeat.seat.seatNo===column.seat.seatNo ? 'seat-available seat-selected' : 'seat-available'} for={`${rowKey}-${columnKey}`}  style={ column.seatStatus !== 'empty' ? {backgroundColor:column?.seat?.color} : {} } >{column?.seat?.seatNo}</label>
                                             </div>
                                         ))
                                     }

@@ -13,19 +13,29 @@ import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import SeatMapModel from './Component/SeatMapModel';
 import BookingReview from './Component/BookingReview';
+import ReturnBookingReview from "./Component/ReturnBookingReview";
 import FareSummary from './Component/FareSummary';
 import BookingTimerOff from './Component/BookingTimerOff';
 import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab'
 import { useSearchParams } from "react-router-dom";
-
+import { Box } from '@mui/material';
+import ReturnFlightDetails from "./Component/ReturnFlightDetails";
 
 export default function AgentFlightReviewBook() {
   const [errorMessage, setErrorMessage] = useState('');
   const seachQuery = useSearchParams()[0]
   const referenceNum = seachQuery.get("reference");
   const [confirmBookingData, setConfirmBookingData] = useState({})
- const [alerts,setAlerts]= useState([]);
+  const [alerts, setAlerts] = useState([]);
+  const [layover, setLayover] = useState([]);
+  const [onwordLayover, setOnwordLayover] = useState([]);
+  const [returnLayover, setReturnLayover] = useState([]);
+  const [routeInfo, setRouteInfo] = useState([]);
+  const [bookingId, setBookingId] = useState("");
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  const[fareDetails,setFareDetails]= useState();
+  let currency = userData.data.currency;
 
   let initialValues = {
     isDomestic: true,
@@ -39,14 +49,14 @@ export default function AgentFlightReviewBook() {
     registeredName: '',
     mobile: '',
     address: '',
-    isGst: '',
+    isGst: 'false',
     paxInfo: {
       ADULT: '',
       CHILD: '',
       INFANT: '',
     },
     preferredFareType: '',
-    flightStops: 1,
+    // flightStops: 1,
     listOfFlight: '',
     fareDetail: '',
     travellerInfo: [
@@ -82,7 +92,11 @@ export default function AgentFlightReviewBook() {
   }
 
   const validationSchema = Yup.object().shape({
-    passangerInfo: Yup.array().of(
+    personalPhone: Yup.string()
+      .required("Personal phone is required"),
+    personalEmail: Yup.string()
+      .required("Personal email is required"),
+    travellerInfo: Yup.array().of(
       Yup.object().shape({
         title: Yup.string()
           .required("Title is required"),
@@ -90,10 +104,13 @@ export default function AgentFlightReviewBook() {
           .required("First name is required"),
         lastName: Yup.string()
           .required("Last name is required"),
-        dateOfBirth: Yup.string()
-          .required("date of birth is required")
-      })
-    )
+        // dateOfBirth: Yup.string()
+        //   .required("date of birth is required")
+      }),
+
+
+    ),
+
     // .test(
     //     'uniqueEmail',
     //     "Email already used please use anothor email",
@@ -109,6 +126,7 @@ export default function AgentFlightReviewBook() {
   const navigate = useNavigate();
   const { ruleId } = useParams();
   const [bookingReviewData, setBookingReviewData] = useState();
+  const [returnReviewData, setReturnReviewData] = useState();
   var [reInitialValues, setReInitialValues] = useState(initialValues);
   const [showModal, setShowModal] = useState(false);
   const [flightMapInfo, setFlightMapInfo] = useState();
@@ -136,7 +154,7 @@ export default function AgentFlightReviewBook() {
   //let amount=5000
   const checkoutHandler = async (bookingRequest) => {
 
-    localStorage.setItem('bookingRequest', JSON.stringify(bookingRequest));
+  
     const userData = JSON.parse(localStorage.getItem('userData'));
 
 
@@ -224,9 +242,8 @@ export default function AgentFlightReviewBook() {
       const ruleIdsArray = ruleId.split(',');
       getBookingReviewData(ruleIdsArray);
     }
-  }, [ruleId])
 
-  const [layover, setLayover] = useState([]);
+  }, [ruleId])
 
   const getBookingReviewData = async (ruleId) => {
 
@@ -234,146 +251,299 @@ export default function AgentFlightReviewBook() {
       priceIds: ruleId,
 
     }
-    FlightSearchService.BookingReview(requestData).then(async (response) => {
-      if (response.data.status) {
-        const result = response.data.data;
-        // Code for bagger and meal information
-         setAlerts(response.data.data.alerts)
-        setLayover(response.data.data.layover);
-        var extraInfo = [];
-        result.listOfFlight && result.listOfFlight.forEach((flightDetail, index) => {
-          var tmp = {
-            from: "",
-            to: "",
-            date: "",
-            flightName: "",
-            flightNumber: "",
-            flightCode: "",
-            flightLogo: "",
-            mealBaggageInfo: "",
-            seats: "No Seat Selected",
-            baggageList: [],
-            mealList: []
-          };
-          tmp.from = flightDetail.departureAirportInformation.city;
-          tmp.to = flightDetail.arrivalAirportInformation.city;
-          tmp.date = flightDetail.departureDate;
-          tmp.flightName = flightDetail.flightDescription.name;
-          tmp.flightNumber = flightDetail.flightNumber;
-          tmp.flightCode = flightDetail.flightCode;
-          tmp.flightLogo = flightDetail.flightLogo;
-          tmp.totalSelectSeat = "";
-          tmp.totalSelectSeatFee = 0;
-          tmp.baggageList = flightDetail.ssrInfo.BAGGAGE ? flightDetail.ssrInfo.BAGGAGE : [];
-          tmp.mealList = flightDetail.ssrInfo.MEAL ? flightDetail.ssrInfo.MEAL : [];
-          var mealBaggageInfo = [];
+    if (ruleId.length > 1) {
+      FlightSearchService.ReviewReturn(requestData).then(async (response) => {
+        if (response.data.status) {
+          const result = response.data.data;
+          setAlerts(result.alerts)
+          setBookingId(result.seasionDetail.bookingId);
+          setOnwordLayover(result?.listOfFlight?.Onword?.layover);
+          setReturnLayover(result?.listOfFlight?.Return?.layover);
+          setRouteInfo(result?.routeInfo);
+          let OnwordList = result.listOfFlight?.Onword?.FlightList;
+          let returnList = result.listOfFlight?.Return?.FlightList;
+
+          let listOfFlight = OnwordList.concat(returnList);
+          let onwardfareDetail= result.listOfFlight?.Onword?.fareDetail?.fareDetails;
+          let returnfareDetail= result.listOfFlight?.Return?.fareDetail?.fareDetails;
+   let finalFareDetails =onwardfareDetail.concat(returnfareDetail);
+
+          var extraInfo = [];
+          result.listOfFlight && listOfFlight.forEach((flightDetail, index) => {
+            var tmp = {
+              from: "",
+              to: "",
+              date: "",
+              flightName: "",
+              flightNumber: "",
+              flightCode: "",
+              flightLogo: "",
+              mealBaggageInfo: "",
+              seats: "No Seat Selected",
+              baggageList: [],
+              mealList: []
+            };
+            tmp.from = flightDetail.departureAirportInformation.city;
+            tmp.to = flightDetail.arrivalAirportInformation.city;
+            tmp.date = flightDetail.departureDate;
+            tmp.flightName = flightDetail.flightDescription.name;
+            tmp.flightNumber = flightDetail.flightNumber;
+            tmp.flightCode = flightDetail.flightCode;
+            tmp.flightLogo = flightDetail.flightLogo;
+            tmp.totalSelectSeat = "";
+            tmp.totalSelectSeatFee = 0;
+            tmp.baggageList = flightDetail.ssrInfo.BAGGAGE ? flightDetail.ssrInfo.BAGGAGE : [];
+            tmp.mealList = flightDetail.ssrInfo.MEAL ? flightDetail.ssrInfo.MEAL : [];
+            var mealBaggageInfo = [];
+            for (var i = 0; i < result.seasionDetail.paxInfo.ADULT; i++) {
+              const tmp1 = {
+                memberName: `ADULT ${i + 1}`,
+                baggage: "",
+                meals: "",
+                seat: "",
+                fee: 0,
+              }
+              mealBaggageInfo.push(tmp1);
+             
+            }  
+            tmp.mealBaggageInfo = mealBaggageInfo;
+            extraInfo.push(tmp)
+         
+            // for (var i = 0; i < result.seasionDetail.paxInfo.INFANT; i++) {
+            //   const tmp1 = {
+            //     memberName: `INFANT ${i + 1}`,
+            //     baggage: "",
+            //     meals: "",
+            //     seat: "",
+            //     fee: 0,
+            //   }
+            //   mealBaggageInfo.push(tmp1);
+            // }
+          
+          });
+
+          let travellerInfo = [];
+          // For Adult
           for (var i = 0; i < result.seasionDetail.paxInfo.ADULT; i++) {
-            const tmp1 = {
-              memberName: `ADULT ${i + 1}`,
-              baggage: "",
-              meals: "",
-              seat: "",
-              fee: 0,
+            const tmp = {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passengerType: 'ADULT',
+              passangerTypeName: `ADULT ${i + 1}`,
+              isSave: "",
+              ssrMealInfos: [],
+              ssrBaggageInfos: [],
+              ssrSeatInfos: [],
             }
-            mealBaggageInfo.push(tmp1);
+            travellerInfo.push(tmp)
           }
+          // For Childern
+          for (var i = 0; i < result.seasionDetail.paxInfo.CHILD; i++) {
+            const tmp = {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passengerType: 'CHILD',
+              passangerTypeName: `CHILD ${i + 1}`,
+              isSave: "",
+              ssrMealInfos: [],
+              ssrBaggageInfos: [],
+              ssrSeatInfos: [],
+            }
+            travellerInfo.push(tmp)
+          }
+          // For Infants
           for (var i = 0; i < result.seasionDetail.paxInfo.INFANT; i++) {
-            const tmp1 = {
-              memberName: `INFANT ${i + 1}`,
-              baggage: "",
-              meals: "",
-              seat: "",
-              fee: 0,
+            const tmp = {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passengerType: 'INFANT',
+              passangerTypeName: `INFANT ${i + 1}`,
+              isSave: "",
+              ssrMealInfos: [],
+              ssrBaggageInfos: [],
+              ssrSeatInfos: [],
             }
-            mealBaggageInfo.push(tmp1);
+            travellerInfo.push(tmp)
           }
-          tmp.mealBaggageInfo = mealBaggageInfo;
-          extraInfo.push(tmp)
-        });
 
-        let travellerInfo = [];
-        // For Adult
-        for (var i = 0; i < result.seasionDetail.paxInfo.ADULT; i++) {
-          const tmp = {
-            title: "",
-            firstName: "",
-            lastName: "",
-            dateOfBirth: "",
-            passengerType: 'ADULT',
-            passangerTypeName: `ADULT ${i + 1}`,
-            isSave: "",
-            ssrMealInfos: [],
-            ssrBaggageInfos: [],
-            ssrSeatInfos: [],
-          }
-          travellerInfo.push(tmp)
+          reInitialValues.travellerInfo = travellerInfo;
+          reInitialValues.extraInfo = extraInfo;
+          reInitialValues.isDomestic = result?.seasionDetail?.isDomestic;
+          reInitialValues.bookingId = result?.seasionDetail?.bookingId;
+          reInitialValues.requestId = result?.seasionDetail?.requestId;
+          reInitialValues.paxInfo = result?.seasionDetail?.paxInfo;
+          reInitialValues.preferredFareType = result?.seasionDetail?.preferredFareType;
+          reInitialValues.tripType = 2; // How to get 
+          // reInitialValues.flightStops = 1; // How to get
+          reInitialValues.listOfFlight = listOfFlight;
+          reInitialValues.fareDetail =finalFareDetails;
+          reInitialValues.routeInfo = result?.routeInfo;
+          setReInitialValues(reInitialValues);
+          totalPrices.baseFarePrice = result?.fareDetail?.baseFare;
+          totalPrices.taxesFee = result?.fareDetail?.taxesAndFees;
+          totalPrices.total = result?.fareDetail?.payAmount;
+
+
+          setPassangerInfo(travellerInfo);
+          setReturnReviewData(result);
+          setTotalPrices(totalPrices);
+        } else {
+          toast.error('Something went wrong');
+          console.log("response", response.data)
         }
-        // For Childern
-        for (var i = 0; i < result.seasionDetail.paxInfo.CHILD; i++) {
-          const tmp = {
-            title: "",
-            firstName: "",
-            lastName: "",
-            dateOfBirth: "",
-            passengerType: 'CHILD',
-            passangerTypeName: `CHILD ${i + 1}`,
-            isSave: "",
-            ssrMealInfos: [],
-            ssrBaggageInfos: [],
-            ssrSeatInfos: [],
-          }
-          travellerInfo.push(tmp)
-        }
-        // For Infants
-        for (var i = 0; i < result.seasionDetail.paxInfo.INFANT; i++) {
-          const tmp = {
-            title: "",
-            firstName: "",
-            lastName: "",
-            dateOfBirth: "",
-            passengerType: 'INFANT',
-            passangerTypeName: `INFANT ${i + 1}`,
-            isSave: "",
-            ssrMealInfos: [],
-            ssrBaggageInfos: [],
-            ssrSeatInfos: [],
-          }
-          travellerInfo.push(tmp)
-        }
-
-        //console.log("result.fareDetail1",result.fareDetail);
-        reInitialValues.travellerInfo = travellerInfo;
-        reInitialValues.extraInfo = extraInfo;
-        reInitialValues.isDomestic = result?.seasionDetail?.isDomestic;
-        reInitialValues.bookingId = result?.seasionDetail?.bookingId;
-        reInitialValues.requestId = result?.seasionDetail?.requestId;
-        reInitialValues.paxInfo = result?.seasionDetail?.paxInfo;
-        reInitialValues.preferredFareType = result?.seasionDetail?.preferredFareType;
-        reInitialValues.tripType = 1; // How to get 
-        reInitialValues.flightStops = 1; // How to get
-        reInitialValues.listOfFlight = result.listOfFlight;
-        reInitialValues.fareDetail = result?.fareDetail;
-        reInitialValues.routeInfo = result?.routeInfo;
-        setReInitialValues(reInitialValues);
-        totalPrices.baseFarePrice = result?.fareDetail?.fareDetails[0]?.baseFare;
-        totalPrices.taxesFee = result?.fareDetail?.fareDetails[0]?.taxesAndFees;
-        totalPrices.total = result?.fareDetail?.fareDetails[0]?.payAmount;
-
-
-        setPassangerInfo(travellerInfo);
-        //console.log("travellerInfo",travellerInfo)
-        setBookingReviewData(result);
-        console.log("totalPrices", totalPrices);
-        setTotalPrices(totalPrices);
-      } else {
+      }).catch((error) => {
+        console.log(error);
         toast.error('Something went wrong');
-        //console.log("response", response.data)
-      }
-    }).catch((error) => {
-      console.log(error);
-      toast.error('Something went wrong');
-      console.log("response", error.data)
-    });
+        console.log("response", error.data)
+      });
+    } else {
+      FlightSearchService.BookingReview(requestData).then(async (response) => {
+        if (response.data.status) {
+          const result = response.data.data;
+          setAlerts(response.data?.data?.alerts)
+          setLayover(response.data.data?.layover);
+          setBookingId(result.seasionDetail.bookingId);
+          setFareDetails(result.fareDetail.fareDetails[0])
+          var extraInfo = [];
+          result.listOfFlight && result.listOfFlight.forEach((flightDetail, index) => {
+            var tmp = {
+              from: "",
+              to: "",
+              date: "",
+              flightName: "",
+              flightNumber: "",
+              flightCode: "",
+              flightLogo: "",
+              mealBaggageInfo: "",
+              seats: "No Seat Selected",
+              baggageList: [],
+              mealList: []
+            };
+            tmp.from = flightDetail.departureAirportInformation.city;
+            tmp.to = flightDetail.arrivalAirportInformation.city;
+            tmp.date = flightDetail.departureDate;
+            tmp.flightName = flightDetail.flightDescription.name;
+            tmp.flightNumber = flightDetail.flightNumber;
+            tmp.flightCode = flightDetail.flightCode;
+            tmp.flightLogo = flightDetail.flightLogo;
+            tmp.totalSelectSeat = "";
+            tmp.totalSelectSeatFee = 0;
+            tmp.baggageList = flightDetail.ssrInfo.BAGGAGE ? flightDetail.ssrInfo.BAGGAGE : [];
+            tmp.mealList = flightDetail.ssrInfo.MEAL ? flightDetail.ssrInfo.MEAL : [];
+            var mealBaggageInfo = [];
+            for (var i = 0; i < result.seasionDetail.paxInfo.ADULT; i++) {
+              const tmp1 = {
+                memberName: `ADULT ${i + 1}`,
+                baggage: "",
+                meals: "",
+                seat: "",
+                fee: 0,
+              }
+              mealBaggageInfo.push(tmp1);
+            }
+            tmp.mealBaggageInfo = mealBaggageInfo;
+            extraInfo.push(tmp)
+            // for (var i = 0; i < result.seasionDetail.paxInfo.INFANT; i++) {
+            //   const tmp1 = {
+            //     memberName: `INFANT ${i + 1}`,
+            //     baggage: "",
+            //     meals: "",
+            //     seat: "",
+            //     fee: 0,
+            //   }
+            //   mealBaggageInfo.push(tmp1);
+            // }
+           
+          });
+
+          let travellerInfo = [];
+          // For Adult
+          for (var i = 0; i < result.seasionDetail.paxInfo.ADULT; i++) {
+            const tmp = {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passengerType: 'ADULT',
+              passangerTypeName: `ADULT ${i + 1}`,
+              isSave: "",
+              ssrMealInfos: [],
+              ssrBaggageInfos: [],
+              ssrSeatInfos: [],
+            }
+            travellerInfo.push(tmp)
+          }
+          // For Childern
+          for (var i = 0; i < result.seasionDetail.paxInfo.CHILD; i++) {
+            const tmp = {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passengerType: 'CHILD',
+              passangerTypeName: `CHILD ${i + 1}`,
+              isSave: "",
+              // ssrMealInfos: [],
+              // ssrBaggageInfos: [],
+              // ssrSeatInfos: [],
+            }
+            travellerInfo.push(tmp)
+          }
+          // For Infants
+          for (var i = 0; i < result.seasionDetail.paxInfo.INFANT; i++) {
+            const tmp = {
+              title: "",
+              firstName: "",
+              lastName: "",
+              dateOfBirth: "",
+              passengerType: 'INFANT',
+              passangerTypeName: `INFANT ${i + 1}`,
+              isSave: "",
+              // ssrMealInfos: [],
+              // ssrBaggageInfos: [],
+              // ssrSeatInfos: [],
+            }
+            travellerInfo.push(tmp)
+          }
+
+          //console.log("result.fareDetail1",result.fareDetail);
+          reInitialValues.travellerInfo = travellerInfo;
+          reInitialValues.extraInfo = extraInfo;
+          reInitialValues.isDomestic = result?.seasionDetail?.isDomestic;
+          reInitialValues.bookingId = result?.seasionDetail?.bookingId;
+          reInitialValues.requestId = result?.seasionDetail?.requestId;
+          reInitialValues.paxInfo = result?.seasionDetail?.paxInfo;
+          reInitialValues.preferredFareType = result?.seasionDetail?.preferredFareType;
+          reInitialValues.tripType = 1; // How to get 
+          // reInitialValues.flightStops = 1; // How to get
+          reInitialValues.listOfFlight = result.listOfFlight;
+          reInitialValues.fareDetail = result?.fareDetail.fareDetails[0];
+          reInitialValues.routeInfo = result?.routeInfo;
+          setReInitialValues(reInitialValues);
+          totalPrices.baseFarePrice = result?.fareDetail?.fareDetails[0]?.baseFare;
+          totalPrices.taxesFee = result?.fareDetail?.fareDetails[0]?.taxesAndFees;
+          totalPrices.total = result?.fareDetail?.fareDetails[0]?.payAmount;
+          setPassangerInfo(travellerInfo);
+          setBookingReviewData(result);
+
+          setTotalPrices(totalPrices);
+        } else {
+          toast.error('Something went wrong');
+          //console.log("response", response.data)
+        }
+      }).catch((error) => {
+        console.log(error);
+        toast.error('Something went wrong');
+        console.log("response", error.data)
+      });
+    }
+
   };
 
 
@@ -386,7 +556,6 @@ export default function AgentFlightReviewBook() {
   }
 
   const proceedForSeat = (passangerInfoModel) => {
-    console.log("passangerInfoModel", passangerInfoModel)
     reInitialValues.extraInfo = passangerInfoModel;
     setReInitialValues(reInitialValues);
     let totalFlightSelectSeatFee = reInitialValues.extraInfo.reduce(function (prev, current) {
@@ -411,21 +580,23 @@ export default function AgentFlightReviewBook() {
       setActiveStep("third");
     }
   }
+const handleBack =(e)=>{
+  alert(e.target.v)
+}
 
   const handleChangeMealBaggageValue = (event, setFieldValue, values, fieldNamme, commonFieldName, indexKey, indexKey2) => {
-    console.log("indexKey", indexKey);
-    console.log("indexKey2", indexKey2);
     let extraPrice = 0;
     values.extraInfo.forEach((extra, extraIndex) => {
       const mealList = extra.mealList;
       const baggageList = extra.baggageList;
       extra.mealBaggageInfo.forEach((mealBaggage, mealBaggageIndex) => {
+      
         if (indexKey !== extraIndex || indexKey2 !== mealBaggageIndex || commonFieldName !== "baggage") {
-          if (mealBaggage.baggage) {
+           if (mealBaggage.baggage) {
             const baggageFound = baggageList.find(baggage => {
               return baggage.code === mealBaggage.baggage;
             });
-            if (baggageFound) {
+            if (baggageFound && baggageFound?.amount) {
               extraPrice += baggageFound?.amount;
             }
           }
@@ -437,16 +608,15 @@ export default function AgentFlightReviewBook() {
               return baggage.code === mealBaggage.meals;
             });
             if (mealFound) {
-              extraPrice += mealFound?.amount;
+              extraPrice += mealFound.amount ? mealFound.amount : 0;
             }
           }
         }
 
       });
     });
-    console.log("extraPrice", extraPrice);
     if (commonFieldName === 'baggage') {
-      const baggageList = reInitialValues.extraInfo[indexKey].baggageList;
+     const baggageList = reInitialValues.extraInfo[indexKey].baggageList;
       if (baggageList && baggageList.length !== 0) {
 
         const baggageFound = baggageList.find(baggage => {
@@ -475,7 +645,9 @@ export default function AgentFlightReviewBook() {
         const mealFound = mealList.find(meal => {
           return meal.code === event.target.value;
         });
-        if (mealFound) {
+
+        if (mealFound && mealFound?.amount) {
+
           setTotalPrices({
             ...totalPrices,
             mealBaggageFee: extraPrice + mealFound?.amount,
@@ -495,57 +667,60 @@ export default function AgentFlightReviewBook() {
 
   const handleOnSubmit = async (values, { resetForm }) => {
 
-    let ssrMealInfos = [];
-    let ssrBaggageInfos = [];
-    let ssrSeatInfos = [];
+    
     values.travellerInfo.forEach((passanger, passangerKey) => {
-      values.extraInfo.forEach((extraInfo, extraInfoKey) => {
-        //let flightFormTo = `${extraInfo.from} - ${extraInfo.to} :`;
-        const ifFoundTraveller = extraInfo.mealBaggageInfo.find(mealBaggage => {
-          return (mealBaggage.memberName == passanger.passangerTypeName)
-        });
-        const listOfMeals = extraInfo.mealList;
-        const listOfBaggage = extraInfo.baggageList;
-        // Here check traveller check
-        if (ifFoundTraveller) {
-          // here check meal 
-          const ifFoundMeals = listOfMeals.find(meal => {
-            return (meal.code == ifFoundTraveller.meals)
+     
+      if(passanger.passengerType ==="ADULT"){
+        values.extraInfo.forEach((extraInfo, extraInfoKey) => {
+          let ssrMealInfos = [];
+          let ssrBaggageInfos = [];
+          let ssrSeatInfos = [];
+          //let flightFormTo = `${extraInfo.from} - ${extraInfo.to} :`;
+          const ifFoundTraveller = extraInfo.mealBaggageInfo.find(mealBaggage => {
+            return (mealBaggage.memberName == passanger.passangerTypeName)
           });
-          if (ifFoundMeals) {
-            ssrMealInfos.push(ifFoundMeals);
-          }
-
-          // here check baggae 
-          const ifFoundBaggage = listOfBaggage.find(baggage => {
-            return (baggage.code == ifFoundTraveller.baggage)
-          });
-          if (ifFoundBaggage) {
-            ssrBaggageInfos.push(ifFoundBaggage);
-          }
-
-          if (ifFoundTraveller.seat) {
-            console.log("allFlightSeats", allFlightSeats);
-            const flightSeats = allFlightSeats[extraInfoKey]
-            const sInfo = flightSeats.sInfo;
-            const ifFoundSeat = sInfo.find(seat => {
-              return (seat.seatNo == ifFoundTraveller.seat)
+          const listOfMeals = extraInfo.mealList;
+          const listOfBaggage = extraInfo.baggageList;
+          console.log("ifFoundTraveller",ifFoundTraveller);
+          // Here check traveller check
+          if (ifFoundTraveller) {
+            // here check meal 
+            const ifFoundMeals = listOfMeals.find(meal => {
+              return (meal.code == ifFoundTraveller.meals)
             });
-            if (ifFoundSeat) {
-              ssrSeatInfos.push(ifFoundSeat)
+            if (ifFoundMeals) {
+              ssrMealInfos.push(ifFoundMeals);
+            }
+  
+            // here check baggae 
+            const ifFoundBaggage = listOfBaggage.find(baggage => {
+              return (baggage.code == ifFoundTraveller.baggage)
+            });
+            if (ifFoundBaggage) {
+              ssrBaggageInfos.push(ifFoundBaggage);
+            }
+  
+            if (ifFoundTraveller.seat) {
+              const flightSeats = allFlightSeats[extraInfoKey]
+              const sInfo = flightSeats.sInfo;
+              const ifFoundSeat = sInfo.find(seat => {
+                return (seat.seatNo == ifFoundTraveller.seat)
+              });
+              if (ifFoundSeat) {
+                ssrSeatInfos.push(ifFoundSeat)
+              }
             }
           }
-        }
-      });
-      passanger.ssrMealInfos = ssrMealInfos;
-      passanger.ssrBaggageInfos = ssrBaggageInfos;
-      passanger.ssrSeatInfos = ssrSeatInfos;
+          passanger.ssrMealInfos = ssrMealInfos;
+          passanger.ssrBaggageInfos = ssrBaggageInfos;
+          passanger.ssrSeatInfos = ssrSeatInfos;
+        });
+      }
     });
 
 
     setReInitialValues(values);
     setActiveStep("third");
-    console.log("totalprice", totalPrices)
     FlightSearchService.BookingAddPassenger(values).then(async (response) => {
       if (response.data.status) {
         const result = response.data.data;
@@ -560,11 +735,8 @@ export default function AgentFlightReviewBook() {
   };
 
 
-  const BookingCheckValidationOfBookingId = async () => {
-    const bookingCheckValidationOfBookingId = {
-      bookingId: reInitialValues.bookingId,
-    }
-    const bookingRequest = {
+  const BookingCheckValidationOfBookingId = async (data) => {
+    let bookingRequest = {
       bookingId: reInitialValues.bookingId,
       amount: totalPrices.total,
       personalPhone: reInitialValues.personalPhone,
@@ -578,8 +750,55 @@ export default function AgentFlightReviewBook() {
       bookingId: reInitialValues.bookingId,
       travellerInfo: reInitialValues.travellerInfo
     }
-    checkoutHandler(bookingRequest);
+    if (data === "hold") {
+      let HoldBooking = bookingRequest;
+      delete HoldBooking.amount;
+      
+      HoldBooking.travellerInfo = HoldBooking.travellerInfo.map(traveller => {
+          // Create a copy of the traveler object
+          const modifiedTraveller = { ...traveller };
+      
+          // Add passport information keys
+          modifiedTraveller.passportNation = "IN";
+          modifiedTraveller.passportNumber = "87UYITB";
+          modifiedTraveller.passportExpiryDate = "2030-09-08";
+      
+          // Rename dateOfBirth to dob and delete dateOfBirth key
+          modifiedTraveller.dob = modifiedTraveller.dateOfBirth ? modifiedTraveller.dateOfBirth:"1998-01-10";
+          delete modifiedTraveller.dateOfBirth;
+          delete modifiedTraveller.passangerTypeName;
+      
+          return modifiedTraveller;
+      });
+      
+      // Now HoldBooking object should be properly modified
+      
+
+    localStorage.setItem('HoldBooking', JSON.stringify(HoldBooking));
+    // ChangeBookingStatus
+      FlightSearchService.HoldBooking(HoldBooking).then(async (response) => {
+        if (response.data.status === true) {
+          const result = response.data.data.bookingId;
+          console.log("result", response.data.status);
+          handleChangeBookingStatus(result);
+        } else {
+          toast.error('Something went wrong');
+        }
+      }).catch((e) => {
+        console.log(e);
+        toast.error('Something went wrong');
+      });
+    } else {
+      localStorage.setItem('bookingRequest', JSON.stringify(bookingRequest));
+      checkoutHandler(bookingRequest);
+    }
+   
+
+
     return false;
+    const bookingCheckValidationOfBookingId = {
+      bookingId: reInitialValues.bookingId,
+    }
     FlightSearchService.BookingCheckValidationOfBookingId(bookingCheckValidationOfBookingId).then(async (response) => {
       if (response.data.status) {
         const result = response.data.data;
@@ -607,8 +826,29 @@ export default function AgentFlightReviewBook() {
       toast.error('Something went wrong');
     });
   }
-
-
+  
+const handleChangeBookingStatus =(id)=>{
+  const data = {
+    bookingId:id,
+    status:"4"
+  }
+  FlightSearchService.ChangeBookingStatus(data).then(async (response) => {
+    if (response.data.status === true) {
+      const result = response.data.data;
+      alert("Your Booking Hold")
+  setTimeout(() => {
+    navigate(`/agent/flight/booking-hold/${id}`)
+  }, 1000);
+      }
+     else {
+      toast.error('Something went wrong');
+    }
+  }).catch((e) => {
+    console.log(e);
+    toast.error('Something went wrong');
+  });
+}
+ 
   return (
     <>
       <Header />
@@ -625,17 +865,17 @@ export default function AgentFlightReviewBook() {
             <div className='container'>
               <Nav variant="pills" className="row bookingTop-row-positionHandle">
                 <Nav.Item className='booking-top-btn no-padding col-sm-3'>
-                  <Nav.Link eventKey="first" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>FIRST STEP</span></span>
+                  <Nav.Link eventKey="first" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span className="graycolor"><span>FIRST STEP</span></span>
                     <h4 class="apt-flightiti"><span>Flight Itinerary</span></h4></Nav.Link>
                 </Nav.Item>
 
                 <Nav.Item className='booking-top-btn no-padding col-sm-3'>
-                  <Nav.Link eventKey="second" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>SECOND STEP</span></span>
+                  <Nav.Link eventKey="second" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span className="graycolor"><span>SECOND STEP</span></span>
                     <h4 class="apt-flightiti"><span>Passenger Details</span></h4></Nav.Link>
                 </Nav.Item>
 
                 <Nav.Item className='booking-top-btn no-padding col-sm-3'>
-                  <Nav.Link eventKey="third" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span class="graycolor"><span>THIRD STEP</span></span>
+                  <Nav.Link eventKey="third" className='apt-common apt-firstep apt-active apt-firstep-positionHandle'><span className="graycolor"><span>THIRD STEP</span></span>
                     <h4 class="apt-flightiti"><span>Review</span></h4></Nav.Link>
                 </Nav.Item>
 
@@ -646,6 +886,8 @@ export default function AgentFlightReviewBook() {
               </Nav>
             </div>
           </div>
+
+          <BookingTimerOff />
 
           <Tab.Content>
             <Tab.Pane eventKey="first">
@@ -665,9 +907,23 @@ export default function AgentFlightReviewBook() {
                         bookingReviewData.listOfFlight.length != 0 &&
                         <FlightDetail
                           listOfFlight={bookingReviewData.listOfFlight}
-                          fareDetail={bookingReviewData.fareDetail}
+                          fareDetail={fareDetails}
                           layover={bookingReviewData.layover}
                           baseFareAlert={alerts}
+                          currency={currency}
+                        />
+                      }
+                      {
+                        returnReviewData &&
+                        returnReviewData.listOfFlight &&
+                        returnReviewData.listOfFlight?.Onword?.FlightList?.length != 0 &&
+                        <ReturnFlightDetails
+                          listOfFlight={returnReviewData.listOfFlight}
+                           onwordLayover={onwordLayover}
+                          returnLayover={returnLayover}
+                          routeInfo={routeInfo}
+                          currency={currency}
+
                         />
                       }
 
@@ -681,10 +937,10 @@ export default function AgentFlightReviewBook() {
                     </div>
                     <FareSummary
                       totalPrices={totalPrices}
+                      currency={currency}
                     />
                   </div>
                 </div>
-                <BookingTimerOff />
               </div>
 
             </Tab.Pane>
@@ -721,7 +977,8 @@ export default function AgentFlightReviewBook() {
                                           travellerInfo && travellerInfo.length > 0
                                             ? travellerInfo.map((user, index) => (
                                               <div className="accordion-item mb-3">
-                                                <h2 className="accordion-header" id={`flush-headingOne${index}`}>
+
+                                                <h2 className={errors.travellerInfo && errors.travellerInfo[index] !== 0 ? 'accordion-header error' : 'accordion-header'} id={`flush-headingOne${index}`}>
                                                   <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapseOne${index}`} aria-expanded="false" aria-controls={`flush-collapseOne${index}`}>
                                                     {
                                                       user.passengerType === 'ADULT' &&
@@ -756,6 +1013,12 @@ export default function AgentFlightReviewBook() {
                                                           <option value="Mrs">Mrs.</option>
                                                           <option value="Ms">Ms.</option>
                                                         </select>
+                                                        {errors.travellerInfo
+                                                          && errors.travellerInfo[index]
+                                                          && errors.travellerInfo[index].title
+                                                          &&
+                                                          <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.travellerInfo[index].title}</Box>
+                                                        }
                                                       </div>
 
                                                       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
@@ -769,6 +1032,12 @@ export default function AgentFlightReviewBook() {
                                                           onChange={handleChange}
 
                                                         />
+                                                        {errors.travellerInfo
+                                                          && errors.travellerInfo[index]
+                                                          && errors.travellerInfo[index].firstName
+                                                          &&
+                                                          <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.travellerInfo[index].firstName}</Box>
+                                                        }
                                                       </div>
 
                                                       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
@@ -781,21 +1050,30 @@ export default function AgentFlightReviewBook() {
                                                           value={values.travellerInfo[index].lastName}
                                                           onChange={handleChange}
                                                         />
+                                                        {errors.travellerInfo
+                                                          && errors.travellerInfo[index]
+                                                          && errors.travellerInfo[index].lastName
+                                                          &&
+                                                          <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.travellerInfo[index].lastName}</Box>
+                                                        }
                                                       </div>
-                                                      {
-                                                        user.passengerType === 'INFANT' &&
+                                                    
                                                         <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                                          <label for="input-placeholder" className="form-label">DOB</label>
+                                                          <label htmlFor={`travellerInfo.${index}.dateOfBirth`} className="form-label">DOB</label>
                                                           <input
                                                             type="date"
                                                             className="form-control"
-                                                            id={`travellerInfo.${index}.dateOfBith`}
-                                                            name={`travellerInfo.${index}.dateOfBith`}
-                                                            value={values.travellerInfo[index].dateOfBirth}
+                                                            id={`travellerInfo.${index}.dateOfBirth`}
+                                                            name={`travellerInfo.${index}.dateOfBirth`}
+                                                            value={values.travellerInfo[index].dateOfBirth.toString()}
                                                             onChange={handleChange}
                                                           />
+                                                          {errors.travellerInfo && errors.travellerInfo[index] && errors.travellerInfo[index].dateOfBith && (
+                                                            <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.travellerInfo[index].dateOfBith}</Box>
+                                                          )}
                                                         </div>
-                                                      }
+                                                      
+
                                                     </div>
                                                     <div className='accordion-footer mt-3'>
                                                       <input
@@ -846,63 +1124,62 @@ export default function AgentFlightReviewBook() {
                                                         </b>
                                                         <span className="graycolor bagNmeal-dateInfo-positionHandle fw-normal muted"> on {extra.date}</span>
                                                       </p>
-                                                      {
-                                                        extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((mealBaggage, mealBaggageIndex) => (
-                                                          <div className='row mb-4'>
-                                                            <div className='col-xl-2'>
-                                                              <h6 className='mt-4'>{mealBaggage.memberName}</h6>
-                                                            </div>
-
-                                                            <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                              <label for="input-label" className="form-label">Baggage Information </label>
-                                                              <select
-                                                                className="form-select"
-                                                                aria-label="Default select example"
-                                                                id={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`}
-
-                                                                name={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`}
-
-                                                                onChange={(e) => {
-                                                                  handleChangeMealBaggageValue(e, setFieldValue, values, `extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`, 'baggage', extraIndex, mealBaggageIndex);
-                                                                }}
-
-                                                                value={values.extraInfo[extraIndex].mealBaggageInfo[mealBaggageIndex].baggage}
-                                                              >
-                                                                <option value="">--Select Baggage--</option>
-                                                                {
-                                                                  extra.baggageList && extra.baggageList.length > 0 && extra.baggageList.map((baggageInfo, index) => (
-                                                                    <option value={baggageInfo.code}>{`${baggageInfo.desc} (${baggageInfo.amount})`}</option>
-                                                                  ))
-                                                                }
-                                                              </select>
-                                                            </div>
-
-                                                            <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                                                              <label for="input-label" className="form-label">Select Meal </label>
-                                                              <select
-                                                                className="form-select"
-                                                                aria-label="Default select example"
-
-                                                                id={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`}
-
-                                                                name={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`}
-                                                                onChange={(e) => {
-                                                                  handleChangeMealBaggageValue(e, setFieldValue, values, `extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`, 'meal', extraIndex, mealBaggageIndex);
-                                                                }}
-                                                                //onChange={handleChange}
-
-                                                                value={values.extraInfo[extraIndex].mealBaggageInfo[mealBaggageIndex].meal}
-                                                              >
-                                                                <option value="">--Meal Preferences--</option>
-                                                                {
-                                                                  extra.mealList && extra.mealList.length > 0 && extra.mealList.map((mealInfo, index) => (
-                                                                    <option value={mealInfo.code}>{`${mealInfo.desc} (${mealInfo.code})`}</option>
-                                                                  ))
-                                                                }
-                                                              </select>
-                                                            </div>
+                                                      {extra.mealBaggageInfo && extra.mealBaggageInfo.length !== 0 && extra.mealBaggageInfo.map((mealBaggage, mealBaggageIndex) => (
+                                                        <div className='row mb-4'>
+                                                          <div className='col-xl-2'>
+                                                            <h6 className='mt-4'>{mealBaggage.memberName}</h6>
                                                           </div>
-                                                        ))
+
+                                                          <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                            <label for="input-label" className="form-label">Baggage Information </label>
+                                                            <select
+                                                              className="form-select"
+                                                              aria-label="Default select example"
+                                                              id={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`}
+
+                                                              name={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`}
+
+                                                              onChange={(e) => {
+                                                                handleChangeMealBaggageValue(e, setFieldValue, values, `extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.baggage`, 'baggage', extraIndex, mealBaggageIndex);
+                                                              }}
+
+                                                              value={values.extraInfo[extraIndex].mealBaggageInfo[mealBaggageIndex].baggage}
+                                                            >
+                                                              <option value="">--Select Baggage--</option>
+                                                              {
+                                                                extra.baggageList && extra.baggageList.length > 0 && extra.baggageList.map((baggageInfo, index) => (
+                                                                  <option value={baggageInfo.code}>{`${baggageInfo.desc} (${baggageInfo.amount})`}</option>
+                                                                ))
+                                                              }
+                                                            </select>
+                                                          </div>
+
+                                                          <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                                            <label for="input-label" className="form-label">Select Meal </label>
+                                                            <select
+                                                              className="form-select"
+                                                              aria-label="Default select example"
+
+                                                              id={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`}
+
+                                                              name={`extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`}
+                                                              onChange={(e) => {
+                                                                handleChangeMealBaggageValue(e, setFieldValue, values, `extraInfo.${extraIndex}.mealBaggageInfo.${mealBaggageIndex}.meals`, 'meal', extraIndex, mealBaggageIndex);
+                                                              }}
+                                                              //onChange={handleChange}
+
+                                                              value={values.extraInfo[extraIndex].mealBaggageInfo[mealBaggageIndex].meal}
+                                                            >
+                                                              <option value="">--Meal Preferences--</option>
+                                                              {
+                                                                extra.mealList && extra.mealList.length > 0 && extra.mealList.map((mealInfo, index) => (
+                                                                  <option value={mealInfo.code}>{`${mealInfo.desc} (${mealInfo.code})`}</option>
+                                                                ))
+                                                              }
+                                                            </select>
+                                                          </div>
+                                                        </div>
+                                                      ))
                                                       }
                                                     </div>
                                                   ))
@@ -1054,24 +1331,32 @@ export default function AgentFlightReviewBook() {
                                       <input
                                         type="email"
                                         className="form-control"
-                                        placeholder='demo@gmail.com'
+                                        placeholder=''
                                         id="personalEmail"
                                         name="personalEmail"
                                         value={values.personalEmail}
                                         onChange={handleChange}
                                       />
+                                      {errors.personalEmail
+                                        &&
+                                        <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.personalEmail}</Box>
+                                      }
                                     </div>
                                     <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                                       <label for="personalPhone" className="form-label">Phone*</label>
                                       <input
                                         type="text"
                                         className="form-control"
-                                        placeholder='7845120369'
+                                        placeholder=''
                                         id="personalPhone"
                                         name="personalPhone"
                                         value={values.personalPhone}
                                         onChange={handleChange}
                                       />
+                                      {errors.personalPhone
+                                        &&
+                                        <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.personalPhone}</Box>
+                                      }
                                     </div>
                                     <div className="form-check">
                                       <input
@@ -1086,11 +1371,33 @@ export default function AgentFlightReviewBook() {
                                       <label className="" for="isGst">
                                         I have a GST Number
                                       </label>
+                                      {errors.isGst
+                                        &&
+                                        <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.isGst}</Box>
+                                      }
+                                    </div>
+                                    <div className="form-check">
+                                      <input
+                                        className="me-2"
+                                        type="radio"
+                                        id="isGst"
+                                        name="isGst"
+                                        value="false"
+                                        checked={values.isGst === 'false'}
+                                        onChange={handleChange}
+                                      />
+                                      <label className="" for="isGst">
+                                        I don't have a GST Number
+                                      </label>
+                                      {errors.isGst
+                                        &&
+                                        <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.isGst}</Box>
+                                      }
                                     </div>
                                   </div>
                                   <hr></hr>
                                   <div className='card-title d-flex justify-content-between'>
-                                    <Button type='button' className='btn btn-danger'>Back</Button>
+                                    <Button type='button' className='btn btn-danger' value="first" onClick={() => handleBack("first")}>Back</Button>
                                     <Button type='submit' className='btn btn-danger' >Proceed To Review </Button>
 
                                     {/* <Link to=''  className='btn btn-danger'> Proceed To Review </Link> */}
@@ -1104,6 +1411,7 @@ export default function AgentFlightReviewBook() {
                     </div>
                     <FareSummary
                       totalPrices={totalPrices}
+                      currency={currency}
                     />
                   </div>
                 </div>
@@ -1119,11 +1427,29 @@ export default function AgentFlightReviewBook() {
                 <BookingReview
                   seasionDetail={bookingReviewData.seasionDetail}
                   listOfFlight={bookingReviewData.listOfFlight}
-                  fareDetail={bookingReviewData.fareDetail}
+                  fareDetail={fareDetails}
                   reInitialValues={reInitialValues}
                   totalPrices={totalPrices}
                   layover={bookingReviewData.layover}
                   BookingCheckValidationOfBookingId={BookingCheckValidationOfBookingId}
+                  currency={currency}
+                />
+              }
+
+            </Tab.Pane>
+            <Tab.Pane eventKey="third">
+              {
+                returnReviewData &&
+                returnReviewData.listOfFlight &&
+                returnReviewData.listOfFlight.length != 0 &&
+                <ReturnBookingReview
+                  listOfFlight={returnReviewData.listOfFlight}
+                  reInitialValues={reInitialValues}
+                  totalPrices={totalPrices}
+                  onwordLayover={onwordLayover}
+                  returnLayover={returnLayover}
+                  BookingCheckValidationOfBookingId={BookingCheckValidationOfBookingId}
+                  currency={currency}
                 />
               }
 
@@ -1141,7 +1467,7 @@ export default function AgentFlightReviewBook() {
           showModal={showModal}
           handleClose={handleClose}
           proceedForSeat={proceedForSeat}
-          bookingId={bookingReviewData?.seasionDetail?.bookingId}
+          bookingId={bookingId}
           flightMapInfo={flightMapInfo}
           flightMapIndex={flightMapIndex}
 

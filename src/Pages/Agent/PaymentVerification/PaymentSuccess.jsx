@@ -24,12 +24,7 @@ const PaymentSuccess = () => {
     })
 
     for (let i = 0; i < newobject.length; i++) {
-      // Remove 'amount' and 'desc' keys from ssrMealInfos array
-      newobject[i].ssrMealInfos.forEach(info => {
-        delete info.amount;
-        delete info.desc;
-      });
-
+    
       // Remove 'amount' and 'desc' keys from ssrBaggageInfos array
       newobject[i].ssrBaggageInfos.forEach(info => {
         delete info.amount;
@@ -41,11 +36,13 @@ const PaymentSuccess = () => {
         delete info.isBooked;
         delete info.seatNo;
         delete info.seatPosition;
+        delete info.isAisle;
       });
       newobject[i].ssrMealInfos.forEach(info => {
         delete info.amount;
         delete info.desc;
       });
+    
     }
   FlightSearchService.BookingConfirm(dataList).then(async (response) => {
       if (response.data.status) {

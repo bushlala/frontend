@@ -1,0 +1,115 @@
+.invoice_container {
+    max-width: 100%;
+    background: #f4f4f4;
+}
+.invoice_container h2 {
+    font-size: 21px;
+    font-weight: bold;
+}
+.invoice_container h4 {
+    font-size: 16px;
+    font-weight: 700;
+}
+.invoice_container h3 {
+    font-size: 16px;
+    font-weight: bold;
+}
+.invoice_container p {
+    margin-bottom: 0;
+}
+.top_details {
+    border-bottom: 0;
+    margin-top: 15px;
+    float: right;
+    min-height: 50px;
+}
+.invoice_logo {
+    display: inline-block;
+    min-height: 50px;
+}
+
+.agentlogo-invoice {
+    max-width: 200px;
+    max-height: 50px;
+    width: auto;
+}
+
+.invoice_body {
+    /* border: 1px solid #bfbfbf; */
+    padding: 10px 20px;
+}
+.center_txt {
+    text-align: center;
+}
+.agent_details .agent_details-left {
+    display: inline-block;
+    width: 50%;
+    float: left;
+    clear: both;
+    margin-bottom: 25px;
+}
+.captaize {
+    text-transform: capitalize;
+}
+.agent_details .agent_details-right {
+    float: right;
+    text-align: right;
+    width: 40%;
+}
+.tkt_details-table {
+    margin: 20px 0;
+}
+.tj-bookingId {
+    font-size: 17px;
+    font-weight: 600;
+    float: left;
+}
+.invoice_table thead {
+    background-color: #e8ecef;
+}
+.tkt_details-table tr td, .tkt_details-table tr th {
+    border: 1px solid #bfbfbf;
+    padding: 5px;
+    font-size: 14px;
+}
+.invoice_table tbody tr:nth-child(odd) {
+    background-color: #fff;
+    padding: 5px;
+}
+.tkt_details-table tr td, .tkt_details-table tr th {
+    border: 1px solid #bfbfbf;
+    padding: 5px;
+    font-size: 14px;
+}
+.bill_container {
+    margin: 15px 0;
+}
+.bill_details {
+    margin-top: 15px;
+    display: inline-block;
+    width: 100%;
+}
+.bill_details .bill_info {
+    display: inline-block;
+    width: 40%;
+    vertical-align: top;
+    float: left;
+    margin-right: 20px;
+}
+.bill_table {
+    border: 1px solid #bfbfbf;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.bill_table tr th, .bill_table tr td {
+    border: 1px solid #bfbfbf;
+    padding: 3px;
+}
+.bill_details .bill_breakup {
+    width: 50%;
+    float: right;
+}
+.terms-conditions {
+    list-style-type: none;
+    padding-left: 0;
+}

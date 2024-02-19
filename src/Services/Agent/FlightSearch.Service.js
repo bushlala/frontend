@@ -61,6 +61,16 @@ export const FlightSearchService = {
         }
       })
     },
+    ReviewReturn: async function (request, cancel = false) {
+      return await apiConfig.request({
+        url: `booking/reviewReturn`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+      })
+    },
     
 
     BookingSeatMap: async function (request, cancel = false) {
@@ -95,7 +105,16 @@ export const FlightSearchService = {
         }
       })
     },
-
+    HoldBooking: async function (request, cancel = false) {
+      return await apiConfig.request({
+        url: `booking/holdBooking`,
+        method: "POST",
+        data: request,
+        headers: { 
+            Authorization: `Bearer ${jwtToken}`
+        }
+      })
+    },
     BookingConfirm: async function (request, cancel = false) {
       return await apiConfig.request({
         url: `booking/confirmBooking`,
@@ -152,6 +171,16 @@ getTicketDetails: async function (request, cancel = false) {
 UpdateTransactions: async function (request, cancel = false) {
   return await apiConfig.request({
   url: `payment/updateTransactions`,
+  method: "POST",
+  data: request,
+  headers: { 
+      Authorization: `Bearer ${jwtToken}`
+  }
+})
+},
+ChangeBookingStatus: async function (request, cancel = false) {
+  return await apiConfig.request({
+  url: `booking/changeBookingStatus`,
   method: "POST",
   data: request,
   headers: { 
