@@ -1,0 +1,51 @@
+.hotelbt-bar{
+    margin-top: 50px;
+}
+.hoteldetails .heading{
+    font-size: 35px;
+    font-weight: 700;
+    color: #474747;
+    margin-right: 10px;
+}
+.hoteldetails .star-icon i{
+    color: #FF9900;
+    padding: 0 3px;
+    padding-bottom:15px ;
+}
+.hoteldetails .para{
+    color: #474747;
+}
+
+.hoteldetails .readmorebtn{
+    margin-left: 10px;
+}
+
+.hoteldetails .safelites{
+   background-color: rgb(225 255 246);
+   outline: none;
+   border: none;
+}
+
+.hoteldetails  .tabel-heading{
+    background-color: #cbc9c9 !important;
+    color: #474747;
+}
+
+.hoteldetails .cancelpolice{
+   background-color: #e2e2e2 !important;
+   border: none;
+   color: black !important;
+}
+.hoteldetails .hRefundable{
+   color: green !important;
+   background-color: transparent;
+   font-size: 14px;
+   font-family: 700;
+   border: none;
+   outline: none;
+   background-color: transparent !important;
+}
+
+
+
+

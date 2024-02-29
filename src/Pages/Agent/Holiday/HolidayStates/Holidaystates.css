@@ -1,0 +1,16 @@
+.holidaystate .hostateprice{
+    color: #ec0909;
+}
+.holidaystate .hostatebtn{
+    background-color: #ec0909;
+    border: none;
+    outline: none;
+    padding: 5px 20px;
+    border-radius: 7px;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+}
+ .card-box:hover{
+    outline: 2px solid black;
+}

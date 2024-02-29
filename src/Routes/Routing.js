@@ -87,6 +87,7 @@ import AgentFlightSearch from "../Pages/Agent/Flights/Search.jsx";
 
 // My Booking
 import MyBooking from "../Pages/Agent/MyBooking/Booking.jsx";
+import ManageCart from "../Pages/Agent/MyBooking/ManageCart.jsx";
 
 // import MyCustomer from "../Pages/Agent/MyCustomer/Customer.jsx";
 import CustomerForm from "../Pages/Agent/MyCustomer/CustomerForm.jsx";
@@ -106,7 +107,7 @@ import AgentPackages from "../Pages/Agent/MyPackages/Packages.jsx";
 import AgentAddPackages from "../Pages/Agent/MyPackages/AddPackages/AddPackages.jsx";
 
 // Mannual Hotel Booking
-import AgentMannualHotel from "../Pages/Agent/HotelBooking/HotelBooking.jsx"
+import AgentMannualHotel from "../Pages/Agent/HotelBookingList/HotelBooking.jsx"
 
 // Manage Markup
 import AgentManageMarkup from "../Pages/Agent/ManageMarkup/ManageMarkup.jsx"
@@ -135,11 +136,31 @@ import FlightRoundSearchList from "../Pages/Agent/Flights/Component/FlightRoundS
 
 // Ticket 
  import TicketPdf from "../Pages/Agent/Ticket-Pdf/TicketPdf.jsx";
+ import Emailticket from "../Pages/Agent/Ticket-Pdf/Email-ticket.jsx/Emailticket.jsx";
 
 import Nopage from "./NoPage.jsx";
 //import Flight from "@mui/icons-material/Flight.js";
 import InvoiceGenerate from "../Pages/Agent/BookingSuccess/Invoice.jsx";
 import ManageCarts from "../Pages/Agent/MyBooking/ManageCart.jsx";
+
+
+
+// Hotels booking pages
+import Hotelsear from "../Pages/Agent/Hotels/HotelSear/Hotelsear.jsx";
+import Hoteldetails from "../Pages/Agent/Hotels/HotelDetails/Hoteldetails.jsx";
+import Hotelbook from "../Pages/Agent/Hotels/HotelBook/Hotelbook.jsx";
+import Payonline from "../Pages/Agent/Hotels/PayOnline/Payonline.jsx";
+
+
+// Holiday booking pages
+import Holidaysearch from "../Pages/Agent/Holiday/HolidaySearch/Holidaysearch.jsx";
+import Holidetails from "../Pages/Agent/Holiday/HolidayDetails/Holidetails.jsx";
+import Holidaystates from "../Pages/Agent/Holiday/HolidayStates/Holidaystates.jsx";
+
+// Bus pages
+import Bussearching from "../Pages/Agent/BusBooking/BusSearch/Bussearching.jsx";
+
+
 
 /// Calling Arrow Routing Function
 const Routing = () => {
@@ -225,6 +246,15 @@ const Routing = () => {
                     </PrivateRoute>
                 }
             />
+            <Route
+                path="agent/amendmentcard"
+                element={
+                    <PrivateRoute>
+                        <ManageCart />
+                    </PrivateRoute>
+                }
+            />
+            
               <Route
                 path="agent/Queries"
                 element={
@@ -467,6 +497,14 @@ element={
     </PrivateRoute>
 }
 />
+<Route
+path="/agent/emailticket"
+element={
+    <PrivateRoute>
+        <Emailticket />
+    </PrivateRoute>
+}
+/>
   
 
 <Route
@@ -478,7 +516,84 @@ element={
 }
 />
 
-            </Routes>
+{/* hotel Booking routes */}
+<Route
+path="agent/hotelbooking/flight"
+element={
+    <PrivateRoute>
+        <Hotelsear />
+    </PrivateRoute>
+}
+/>
+
+
+<Route
+path="agent/hotelbooking/hoteldetails"
+element={
+    <PrivateRoute>
+        <Hoteldetails />
+    </PrivateRoute>
+}
+/>
+
+<Route
+path="agent/hotelbooking/hotelbook"
+element={
+    <PrivateRoute>
+        <Hotelbook />
+    </PrivateRoute>
+}
+/>
+
+<Route
+path="agent/hotelbooking/payonline"
+element={
+    <PrivateRoute>
+        <Payonline />
+    </PrivateRoute>
+}
+/>
+
+{/* Holiday Booking Routes */}
+
+<Route
+path="agent/holidaybooking/holidaysearch"
+element={
+    <PrivateRoute>
+        <Holidaysearch />
+    </PrivateRoute>
+}
+/>
+
+<Route
+path="agent/holidaybooking/holidetails"
+element={
+    <PrivateRoute>
+        <Holidetails />
+    </PrivateRoute>
+}
+/>
+
+<Route
+path="agent/holidaybooking/holidaystates"
+element={
+    <PrivateRoute>
+        <Holidaystates />
+    </PrivateRoute>
+}
+/>
+
+{/* Bus Booking Routes */}
+
+<Route
+path="agent/busbooking/bussearching"
+element={
+    <PrivateRoute>
+        <Bussearching />
+    </PrivateRoute>
+}
+/>
+</Routes>
             {/* </BrowserRouter> */}
         </Provider>
     );

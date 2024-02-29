@@ -32,7 +32,7 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
                 <div className="card-header">
                     <div className='row'>
                         <div className='col-6'>
-                            <p className='flightname mb-0'>{listOfFlight[0]?.departureAirportInformation?.city} <i class="fa-solid fa-arrow-right-long"></i>  {listOfFlight[0]?.arrivalAirportInformation?.city}  <span className='flightnumber'>On {Moment(listOfFlight[0]?.departureDate).format('ddd, MMM DD YYYY')}</span></p>
+                            <p className='flightname mb-0'>{listOfFlight[0]?.departureAirportInformation?.city} <i class="fa-solid fa-arrow-right-long"></i>  {listOfFlight[listOfFlight.length-1]?.arrivalAirportInformation?.city}  <span className='flightnumber'>On {Moment(listOfFlight[0]?.departureDate).format('ddd, MMM DD YYYY')}</span></p>
                         </div>
                         {
                             layover && layover.length !==0 &&
@@ -62,7 +62,6 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div className='col-10 d-flex'>
                                             <div className="text-center" style={{ width: "50%" }}>
                                                 <div className="coltime"> {flightValue?.departureTime}</div>
@@ -81,12 +80,10 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
                                                 <div className="graysmalltext"> {flightValue?.arrivalAirportInformation?.terminal}</div>
                                             </div>
                                         </div>
-
                                         <div className='d-flex'>
                                             <p className="small"><i class="fa-solid fa-suitcase fa-small me-1"></i> Baggage:{fareDetail?.baggageInformation?.checkInBaggage}, Cabin Baggage:{fareDetail?.baggageInformation?.cabinBaggage} Included</p>
                                         </div>
-
-                                        {listOfFlight.length > 1 && (flightKey < listOfFlight.length - 1) &&
+                                            {listOfFlight.length > 1 && (flightKey < listOfFlight.length - 1) &&
                                             <div className='re-layover mb-3' style={{ backgroundColor: "#e1dff7", padding: "4px 0", fontSize: "13px", borderRadius: "15px", marginTop: "8px" }}>
                                                 {parseInt(layover[flightKey].layover) < 2 ? <p className='text-center mb-0'> Layover {layover[flightKey].layover}</p> : <p className='text-center mb-0'>Require to change Plane  {layover[flightKey].layover}</p>}
                                             </div>
@@ -127,16 +124,15 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
                                             </div>
                                         </Modal.Body>
                                         <Modal.Footer>
-                                            {/* <div className='row'>
-                                                <div></div>
-                                            </div> */}
-                                                <Button variant="dark" className='' onClick={handleClose1}>
-                                                    BACK
-                                                </Button>
-                                                <Button variant="danger" onClick={handleClose1}>
-                                                    CONFIRM TO PROCEED
-                                                </Button>
-                                            
+                                                <div className=''>
+                                                    <Button variant="dark" className='me-3' onClick={handleClose1}>
+                                                        BACK
+                                                    </Button>
+                                                
+                                                    <Button variant="danger" onClick={handleClose1}>
+                                                            CONFIRM TO PROCEED
+                                                    </Button> 
+                                                </div>
                                         </Modal.Footer>
                                     </Modal>
                                     <div class="collapse" id="collapseExample">
@@ -154,8 +150,8 @@ export default function FlightDetail({ listOfFlight, fareDetail, layover,baseFar
                 show && <FlightDetailModel
                     show={show}
                     handleClose={handleClose}
-                    flightDetail={listOfFlight[0]}
-                    fareDetail={fareDetail}
+                    already={fareDetail}
+                    viewListOfFlight={listOfFlight}
                     currency={currency}
                 />
             }

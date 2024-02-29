@@ -69,6 +69,12 @@ export default function Sidebar() {
                     </Link>
                 </li>
                 <li class="slide">
+                    <Link to='/agent/amendmentcard' class="side-menu__item">
+                        <img src={SidebarIcon4} className='side-menu__icon' style={myStyle}  alt="" />
+                        <span class="side-menu__label"> Amendment Card</span>
+                    </Link>
+                </li>
+                <li class="slide">
                     <Link to='/agent/Queries' class="side-menu__item">
                         <img src={SidebarIcon4} className='side-menu__icon' style={myStyle}  alt="" />
                         <span class="side-menu__label"> Queries</span>

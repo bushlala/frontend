@@ -45,10 +45,21 @@ export default function Header() {
                     </Link>  
                     </div>
                     <div className='mt-3 header-icon'> 
-                    <Link>
-                        <button type="button" className="btn btn-info btn-border"><i className="fa-solid fa-hotel icon-size"></i> Hotels</button>
+                    <Link to={"/agent/hotelbooking/flight"}>
+                        <button type="button" className="btn btn-info btn-border "><i className="fa-solid fa-hotel icon-size"></i> Hotels</button>
                     </Link>
-                    </div>   
+                    </div>  
+
+                    <div className='mt-3 header-icon'> 
+                    <Link to={"/agent/holidaybooking/holidaysearch"}>
+                        <button type="button" className="btn btn-info btn-border ms-3"><i className="fa-solid fa-hotel icon-size"></i> Holiday</button>
+                    </Link>
+                    </div> 
+                    <div className='mt-3 header-icon'> 
+                    <Link to={"/agent/busbooking/bussearching"}>
+                        <button type="button" className="btn btn-info btn-border ms-3"><i className="fa-solid fa-hotel icon-size"></i> Bus</button>
+                    </Link>
+                    </div>  
                 </div>
                 {/* <!-- End::header-content-left --> */}
                 {/* <!-- Start::header-content-right --> */}

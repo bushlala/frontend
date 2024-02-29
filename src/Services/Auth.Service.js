@@ -25,6 +25,7 @@ export const AuthAPI = {
     },
     logout : async function ()  {
       localStorage.removeItem("userData");
+      localStorage.removeItem("bookingStatus")
       // return axios.post(API_URL + "signout").then((response) => {
       //   return response.data;
       // });

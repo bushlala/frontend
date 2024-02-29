@@ -1,0 +1,86 @@
+
+
+
+.hotel-banner{
+    background-image: url('../../../../assets//images//bg-fl.jpg');
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.hotel-box{
+    background-color: white;
+    padding: 50px;
+    border-radius: 15px;
+    margin-top: 16px;
+}
+.hotel-searbtn{
+    position: relative;
+    bottom: initial;
+    padding: 17px 13px !important;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #6c5ffc;
+    border-radius: 35px;
+    color: #fff !important;
+    outline: none;
+    border: none;
+    font-size: 18px;
+}
+.hotelbt-bar{
+    background-color: #474747;
+    padding: 20px 0;
+    color: white;
+}
+.hotel-list .cardhoteimg{
+    background-image: url('https://media.istockphoto.com/id/104731717/photo/luxury-resort.jpg?s=612x612&w=0&k=20&c=cODMSPbYyrn1FHake1xYz9M8r15iOfGz9Aosy9Db7mI=');
+    height: 212px;
+    width: 100%;
+}
+.hotel-list .hheading{
+  color: #474747;
+  padding: 10px 0  10px 0;
+  font-weight: 700;
+} 
+.hotel-list .hsubheading{
+   color: rgb(158, 152, 152);
+}
+.hotel-list  .service-box{
+    margin-right: 5px;
+    float: left;
+    border: 1px solid #66be5b;
+    color: #66be5b;
+    padding: 3px 10px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    border-radius: 2px;
+}
+.hotel-list .priceheading{
+    margin-top: 110px;
+    margin-left: 30px;
+    margin-bottom: 0px;
+}
+.hotel-list .pricesubheading{
+    color: #737373;
+    margin-left: 30px;
+    margin-bottom: 0px;
+}
+.hotel-list .viewmore{
+   background-color: #ec0909;
+   color: white ;
+   border-radius: 10px;
+   outline: none;
+   border: none;
+   font-size: 22px;
+   padding: 7px 15px;
+   margin-left: 10px;
+
+}
+
+.hotel-list .priceranngebox{
+    color: #ec0909;
+}
+
+/* ---------------------- */

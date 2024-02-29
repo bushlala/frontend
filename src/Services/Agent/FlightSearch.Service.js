@@ -4,12 +4,30 @@ const userData = JSON.parse(localStorage.getItem('userData'));
   const jwtToken = userData?.data?.token || " ";
 export const FlightSearchService = {
     
+    // Search: async function (request, cancel = false) {
+    //   // var requestParam = {
+    //   //     params: request
+    //   // };
+    //   return await apiConfig.request({
+    //     url: `flight/oneWay`,
+    //     method: "POST",
+    //     data: request,
+    //     headers: { 
+    //         Authorization: `Bearer ${jwtToken}`
+    //     }
+    //     // retrieving the signal value by using the property name
+    //     //signal: cancel ? apiConfig[this.get.name].handleRequestCancellation().signal : undefined,
+    //   })
+    //   // returning the product returned by the API
+    //   //return response
+    // },
+    
     Search: async function (request, cancel = false) {
       // var requestParam = {
       //     params: request
       // };
       return await apiConfig.request({
-        url: `flight/oneWay`,
+        url: `flight/OneWaySearch`,
         method: "POST",
         data: request,
         headers: { 
@@ -21,7 +39,7 @@ export const FlightSearchService = {
       // returning the product returned by the API
       //return response
     },
-     
+  
     RoundTrip: async function (request, cancel = false) {
       // var requestParam = {
       //     params: request
@@ -188,5 +206,24 @@ ChangeBookingStatus: async function (request, cancel = false) {
   }
 })
 },
-    
+ConfirmholdBooking: async function (request, cancel = false) {
+  return await apiConfig.request({
+  url: `booking/ConfirmholdBooking`,
+  method: "POST",
+  data: request,
+  headers: { 
+      Authorization: `Bearer ${jwtToken}`
+  }
+})
+},   
+checkoutapiurl: async function (request, cancel = false) {
+  return await apiConfig.request({
+  url: `payment/checkout`,
+  method: "POST",
+  data: request,
+  headers: { 
+      Authorization: `Bearer ${jwtToken}`
+  }
+})
+},  
 }

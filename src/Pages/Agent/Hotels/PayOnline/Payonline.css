@@ -1,0 +1,30 @@
+.payonline{
+    margin-top: 70px;
+}
+.payonline .heading{
+    color: #474747;
+    font-size: 32px;
+    margin-top: 5px;
+}
+.payonline .pinform{
+    background-color: #f1e9e9;
+    /* padding-left: 12px; */
+}
+.payonline .pwallet{
+    background-color: #e4f8ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 200px;  
+}
+.payonline .payonlinebtn{
+    background-color: #ec0909;
+  border-radius: 5px;
+  padding: 5px 10px;
+  outline: none;
+  border: none;
+  color: white;
+  font-size: 19px;
+  font-weight: 600;
+}

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-//import AgentLayout from '../../../Component/Layout/Agent/AgentLayout';
 import Header from '../../../Component/Layout/Agent/Header/SearchHeader';
 import auFlag from '../../../assets/images/au.svg'
 import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
@@ -14,7 +13,7 @@ import FlightSearchList from './Component/FlightSearchList';
 import FlightRoundSearchList from "./Component/FlightRoundSearchList";
 import Moment from 'moment';
 import { TailSpin } from "react-loader-spinner";
-import axios from 'axios';
+
 import Select from "react-select";
 import Modal from 'react-bootstrap/Modal';
 import { AuthAPI } from '../../../Services/Auth.Service';
@@ -24,32 +23,20 @@ import { useNavigate } from 'react-router-dom';
 function taskDate(dateMilli) {
     var d = (new Date(dateMilli) + '').split(' ');
     d[2] = d[2] + ',';
-
     return [d[0], d[1], d[2], d[3]].join(' ');
 }
-
-var datemilli = Date.parse('Sun May 11,2014');
 
 
 const AgentFlightSearch = () => {
     const userData = JSON.parse(localStorage.getItem('userData'));
     let currency = userData.data.currency;
-
     const [departureDate, setDepartureDate] = useState(new Date());
     const [minDate] = useState(new Date());
     const [returnDate, setReturnDate] = useState(new Date());
     const [loading, setLoading] = useState(false);
     const [citySwapArrowStatus, setCitySwapArrowStatus] = useState(true);
-    const [fromCityDestination, setFromCityDestination] = useState([{
-        value: "BLR - India",
-        label: "BLR - Bengaluru",
-        image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif"
-    }]);
-    const [toCityDestination, setToCityDestination] = useState([{
-        value: "DEL - India",
-        label: "DEL - Delhi",
-        image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif"
-    }]);
+    const [fromCityDestination, setFromCityDestination] = useState([{ value: "BLR - India", label: "BLR - Bengaluru", image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif" }]);
+    const [toCityDestination, setToCityDestination] = useState([{ value: "DEL - India", label: "DEL - Delhi", image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif" }]);
     const [journeyDateOne, setJourneyDateOne] = useState(new Date());
     const [travellersArr, setTravellersArr] = useState("1 Pax, Economy");
     const [pc, setPc] = useState("Economy");
@@ -96,105 +83,42 @@ const AgentFlightSearch = () => {
 
 
     const seatNunmberAdult = [
-        {
-            name: "1",
-        },
-        {
-            name: "2",
-        },
-        {
-            name: "3",
-        },
-        {
-            name: "4",
-        },
-        {
-            name: "6",
-        },
-        {
-            name: "7",
-        },
-        {
-            name: "8",
-        },
-        {
-            name: "9",
-        }
+        { name: "1", },
+        { name: "2", },
+        { name: "3", },
+        { name: "4", },
+        { name: "6", },
+        { name: "7", },
+        { name: "8", },
+        { name: "9", }
     ]
     const seatNumber = [
-        {
-            name: "0",
-        },
-        {
-            name: "1",
-        },
-        {
-            name: "2",
-        },
-        {
-            name: "3",
-        },
-        {
-            name: "4",
-        },
-        {
-            name: "6",
-        },
-        {
-            name: "7",
-        },
-        {
-            name: "8",
-        },
-        {
-            name: "9",
-        }
+        { name: "0", },
+        { name: "1", },
+        { name: "2", },
+        { name: "3", },
+        { name: "4", },
+        { name: "6", },
+        { name: "7", },
+        { name: "8", },
+        { name: "9", }
     ]
-
-
 
     const prefferedClass = [
-        {
-            name: "Economy Class",
-            sortName: "Economy"
-        },
-        {
-            name: "Premium Economy Class",
-            sortName: "Premium Economy"
-        },
-        {
-            name: "Business Class",
-            sortName: "Business"
-        },
-        {
-            name: "First Class",
-            sortName: "First"
-        },
-    ]
+        { name: "Economy Class", sortName: "Economy" },
+        { name: "Premium Economy Class", sortName: "Premium Economy" },
+        { name: "Business Class", sortName: "Business" },
+        { name: "First Class", sortName: "First" },]
 
-    const resultFareType = [
-        {
-            name: "Regular Fare",
-            sortName: "1"
-        },
-        {
-            name: "Student Fare",
-            sortName: "2"
-        },
-        {
-            name: "Senior Citizen",
-            sortName: "3"
-        },
-    ];
-
+    const resultFareType = [{ name: "Regular Fare", sortName: "1" }, { name: "Student Fare", sortName: "2" }, { name: "Senior Citizen", sortName: "3" },];
 
     const handleInputChange = (inputValue) => {
         fetchAirportList(inputValue)
     }
+
     const validationSchema = Yup.object().shape({
         fromCityDestination: Yup.string()
             .required("Form city is required"),
-        //.max(60, 'First name maximum length is 60'),
         toCityDestination: Yup.string()
             .required("To city is required")
     });
@@ -220,7 +144,6 @@ const AgentFlightSearch = () => {
     };
 
     const changeTripType = (tripType, setFieldValue) => {
-        //console.log(tripType);
         setFieldValue("tripType", tripType.toString());
         setTripType(tripType);
     }
@@ -246,7 +169,6 @@ const AgentFlightSearch = () => {
 
         }
         setTravellersArr(values.travellersShow[0] + " Pax" + ", " + pc);
-
     }
 
     const handlePrefferedClass = (event, setFieldValue, values) => {
@@ -327,17 +249,16 @@ const AgentFlightSearch = () => {
 
         }
     }
+
     const handleClickCitySwap = (fromCityDestination, toCityDestination, setFieldValue) => {
-
-        setFromCityDestination(toCityDestination);
-        setToCityDestination(fromCityDestination);
-
         if (fromCityDestination && toCityDestination) {
             if (citySwapArrowStatus) {
                 setCitySwapArrowStatus(false);
             } else {
                 setCitySwapArrowStatus(true);
             }
+            setFromCityDestination(toCityDestination);
+            setToCityDestination(fromCityDestination);
             setFieldValue('fromCityDestination', toCityDestination.value);
             setFieldValue('fromDestinationFlight', toCityDestination.label);
             setFieldValue("toCityDestination", fromCityDestination.value);
@@ -348,7 +269,6 @@ const AgentFlightSearch = () => {
 
     const handleChangeDate = (date) => {
         reInitialValues.journeyDateOne = date;
-
         //    setReInitialValues(values);
         setDateForHorizontal(date);
         setLoading(true);
@@ -364,7 +284,6 @@ const AgentFlightSearch = () => {
 
                     } else {
                         let errorMessage = response.data.message ? response.data.message : "someting wrong"
-                        // toast.error(response.data.message);
                         setIsOpen(true)
                         setErrorMsg(errorMessage);
                         setOnwardTripList([]);
@@ -398,7 +317,6 @@ const AgentFlightSearch = () => {
 
                     }
                 } else {
-                    // toast.error(response.data.message);
                     let errorMessage = response.data.message
                     setIsOpen(true)
                     setErrorMsg(errorMessage);
@@ -416,11 +334,6 @@ const AgentFlightSearch = () => {
 
     }
 
-    useEffect(() => {
-        fetchAirportList();
-
-    }, [])
-
     const handleOptionTOValues = (inputValue) => {
         fetchAirportList(inputValue);
     }
@@ -434,11 +347,8 @@ const AgentFlightSearch = () => {
                 if (response.status === 200) {
                     let result = response.data.data.rows;
                     setCityList(result);
-                    console.log("result", result)
-
                 } else {
                     setCityList([]);
-
                 }
             }).catch((e) => {
                 console.log(e);
@@ -472,7 +382,6 @@ const AgentFlightSearch = () => {
             FlightSearchService.RoundTrip(values).then(async (response) => {
                 setLoading(true);
                 if (response.status === 200) {
-
                     if (response.data.status === true) {
                         setOnwardTripList(response.data.data.Onward);
                         setReturnTripList(response.data.data.Return)
@@ -487,7 +396,6 @@ const AgentFlightSearch = () => {
                         setReturnTripList([]);
                     }
                 } else {
-
                     let errorMessage = response.data.message;
                     setIsOpen(true)
                     setErrorMsg(errorMessage);
@@ -503,11 +411,9 @@ const AgentFlightSearch = () => {
             FlightSearchService.Search(values).then(async (response) => {
                 setLoading(true);
                 if (response.status === 200) {
-
                     if (response.data.status === true) {
                         setTripList(response.data.data)
                         setIsOpen(false)
-
                     } else {
                         let errorMessage = response.data.message ? response.data.message : "someting wrong"
                         // toast.error(response.data.message);
@@ -517,6 +423,7 @@ const AgentFlightSearch = () => {
                             setTimeout(() => {
                                 AuthAPI.logout();
                                 navigate("/");
+                                localStorage.removeItem("bookingStatus")
                             }, 1000)
                         }
                     }
@@ -575,18 +482,18 @@ const AgentFlightSearch = () => {
         } else {
             setFieldValue(fieldName, e.target.checked);
             setIsChecked(e.target.checked);
-    }
+        }
     };
 
+    useEffect(() => {
+        fetchAirportList();
+    }, [])
     return (
         <>
-
             <Header />
-
             <div className="main-content p-0">
                 <div className="">
                     <div className='agent-flight-search'>
-                    
                         <div className='homeflightsearchouterbox'>
                             <Formik
                                 initialValues={reInitialValues}
@@ -600,7 +507,7 @@ const AgentFlightSearch = () => {
                                             <h4 className='text-center text-white'>Book flights and explore the world with us.</h4>
                                             <Box className='card home-flightsear-card'>
                                                 <Box className='card-body'>
-                                      
+
                                                     <ul className="nav nav-pills One-Way-tab">
                                                         <li className="nav-item">
                                                             <Link className={`nav-link ${tripType === 1 ? "active" : ""}`} aria-current="page" href="#" onClick={() => changeTripType(1, setFieldValue)}>One-Way</Link>
@@ -907,24 +814,23 @@ const AgentFlightSearch = () => {
                         <div className='container'>
                             <div className='d-flex'>
                                 <div className='me-xl-5'>
-                               
-                                    <div class="headtext">{fromCity ? fromCityDestination.value : fromCityDestination[0].value} </div>
-                                    <div class="subtext">{fromCity ? fromCityDestination.label : fromCityDestination[0].label}</div>
+                                    <div className="headtext">{fromCity ? fromCityDestination.value : fromCityDestination[0].value} </div>
+                                    <div className="subtext">{fromCity ? fromCityDestination.label : fromCityDestination[0].label}</div>
                                 </div>
                                 <div className='me-xl-5'>
-                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                    <i className="fa fa-arrow-right" aria-hidden="true"></i>
                                 </div>
                                 <div className='me-xl-5'>
-                                    <div class="headtext">{toCity ? toCityDestination.value : toCityDestination[0].value} </div>
-                                    <div class="subtext"> {toCity ? toCityDestination.label : toCityDestination[0].label}</div>
+                                    <div className="headtext">{toCity ? toCityDestination.value : toCityDestination[0].value} </div>
+                                    <div className="subtext"> {toCity ? toCityDestination.label : toCityDestination[0].label}</div>
                                 </div>
                                 <div className='me-xl-5'>
-                                    <div class="headtext">Departure Date </div>
-                                    <div class="subtext">{(taskDate(journeyDateOne))}</div>
+                                    <div className="headtext">Departure Date </div>
+                                    <div className="subtext">{(taskDate(journeyDateOne))}</div>
                                 </div>
                                 <div className=''>
-                                    <div class="headtext">Passengers & Class </div>
-                                    <div class="subtext"> {travellersArr}</div>
+                                    <div className="headtext">Passengers & Class </div>
+                                    <div className="subtext"> {travellersArr}</div>
                                 </div>
                             </div>
                         </div>

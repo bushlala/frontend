@@ -1,0 +1,52 @@
+.HotelBook{
+    margin-top: 80px;
+}
+
+.HotelBook .bback{
+    display: flex;
+    justify-content: end;
+    align-items:center;
+}
+.HotelBook .bback button{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #e52b30;
+}
+.HotelBook .Hinform{
+    background-color: #f1e9e9;
+}
+.HotelBook .star-icon i{
+    color: #f90;
+}
+.HotelBook .Hclassic{
+    background-color: #f1e9e9;
+    width: 99%;
+    margin: auto;
+    padding: 0 20px !important;
+}
+.HotelBook .Hclassic .heading{
+    color: #FF0000;
+    margin: 20px 0;
+}
+.HotelBook .Hclassic .hcheckin{
+    color: #999999;
+}
+.HotelBook .Hclassic .hdate{
+    font-size: 23px;
+}
+.HotelBook  .Hpaxrom{
+    background-color: #f0f6fb;
+    width: 98%;
+    margin: 10px auto auto auto;
+}
+.HotelBook .hproceed{
+  background-color: #ec0909;
+  border-radius: 5px;
+  padding: 5px 10px;
+  outline: none;
+  border: none;
+  color: white;
+  font-size: 19px;
+  font-weight: 600;
+}

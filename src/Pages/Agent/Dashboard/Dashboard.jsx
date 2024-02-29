@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { Grid, Card, CardContent, Typography, Breadcrumbs, Link} from '@mui/material';
 import ImageExample from '../../../assets/images/icon2.png';
 import IconImage from '../../../assets/images/icon.svg';
@@ -7,9 +7,33 @@ import Icon3 from '../../../assets/images/icon2.svg';
 import Icon4 from '../../../assets/images/icon4.svg';
 import Icon5 from '../../../assets/images/icon5.svg';
 import Icon6 from '../../../assets/images/icon6.svg';
-
+import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
 import AgentLayout from '../../../Component/Layout/Agent/AgentLayout';
 export default function AgentDashboard() {
+const[flightBooking,setFlightBooking]= useState();
+
+
+
+    useEffect(() => {
+        handleBookTicket();
+
+    }, [])
+    const handleBookTicket = () => {
+         FlightSearchService.BookTicket().then(async (response) => {
+            if (response.status === 200) {
+                let data = response.data.data.rows;
+                setFlightBooking(data.length);
+                }else{
+                    console.log("error")
+                }
+           
+
+        }).catch((e) => {
+            console.log(e);
+           
+        });
+    };
+
   return (
     <>
     <div class="page">
@@ -55,7 +79,7 @@ export default function AgentDashboard() {
                                 <div class="d-flex">
                                     <div class="mt-2">
                                         <h6 class="fw-normal text-white">Total Flight Booking</h6>
-                                        <h2 class="mb-0 text-dark fw-semibold text-white">140</h2>
+                                        <h2 class="mb-0 text-dark fw-semibold text-white">{flightBooking &&flightBooking}</h2>
                                     </div>
                                     <div class="ms-auto">
                                         <div class="chart-wrapper mt-3">

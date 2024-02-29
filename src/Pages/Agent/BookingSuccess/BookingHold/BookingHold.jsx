@@ -7,6 +7,8 @@ import { useParams,useNavigate } from "react-router-dom";
 import { FlightSearchService } from '../../../../Services/Agent/FlightSearch.Service';
 import { Alert, Box, Grid, InputLabel, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import Moment from 'moment';
+import axios from "axios";
+import Sucssesloder from "../../../../Component/Loder/Sucssesloder";
 import { Form, Formik } from "formik";
 export default function BookingHold() {
   const [ticketDetails, setTicketDetails] = useState();
@@ -27,6 +29,7 @@ export default function BookingHold() {
     const handleShow = () => setShowModal(true);
     const[testPnr, setTestPnr] = useState(false);
     const [unCofirmed,setUnCofirmed] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -44,6 +47,7 @@ export default function BookingHold() {
   
   const nameForm = useRef(null)
   const [reInitialValues, setReInitialValues] = useState(initialValues);
+
   const fetchBookingDeatils = async () => {
     let bookingData = {
       "bookingId": bookingId && bookingId,
@@ -54,22 +58,21 @@ export default function BookingHold() {
       if (response.data.status) {
         const result = response.data.data;
         setTicketDetails(result);
+        setIsLoading(false)
         setFareDetailsId(result.bookingDetails.fareRuleId)
         setFareDetails(result.fareDetail);
         setListOfFlight(result.listOfFlight);
         setLayover(result.layover);
-        console.log("result.layover",result.layover)
         let data = result.travellerInfos.pnrDetails;
         let pnrlist = "";
         var details = Object.entries(data);
         for (let i = 0; i < details.length; i++) {
           pnrlist += details[i][0] + "-" + details[i][1] + ",";
         }
-        console.log("pnrlist", pnrlist.split(","))
-
+      
         setDetails(pnrlist.split(","));
       } else {
-        console.log(response.data.message.message)
+       
         setFareDetails();
         setListOfFlight([]);
         setTicketDetails();
@@ -155,50 +158,135 @@ export default function BookingHold() {
      
   }
 
+
+
+  let BASE_URL = '';
+  if (process.env.REACT_APP_SERVER_ENV === 'Local') {
+    BASE_URL = process.env.REACT_APP_LOCAL_API_URL;
+  } else if (process.env.REACT_APP_SERVER_ENV === 'Live') {
+    BASE_URL = process.env.REACT_APP_LIVE_API_URL;
+  }
+
+  //let amount=5000
+  const checkoutHandler = async () => {
+
+   const bookingRequest =JSON.parse(localStorage.getItem('bookingRequest'))
+    const userData = JSON.parse(localStorage.getItem('userData'));
+
+
+    let getapiurl = `${BASE_URL}api/payment/getkey`;
+    let checkoutapiurl = `${BASE_URL}api/payment/checkout`;
+    const amount = bookingRequest.amount;
+
+
+    const { data: { data } } = await axios.get(getapiurl)
+
+    const { data: { order } } = await axios.post(checkoutapiurl, { amount })
+const options = {
+      key: data.RAZORPAY_API_KEY,
+      amount: bookingRequest.amount,
+      currency: "INR",
+      name: "wizotrip booking",
+      description: "Air Ticket Booking",
+      image: "https://awsbizz.sgp1.cdn.digitaloceanspaces.com/wtl/wNOpEGI3mqLp8345L98sC6oII0OTsScUVEfjwegA.png",
+      order_id: order.id,
+      callback_url: `${BASE_URL}api/payment/paymentVerification/`,
+      prefill: {
+        name: userData?.data?.firstName + " " + userData?.data?.lastName,
+        email: userData?.data?.email,
+        contact: userData?.data?.mobileNumber,
+      },
+      notes: {
+        "address": "Iswarkrupa Society, Hatkeshwar"
+      },
+      theme: {
+        "color": "#121212"
+      },
+    };
+
+    const razor = new window.Razorpay(options);
+    razor.on('payment.failed', function (response) {
+      let values = {
+        bookingId: bookingRequest.bookingId,
+        orderId: order.id, // Assuming order.id is available in the scope
+        status: 2
+      }
+      FlightSearchService.UpdateTransactions(values).then(async (response) => {
+        if (response.status === 200) {
+
+          if (response.data.status === true) {
+             setTimeout(() => {
+              navigate("/Error")
+            }, 200)
+
+          } else {
+            let errorMessage = response.data.message ? response.data.message : "someting wrong"
+            console.log(errorMessage)
+          }
+        } else {
+          let errorMessage = response.data.message;
+          console.log(errorMessage)
+        }
+
+      }).catch((error) => {
+        let errorMessage = error.message
+        console.log(errorMessage)
+      });
+
+    });
+
+    razor.open();
+
+    // Event === "modal-close" ? alert("close") : alert("open");
+  }
+
  const handleStatusChange = async()=>{
     const data = {
       bookingId:bookingId,
-      status:testPnr?"5":"0"
+      status:"0"
     }
-    FlightSearchService.ChangeBookingStatus(data).then(async (response) => {
-      if (response.data.status === true) {
-        const result = response.data.data;
-       console.log("result", result);
-      }else{
-       alert('Something went wrong');
-      }
-    }).catch((e) => {
-      console.log(e);
-    });
-  }
+    if(testPnr && unCofirmed){
+      FlightSearchService.ChangeBookingStatus(data).then(async (response) => {
+        if (response.data.status === true) {
+          const result = response.data.data;
+          handleClose();
+     }else{
+         alert('Something went wrong');
+        }
+      }).catch((e) => {
+        console.log(e);
+      });
+    }
+ }
  
     
   return (
     <>
       <Layout />
       <div className="main-content app-content">
+      {isLoading===true ? <div className='loader'> <Sucssesloder headers={"Booking Details"} /></div>  :(<>
             <div className="container-fluid">
                 <div className="row ">
                     <div className="col-6 mt-3">
                     <h4 className='text-success'>
-  Booking {testPnr ? "CANCELLED" : (unCofirmed ? <span style={{color:"red"}}>UNCONFIRMED</span> : <span>On Hold</span>)}
+  Booking {unCofirmed ? <span style={{color:"red"}}>UNCONFIRMED</span> : bookingId==="CANCELLED"? <span style={{color:"red"}}>CANCELLED</span>: "OnHold"}
 </h4>
 
-                        <p>Booking ID :{bookingId && bookingId}6587</p>
+                        <p>Booking ID :{bookingId && bookingId}</p>
                     </div>
                     <div className="col-6 mt-3">
                             
                             <button type="button" class="btn btn-primary dropdown-toggle float-end" data-bs-toggle="dropdown" aria-expanded="false">More Option</button>
                             <ul className="dropdown-menu">
   <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("DownloadPDF")}><i className="fa-solid fa-download"></i> Download as PDF</a></li>
-  <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("PrintTicket")}><i className="fa-solid fa-print"></i> Print Ticket</a></li>
-  <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("EmailTicket")}><i className="fa-solid fa-envelope"></i> Email Ticket</a></li>
-  <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("SMSTicket")}><i className="fa-regular fa-envelope"></i> SMS Ticket</a></li>
+  <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("PrintTicket")}><i className="fa-solid fa-print"></i> Print Ticket</a></li>
+  <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("EmailTicket")}><i className="fa-solid fa-envelope"></i> Email Ticket</a></li>
+  <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("SMSTicket")}><i className="fa-regular fa-envelope"></i> SMS Ticket</a></li>
   <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("InvoiceForAgency")}><i className="fa-solid fa-file-invoice"></i> Invoice For Agency</a></li>
   <li><a className="dropdown-item" href="#"  target="_blank" onClick={() => dowanloadModalOpen("InvoiceForCustomer")}><i className="fa-solid fa-file-invoice"></i> Invoice For Customer</a></li>
   <li><a className="dropdown-item" href="#"   onClick={() => dowanloadModalOpen("GoToCartDetails")}><i className="fa-solid fa-cart-shopping"></i> Go to Cart Details</a></li>
 </ul>
-                            <button className="btn btn-success float-end me-2">Pay Now</button>
+                            <button className="btn btn-success float-end me-2" onClick={checkoutHandler}>Pay Now</button>
                             <Button className="btn btn-primary float-end me-2" onClick={handleShow}>Un Hold</Button>
                             <Modal size="md" show={showModal} onHide={handleClose} centered>
                                 <Modal.Header closeButton>
@@ -418,7 +506,7 @@ export default function BookingHold() {
                         <h6>Meal, Baggage & Seat</h6>
                       </div>
                       <div className='col-6 '> 
-                      <p className='float-end'> <span style={{ marginLeft: "10px" }}>not available</span> </p>
+                      <p className='float-end'>{currency} <span style={{ marginLeft: "10px" }}>{fareDetails && fareDetails.SSRP? fareDetails.SSRP:"0"}</span> </p>
                       </div>
                       <hr></hr>
                     </div>
@@ -487,7 +575,11 @@ export default function BookingHold() {
 </Formik>
 
         </Modal>
+        </>)}
             </div>
+   
+   
+   
     </>
   )
 }

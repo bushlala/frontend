@@ -24,10 +24,9 @@ export const isAuthSelector = state => state.auth.user !== null;
 export function login(loginData) {
   return async function (dispatch) {
     return await AuthAPI.login(loginData).then((response) => {
-      console.log("login response", response);
+   
       if (response.status) {
         // navigate("/login");
-        console.warn(response);
         localStorage.setItem('userData', JSON.stringify(response));
         dispatch(slice.actions.setUser(response));
         return response;

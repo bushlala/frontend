@@ -6,9 +6,7 @@ import BookingTimerOff from './BookingTimerOff';
 
 //import Moment from 'moment';
 
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+
 export default function ReturnBookingReview({listOfFlight,onwordLayover,returnLayover, reInitialValues, totalPrices,BookingCheckValidationOfBookingId,currency}) {
  let onwardFlightList = listOfFlight?.Onword?.FlightList;
  let returnFlightList = listOfFlight?.Return?.FlightList;
@@ -140,7 +138,7 @@ export default function ReturnBookingReview({listOfFlight,onwordLayover,returnLa
 
                               <div className="" style={{ width: "30%" }}>
                                 <div className="coltime"> {flightValue?.flightDuration}</div>
-                                <div className="graysmalltext">{capitalizeFirstLetter(fareDetail.cabinClass.toLowerCase())},Free</div>
+                                <div className="graysmalltext">{fareDetail.cabinClass},Free</div>
                                 <div className="graysmalltext">Meal,Non refundable</div>
                               </div>
                             </div>

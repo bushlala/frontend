@@ -10,6 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import FlightDetail from './Component/FlightDetails'
 import axios from "axios";
 import { FieldArray, Form, Formik } from "formik";
+import Sucssesloder from '../../../../Component/Loder/Sucssesloder';
 import * as Yup from "yup";
 import SeatMapModel from './Component/SeatMapModel';
 import BookingReview from './Component/BookingReview';
@@ -35,8 +36,11 @@ export default function AgentFlightReviewBook() {
   const [bookingId, setBookingId] = useState("");
   const userData = JSON.parse(localStorage.getItem('userData'));
   const[fareDetails,setFareDetails]= useState();
-  let currency = userData.data.currency;
+  const [isLoading, setIsLoading] = useState(true);
+  const[cancelledOpen,setModalOpen]= useState(false);
 
+  let currency = userData?.data?.currency;
+  
   let initialValues = {
     isDomestic: true,
     bookingId: '',
@@ -64,7 +68,7 @@ export default function AgentFlightReviewBook() {
         title: "",
         firstName: "",
         lastName: "",
-        dateOfBirth: "",
+        dob: "",
         passengerType: 'ADULT-1',
         passangerTypeName: '',
         //fee : '0',
@@ -73,8 +77,7 @@ export default function AgentFlightReviewBook() {
         ssrMealInfos: [],
         ssrBaggageInfos: [],
         ssrSeatInfos: [],
-
-      },
+        },
     ],
     extraInfo: [
       {
@@ -90,12 +93,14 @@ export default function AgentFlightReviewBook() {
       }
     ]
   }
-
+  
+  
   const validationSchema = Yup.object().shape({
     personalPhone: Yup.string()
       .required("Personal phone is required"),
     personalEmail: Yup.string()
       .required("Personal email is required"),
+    
     travellerInfo: Yup.array().of(
       Yup.object().shape({
         title: Yup.string()
@@ -104,8 +109,8 @@ export default function AgentFlightReviewBook() {
           .required("First name is required"),
         lastName: Yup.string()
           .required("Last name is required"),
-        // dateOfBirth: Yup.string()
-        //   .required("date of birth is required")
+        dob: Yup.string()
+          .required("date of birth is required")
       }),
 
 
@@ -151,6 +156,8 @@ export default function AgentFlightReviewBook() {
     BASE_URL = process.env.REACT_APP_LIVE_API_URL;
   }
 
+
+
   //let amount=5000
   const checkoutHandler = async (bookingRequest) => {
 
@@ -161,13 +168,9 @@ export default function AgentFlightReviewBook() {
     let getapiurl = `${BASE_URL}api/payment/getkey`;
     let checkoutapiurl = `${BASE_URL}api/payment/checkout`;
     const amount = bookingRequest.amount;
-
-
-    const { data: { data } } = await axios.get(getapiurl)
+  const { data: { data } } = await axios.get(getapiurl)
 
     const { data: { order } } = await axios.post(checkoutapiurl, { amount })
-    console.log(bookingRequest.amount)
-
     const options = {
       key: data.RAZORPAY_API_KEY,
       amount: bookingRequest.amount,
@@ -189,10 +192,9 @@ export default function AgentFlightReviewBook() {
         "color": "#121212"
       },
     };
-
+      localStorage.setItem("orderId", order.id);
     const razor = new window.Razorpay(options);
     razor.on('payment.failed', function (response) {
-      alert("Payment Failed");
       let values = {
         bookingId: bookingRequest.bookingId,
         orderId: order.id, // Assuming order.id is available in the scope
@@ -203,9 +205,11 @@ export default function AgentFlightReviewBook() {
 
           if (response.data.status === true) {
             console.log("response", response.data.data)
-            alert(response.data.message)
+            handleChangeBookingStatus("CANCELLED");
             setTimeout(() => {
-              navigate("/Error")
+              // navigate("/Error");
+              cancelledModalOpen();
+              razor.close();
             }, 200)
 
           } else {
@@ -226,16 +230,9 @@ export default function AgentFlightReviewBook() {
 
     razor.open();
 
-    Event === "modal-close" ? alert("close") : alert("open");
+    // Event === "modal-close" ? alert("close") : alert("open");
   }
 
-  // const handleAlert =()=>{
-  //   alert("hhhhgh")
-  // }
-  // const openModal =()=>{
-  //   if(className ==="modal-close" ? alert("close"):alert("open"))
-  //   razor.close();
-  // }
 
   useEffect(() => {
     if (ruleId) {
@@ -255,6 +252,7 @@ export default function AgentFlightReviewBook() {
       FlightSearchService.ReviewReturn(requestData).then(async (response) => {
         if (response.data.status) {
           const result = response.data.data;
+          setIsLoading(false)
           setAlerts(result.alerts)
           setBookingId(result.seasionDetail.bookingId);
           setOnwordLayover(result?.listOfFlight?.Onword?.layover);
@@ -266,7 +264,7 @@ export default function AgentFlightReviewBook() {
           let listOfFlight = OnwordList.concat(returnList);
           let onwardfareDetail= result.listOfFlight?.Onword?.fareDetail?.fareDetails;
           let returnfareDetail= result.listOfFlight?.Return?.fareDetail?.fareDetails;
-   let finalFareDetails =onwardfareDetail.concat(returnfareDetail);
+          let finalFareDetails =onwardfareDetail.concat(returnfareDetail);
 
           var extraInfo = [];
           result.listOfFlight && listOfFlight.forEach((flightDetail, index) => {
@@ -306,21 +304,20 @@ export default function AgentFlightReviewBook() {
               mealBaggageInfo.push(tmp1);
              
             }  
+          
+            for (var i=0; i < result.seasionDetail.paxInfo.CHILD; i++) {
+              const tmp1 =  {
+                memberName : `CHILD ${i+1}`,
+                baggage: "",
+                meals: "",
+                seat : ""
+              }
+              mealBaggageInfo.push(tmp1);
+            }
             tmp.mealBaggageInfo = mealBaggageInfo;
             extraInfo.push(tmp)
-         
-            // for (var i = 0; i < result.seasionDetail.paxInfo.INFANT; i++) {
-            //   const tmp1 = {
-            //     memberName: `INFANT ${i + 1}`,
-            //     baggage: "",
-            //     meals: "",
-            //     seat: "",
-            //     fee: 0,
-            //   }
-            //   mealBaggageInfo.push(tmp1);
-            // }
-          
           });
+        
 
           let travellerInfo = [];
           // For Adult
@@ -329,7 +326,7 @@ export default function AgentFlightReviewBook() {
               title: "",
               firstName: "",
               lastName: "",
-              dateOfBirth: "",
+              dob: "",
               passengerType: 'ADULT',
               passangerTypeName: `ADULT ${i + 1}`,
               isSave: "",
@@ -345,7 +342,7 @@ export default function AgentFlightReviewBook() {
               title: "",
               firstName: "",
               lastName: "",
-              dateOfBirth: "",
+              dob: "",
               passengerType: 'CHILD',
               passangerTypeName: `CHILD ${i + 1}`,
               isSave: "",
@@ -361,7 +358,7 @@ export default function AgentFlightReviewBook() {
               title: "",
               firstName: "",
               lastName: "",
-              dateOfBirth: "",
+              dob: "",
               passengerType: 'INFANT',
               passangerTypeName: `INFANT ${i + 1}`,
               isSave: "",
@@ -406,6 +403,7 @@ export default function AgentFlightReviewBook() {
       FlightSearchService.BookingReview(requestData).then(async (response) => {
         if (response.data.status) {
           const result = response.data.data;
+          setIsLoading(false)
           setAlerts(response.data?.data?.alerts)
           setLayover(response.data.data?.layover);
           setBookingId(result.seasionDetail.bookingId);
@@ -447,18 +445,17 @@ export default function AgentFlightReviewBook() {
               }
               mealBaggageInfo.push(tmp1);
             }
+           for (var i=0; i < result.seasionDetail.paxInfo.CHILD; i++) {
+              const tmp1 =  {
+                memberName : `CHILD ${i+1}`,
+                baggage: "",
+                meals: "",
+                seat : ""
+              }
+              mealBaggageInfo.push(tmp1);
+            }
             tmp.mealBaggageInfo = mealBaggageInfo;
             extraInfo.push(tmp)
-            // for (var i = 0; i < result.seasionDetail.paxInfo.INFANT; i++) {
-            //   const tmp1 = {
-            //     memberName: `INFANT ${i + 1}`,
-            //     baggage: "",
-            //     meals: "",
-            //     seat: "",
-            //     fee: 0,
-            //   }
-            //   mealBaggageInfo.push(tmp1);
-            // }
            
           });
 
@@ -469,7 +466,7 @@ export default function AgentFlightReviewBook() {
               title: "",
               firstName: "",
               lastName: "",
-              dateOfBirth: "",
+              dob: "",
               passengerType: 'ADULT',
               passangerTypeName: `ADULT ${i + 1}`,
               isSave: "",
@@ -485,7 +482,7 @@ export default function AgentFlightReviewBook() {
               title: "",
               firstName: "",
               lastName: "",
-              dateOfBirth: "",
+              dob: "",
               passengerType: 'CHILD',
               passangerTypeName: `CHILD ${i + 1}`,
               isSave: "",
@@ -501,7 +498,7 @@ export default function AgentFlightReviewBook() {
               title: "",
               firstName: "",
               lastName: "",
-              dateOfBirth: "",
+              dob: "",
               passengerType: 'INFANT',
               passangerTypeName: `INFANT ${i + 1}`,
               isSave: "",
@@ -523,7 +520,7 @@ export default function AgentFlightReviewBook() {
           reInitialValues.tripType = 1; // How to get 
           // reInitialValues.flightStops = 1; // How to get
           reInitialValues.listOfFlight = result.listOfFlight;
-          reInitialValues.fareDetail = result?.fareDetail.fareDetails[0];
+          reInitialValues.fareDetail = result?.fareDetail.fareDetails;
           reInitialValues.routeInfo = result?.routeInfo;
           setReInitialValues(reInitialValues);
           totalPrices.baseFarePrice = result?.fareDetail?.fareDetails[0]?.baseFare;
@@ -589,6 +586,8 @@ const handleBack =(e)=>{
     values.extraInfo.forEach((extra, extraIndex) => {
       const mealList = extra.mealList;
       const baggageList = extra.baggageList;
+      console.log("mealList",mealList)
+      console.log("baggageList",baggageList)
       extra.mealBaggageInfo.forEach((mealBaggage, mealBaggageIndex) => {
       
         if (indexKey !== extraIndex || indexKey2 !== mealBaggageIndex || commonFieldName !== "baggage") {
@@ -666,15 +665,13 @@ const handleBack =(e)=>{
   }
 
   const handleOnSubmit = async (values, { resetForm }) => {
-
-    
-    values.travellerInfo.forEach((passanger, passangerKey) => {
-     
+  values.travellerInfo.forEach((passanger, passangerKey) => {
+      let ssrMealInfos = [];
+      let ssrBaggageInfos = [];
+      let ssrSeatInfos = [];
       if(passanger.passengerType ==="ADULT"){
         values.extraInfo.forEach((extraInfo, extraInfoKey) => {
-          let ssrMealInfos = [];
-          let ssrBaggageInfos = [];
-          let ssrSeatInfos = [];
+
           //let flightFormTo = `${extraInfo.from} - ${extraInfo.to} :`;
           const ifFoundTraveller = extraInfo.mealBaggageInfo.find(mealBaggage => {
             return (mealBaggage.memberName == passanger.passangerTypeName)
@@ -711,10 +708,56 @@ const handleBack =(e)=>{
               }
             }
           }
-          passanger.ssrMealInfos = ssrMealInfos;
-          passanger.ssrBaggageInfos = ssrBaggageInfos;
-          passanger.ssrSeatInfos = ssrSeatInfos;
+          
         });
+        passanger.ssrMealInfos = ssrMealInfos;
+        passanger.ssrBaggageInfos = ssrBaggageInfos;
+        passanger.ssrSeatInfos = ssrSeatInfos;
+      }
+      if(passanger.passengerType ==="CHILD"){
+        values.extraInfo.forEach((extraInfo, extraInfoKey) => {
+
+          //let flightFormTo = `${extraInfo.from} - ${extraInfo.to} :`;
+          const ifFoundTraveller = extraInfo.mealBaggageInfo.find(mealBaggage => {
+            return (mealBaggage.memberName == passanger.passangerTypeName)
+          });
+          const listOfMeals = extraInfo.mealList;
+          const listOfBaggage = extraInfo.baggageList;
+          console.log("ifFoundTraveller",ifFoundTraveller);
+          // Here check traveller check
+          if (ifFoundTraveller) {
+            // here check meal 
+            const ifFoundMeals = listOfMeals.find(meal => {
+              return (meal.code == ifFoundTraveller.meals)
+            });
+            if (ifFoundMeals) {
+              ssrMealInfos.push(ifFoundMeals);
+            }
+  
+            // here check baggae 
+            const ifFoundBaggage = listOfBaggage.find(baggage => {
+              return (baggage.code == ifFoundTraveller.baggage)
+            });
+            if (ifFoundBaggage) {
+              ssrBaggageInfos.push(ifFoundBaggage);
+            }
+  
+            if (ifFoundTraveller.seat) {
+              const flightSeats = allFlightSeats[extraInfoKey]
+              const sInfo = flightSeats.sInfo;
+              const ifFoundSeat = sInfo.find(seat => {
+                return (seat.seatNo == ifFoundTraveller.seat)
+              });
+              if (ifFoundSeat) {
+                ssrSeatInfos.push(ifFoundSeat)
+              }
+            }
+          }
+          
+        });
+        passanger.ssrMealInfos = ssrMealInfos;
+        passanger.ssrBaggageInfos = ssrBaggageInfos;
+        passanger.ssrSeatInfos = ssrSeatInfos;
       }
     });
 
@@ -750,7 +793,9 @@ const handleBack =(e)=>{
       bookingId: reInitialValues.bookingId,
       travellerInfo: reInitialValues.travellerInfo
     }
+    localStorage.setItem('bookingRequest', JSON.stringify(bookingRequest));
     if (data === "hold") {
+      localStorage.setItem('bookingStatus', JSON.stringify("onhold"));
       let HoldBooking = bookingRequest;
       delete HoldBooking.amount;
       
@@ -763,34 +808,28 @@ const handleBack =(e)=>{
           modifiedTraveller.passportNumber = "87UYITB";
           modifiedTraveller.passportExpiryDate = "2030-09-08";
       
-          // Rename dateOfBirth to dob and delete dateOfBirth key
-          modifiedTraveller.dob = modifiedTraveller.dateOfBirth ? modifiedTraveller.dateOfBirth:"1998-01-10";
-          delete modifiedTraveller.dateOfBirth;
           delete modifiedTraveller.passangerTypeName;
       
           return modifiedTraveller;
       });
       
       // Now HoldBooking object should be properly modified
-      
-
-    localStorage.setItem('HoldBooking', JSON.stringify(HoldBooking));
-    // ChangeBookingStatus
+      // ChangeBookingStatus
       FlightSearchService.HoldBooking(HoldBooking).then(async (response) => {
         if (response.data.status === true) {
           const result = response.data.data.bookingId;
-          console.log("result", response.data.status);
           handleChangeBookingStatus(result);
         } else {
-          toast.error('Something went wrong');
-        }
+          localStorage.removeItem("bookingStatus");
+         }
       }).catch((e) => {
         console.log(e);
-        toast.error('Something went wrong');
+        localStorage.removeItem("bookingStatus");
       });
     } else {
-      localStorage.setItem('bookingRequest', JSON.stringify(bookingRequest));
       checkoutHandler(bookingRequest);
+      handleChangeBookingStatus();
+     
     }
    
 
@@ -828,32 +867,50 @@ const handleBack =(e)=>{
   }
   
 const handleChangeBookingStatus =(id)=>{
+ 
   const data = {
-    bookingId:id,
-    status:"4"
+    bookingId:bookingId,
+    status: id==="CANCELLED"?"5":id?"4":"2"
   }
   FlightSearchService.ChangeBookingStatus(data).then(async (response) => {
     if (response.data.status === true) {
       const result = response.data.data;
-      alert("Your Booking Hold")
-  setTimeout(() => {
-    navigate(`/agent/flight/booking-hold/${id}`)
-  }, 1000);
+      let status = localStorage.getItem("bookingStatus");
+
+      if(status){
+        setTimeout(() => {
+          navigate(`/agent/flight/booking-hold/${bookingId}`)
+        }, 500);
+      }
+       
       }
      else {
       toast.error('Something went wrong');
     }
   }).catch((e) => {
     console.log(e);
-    toast.error('Something went wrong');
+    
   });
 }
- 
+
+const cancelledModalOpen =()=>{
+  setModalOpen(true);
+  setTimeout(()=>{
+ navigate("/");
+  },5000)
+  }
+  const cancelledModalClose =()=>{
+    setModalOpen(false);
+    }
+   
   return (
     <>
       <Header />
       <div className="main-content px-0 main-top-padding">
+      {isLoading===true ? <div className='loader'> <Sucssesloder headers={"FLight Details"} /></div>  :(
+        <>
 
+       
         <Tab.Container
           id="left-tabs-example"
           defaultActiveKey="first"
@@ -901,8 +958,8 @@ const handleChangeBookingStatus =(id)=>{
                           <Link onClick={() => navigate(-1)} className="my-auto text-danger" >Back to Search</Link>
                         </div>
                       </div>
-                      {
-                        bookingReviewData &&
+                      
+                       {bookingReviewData &&
                         bookingReviewData.listOfFlight &&
                         bookingReviewData.listOfFlight.length != 0 &&
                         <FlightDetail
@@ -911,10 +968,8 @@ const handleChangeBookingStatus =(id)=>{
                           layover={bookingReviewData.layover}
                           baseFareAlert={alerts}
                           currency={currency}
-                        />
-                      }
-                      {
-                        returnReviewData &&
+                        />}
+                        { returnReviewData &&
                         returnReviewData.listOfFlight &&
                         returnReviewData.listOfFlight?.Onword?.FlightList?.length != 0 &&
                         <ReturnFlightDetails
@@ -924,8 +979,11 @@ const handleChangeBookingStatus =(id)=>{
                           routeInfo={routeInfo}
                           currency={currency}
 
-                        />
-                      }
+                        />}
+                      
+                      
+                       
+                    
 
                       <div class="card">
                         <div className='card-body d-flex justify-content-between'>
@@ -1059,13 +1117,13 @@ const handleChangeBookingStatus =(id)=>{
                                                       </div>
                                                     
                                                         <div className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                                          <label htmlFor={`travellerInfo.${index}.dateOfBirth`} className="form-label">DOB</label>
+                                                          <label htmlFor={`travellerInfo.${index}.dob`} className="form-label">DOB</label>
                                                           <input
                                                             type="date"
                                                             className="form-control"
-                                                            id={`travellerInfo.${index}.dateOfBirth`}
-                                                            name={`travellerInfo.${index}.dateOfBirth`}
-                                                            value={values.travellerInfo[index].dateOfBirth.toString()}
+                                                            id={`travellerInfo.${index}.dob`}
+                                                            name={`travellerInfo.${index}.dob`}
+                                                            value={values.travellerInfo[index].dob}
                                                             onChange={handleChange}
                                                           />
                                                           {errors.travellerInfo && errors.travellerInfo[index] && errors.travellerInfo[index].dateOfBith && (
@@ -1238,8 +1296,8 @@ const handleChangeBookingStatus =(id)=>{
                                 </div>
 
                                 <div className="accordion-item mb-3">
-                                  <h2 className="accordion-header" id="gstnumber">
-                                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gst-collapseOne" aria-expanded="false" aria-controls="gst-collapseOne">
+                                <h2 className='accordion-header' id="gstnumber">
+                                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gst-collapseOne" aria-expanded="false" aria-controls="gst-collapseOne">
                                       GST Number for Business Travel (Optional)
                                     </button>
                                   </h2>
@@ -1257,6 +1315,7 @@ const handleChangeBookingStatus =(id)=>{
                                             value={values.gstNumber}
                                             onChange={handleChange}
                                           />
+                                       
                                         </div>
                                         <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
                                           <label for="gstNumber" className="form-label">Registered Company Name</label>
@@ -1268,6 +1327,7 @@ const handleChangeBookingStatus =(id)=>{
                                             value={values.registeredName}
                                             onChange={handleChange}
                                           />
+                                         
                                         </div>
                                         <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
                                           <label for="gstEmail" className="form-label">Registered Email</label>
@@ -1279,6 +1339,10 @@ const handleChangeBookingStatus =(id)=>{
                                             value={values.gstEmail}
                                             onChange={handleChange}
                                           />
+                                          {errors.gstEmail
+                                        &&
+                                        <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.gstEmail}</Box>
+                                      }
                                         </div>
                                         <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
                                           <label for="mobile" className="form-label">Registered Phone</label>
@@ -1290,6 +1354,7 @@ const handleChangeBookingStatus =(id)=>{
                                             value={values.mobile}
                                             onChange={handleChange}
                                           />
+                                        
                                         </div>
                                         <div className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
                                           <label for="address" className="form-label">Registered Address</label>
@@ -1301,6 +1366,10 @@ const handleChangeBookingStatus =(id)=>{
                                             value={values.address}
                                             onChange={handleChange}
                                           />
+                                           {errors.address
+                                        &&
+                                        <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.address}</Box>
+                                      } 
                                         </div>
                                       </div>
                                       <div className='accordion-footer mt-3'>
@@ -1459,7 +1528,8 @@ const handleChangeBookingStatus =(id)=>{
           </Tab.Content>
         </Tab.Container>
 
-
+        </>
+      )}
       </div>
       {
         showModal &&
@@ -1479,6 +1549,13 @@ const handleChangeBookingStatus =(id)=>{
         //selectPassanger = {selectPassanger}
         />
       }
+      <Modal show={cancelledOpen} onHide={cancelledModalClose}>
+        <Modal.Header closeButton>
+         
+        </Modal.Header>
+        <Modal.Body>Your Booking is Cancelled</Modal.Body>
+        
+      </Modal>
     </>
   )
 }

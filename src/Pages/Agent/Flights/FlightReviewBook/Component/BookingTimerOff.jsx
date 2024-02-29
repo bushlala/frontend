@@ -5,12 +5,12 @@ import { FlightSearchService } from '../../../../../Services/Agent/FlightSearch.
 import toast from 'react-hot-toast';
 export default function BookingTimerOff({}) {
     // for timers
-    const [countdown, setcountdown] = useState(60 * 25);
+    const [countdown, setcountdown] = useState(60 * 12);
     const navigate = useNavigate();
   
     let timerid;
     useEffect(() => {
-        setcountdown(60 * 25);
+        setcountdown(60 * 12);
         timerid = setInterval(() => {
             setcountdown((countdown) => countdown - 1);
         }, 1000);
