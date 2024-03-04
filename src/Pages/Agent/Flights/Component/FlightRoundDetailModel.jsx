@@ -6,26 +6,21 @@ import Indigo from "../../../../assets/images/indigo.png";
 import { FlightSearchService } from "../../../../Services/Agent/FlightSearch.Service";
 import Sucssesloder from '../../../../Component/Loder/Sucssesloder';
 import toast from "react-hot-toast";
-export default function FlightDetailModel({ show, handleClose, currency, ruleId, already, viewListOfFlight }) {
-
+export default function FlightRoundDetailModel({show,handleClose,flightDetail,fareDetail ,currency,layover}) {
+console.log("flightDetail",flightDetail);
   const [searchRule, setSearchRule] = useState();
   const [errorMsg, setErrorMsg] = useState("");
   const [dateChangeList, setDateChangeList] = useState();
   const [cancellationList, setCancellationList] = useState();
-  const [layover, setLayover] = useState([]);
-  const [bookingId, setBookingId] = useState("");
-  const [fareDetails, setFareDetails] = useState();
-  const [isLoading, setIsLoading] = useState(true);
-  const [listOfFlight, setListOfFLight] = useState([]);
-  const [routeInfo, setRouteInfo] = useState([]);
+
   const [journyPoints, setJournyPoints] = useState([])
 
 
 
   const handleClickGetSearchRule = () => {
     const requestParam = {
-      id: fareDetails ? fareDetails.fareRuleId :already? already.fareRuleId:"",
-      flowType: fareDetails ? fareDetails?.flowType : already?already.flowType:"",
+      id: flightDetail.fareRuleId ,
+      flowType:  flightDetail?.flowType 
     };
     FlightSearchService.SearchRule(requestParam)
       .then(async (response) => {
@@ -48,63 +43,13 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
       });
   };
 
-  useEffect(() => {
-    if (viewListOfFlight && Array.isArray(viewListOfFlight)) {
-      let combineArray = [];
-      viewListOfFlight.forEach(item => {
-        if (item.departureAirportInformation && item.arrivalAirportInformation) {
-          combineArray.push(item.departureAirportInformation.code, item.arrivalAirportInformation.code);
-        }
-      });
-      let uniqueList = [...new Set(combineArray)];
-      let journyPoint = uniqueList.join("-");
-      setJournyPoints(journyPoint);
-      console.log("journyPoint",journyPoint);
-    } else {
-      getBookingReviewData();
 
-    }
 
-  }, [])
 
-  const getBookingReviewData = async () => {
 
-    var requestData = {
-      priceIds: ruleId,
-
-    }
-
-    FlightSearchService.BookingReview(requestData).then(async (response) => {
-      if (response.data.status) {
-        const result = response.data.data;
-        setIsLoading(false)
-        setLayover(result.layover);
-        setBookingId(result.seasionDetail.bookingId);
-        setFareDetails(result.fareDetail.fareDetails[0])
-        setListOfFLight(result.listOfFlight);
-        setRouteInfo(result.routeInfo);
-        let toFlight = result.listOfFlight.map(item => item.arrivalAirportInformation.code);
-        let fromFlight = result.listOfFlight.map(item => item.departureAirportInformation.code);
-        let combineArray = fromFlight.concat(toFlight);
-        let uniqueList = [... new Set(combineArray)];
-        let value = uniqueList.toString()
-        let journyPoint = value.replaceAll(",", "-");
-        setJournyPoints(journyPoint);
-        console.log("api",journyPoint);
-      } else {
-        toast.error('Something went wrong');
-        //console.log("response", response.data)
-      }
-    }).catch((error) => {
-      console.log(error);
-
-    });
-  }
-
-  console.log("viewListOfFlight", viewListOfFlight);
   return (
     <>
-      <Modal
+     <Modal
         className="flight-item-flight-moodal"
         show={show}
         size="lg"
@@ -120,7 +65,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
           <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
             <li className="nav-item" role="presentation">
               <button
-                className={already ? "d-none" : "nav-link active"}
+                className= "nav-link active"
                 id="nav-flight-details-tab"
                 data-bs-toggle="tab"
                 data-bs-target="#nav-flight-details"
@@ -135,7 +80,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
 
             <li className="nav-item" role="presentation">
               <button
-                className={already ? "d-none" : "nav-link "}
+                className="nav-link "
                 id="nav-fare-deatils-tab"
                 data-bs-toggle="tab"
                 data-bs-target="#nav-fare-deatils"
@@ -150,7 +95,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
 
             <li className="nav-item" role="presentation">
               <button
-                className={already ? "nav-link active " : "nav-link"}
+                className={"nav-link"}
                 id="nav-baggage-tab"
                 data-bs-toggle="tab"
                 data-bs-target="#nav-baggage"
@@ -189,7 +134,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                 role="tab"
                 aria-controls="nav-cancellation"
                 aria-selected="false"
-                onClick={() => handleClickGetSearchRule()}
+                // onClick={() => handleClickGetSearchRule()}
               >
                 Cancellation Charges
               </button>
@@ -198,16 +143,16 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
 
           <div className="tab-content" id="nav-tabContent">
             <div
-              className={already ? "d-none" : "tab-pane fade show active"}
+              className="tab-pane fade show active"
               id="nav-flight-details"
               role="tabpanel"
               aria-labelledby="nav-flight-details-tab" >
-              {isLoading === true ? <div className='loader'> <Sucssesloder headers={"FLight Details"} /></div> : (
+         
                 <div className="">
                   <div className="card-header">
                     <div className='row'>
                       <div className='col-6'>
-                        <p className='flightname mb-0'>{routeInfo[0]?.fromCityOrAirport?.city} <i class="fa-solid fa-arrow-right-long"></i>  {routeInfo[0]?.toCityOrAirport?.city}  <span className='flightnumber'>On {Moment(routeInfo[0]?.travelDate).format('ddd, MMM DD YYYY')}</span></p>
+                        <p className='flightname mb-0'>{flightDetail[0]?.departureAirportInformation?.city} <i className="fa-solid fa-arrow-right-long"></i>  {flightDetail[flightDetail.length-1]?.arrivalAirportInformation?.city}  <span className='flightnumber'>On {Moment(flightDetail[0]?.arrivalDate).format('ddd, MMM DD YYYY')}</span></p>
                       </div>
                       {
                         layover && layover.length !== 0 &&
@@ -222,8 +167,8 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                   <div className='card-body'>
                     <div className='row'>
                       <div className='col-12'>
-                        {listOfFlight &&
-                          listOfFlight.map((flightValue, flightKey) =>
+                        {flightDetail &&
+                          flightDetail.map((flightValue, flightKey) =>
 
                           (
 
@@ -256,9 +201,9 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                                 </div>
                               </div>
                               <div className='d-flex'>
-                                <p className="small"><i class="fa-solid fa-suitcase fa-small me-1"></i> Baggage:{fareDetails?.baggageInformation?.checkInBaggage}, Cabin Baggage:{fareDetails?.baggageInformation?.cabinBaggage} Included</p>
+                                <p className="small"><i className="fa-solid fa-suitcase fa-small me-1"></i> Baggage:{fareDetail?.baggageInformation?.checkInBaggage}, Cabin Baggage:{fareDetail?.baggageInformation?.cabinBaggage} Included</p>
                               </div>
-                              {listOfFlight.length > 1 && (flightKey < listOfFlight.length - 1) &&
+                              {flightDetail.length > 1 && (flightKey < flightDetail.length - 1) &&
                                 <div className='re-layover mb-3' style={{ backgroundColor: "#e1dff7", padding: "4px 0", fontSize: "13px", borderRadius: "15px", marginTop: "8px" }}>
                                   {parseInt(layover[flightKey].layover) < 2 ? <p className='text-center mb-0'> Layover {layover[flightKey].layover}</p> : <p className='text-center mb-0'>Require to change Plane  {layover[flightKey].layover}</p>}
                                 </div>
@@ -271,11 +216,10 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                     </div>
                   </div>
                 </div>
-              )}
-
+         
             </div>
             <div
-              className={already ? "d-none" : "tab-pane fade show"}
+              className="tab-pane fade show"
               id="nav-fare-deatils"
               role="tabpanel"
               aria-labelledby="nav-fare-deatils-tab"
@@ -299,7 +243,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                         <td width="33%" align="left">
                           {currency}
                           <span style={{ marginLeft: "10px" }}>
-                            {fareDetails?.baseFare ? fareDetails.baseFare : 0}
+                            {/* {fareDetails?.baseFare ? fareDetails.baseFare : 0} */}
                           </span>
                         </td>
                       </tr>
@@ -310,7 +254,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                         <td align="left">
                           {currency}
                           <span style={{ marginLeft: "10px" }}>
-                            {fareDetails?.taxesAndFees ? fareDetails?.taxesAndFees : 0}
+                            {/* {fareDetail?.taxesAndFees ? fareDetail?.taxesAndFees : 0} */}
                           </span>
                         </td>
                       </tr>
@@ -321,7 +265,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                         <td align="left">
                           {currency}{" "}
                           <span style={{ marginLeft: "10px" }}>
-                            {fareDetails?.payAmount ? fareDetails?.payAmount : 0}
+                            {/* {fareDetails?.payAmount ? fareDetails?.payAmount : 0} */}
                           </span>
                         </td>
                       </tr>
@@ -332,7 +276,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
             </div>
 
             <div
-              className={already ? "tab-pane fade show active" : "tab-pane fade"}
+              className="tab-pane fade"
               id="nav-baggage"
               role="tabpanel"
               aria-labelledby="nav-baggage-tab"
@@ -352,12 +296,12 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                         <div className="d-flex">
                           <img
                             className="flight-flag"
-                             src={viewListOfFlight? viewListOfFlight[0].flightLogo:listOfFlight ? listOfFlight[0]?.flightLogo:"0" }
+                             src={fareDetail[0]?.flightLogo}
                             alt=""
                           />
                           <div className="">
                             <div className="flightname" id="">
-                              {fareDetails?.baggageInformation?.checkInBaggage}
+                              {/* {fareDetails?.baggageInformation?.checkInBaggage} */}
                             </div>
                             <div className="flightnumber" id="">
                               Included
@@ -365,8 +309,8 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                           </div>
                         </div>
                       </th>
-                      <th>{fareDetails?.baggageInformation?.checkInBaggage ? fareDetails?.baggageInformation?.checkInBaggage : already?.baggageInformation?.checkInBaggage}</th>
-                      <th>{fareDetails?.baggageInformation?.cabinBaggage ? fareDetails?.baggageInformation?.cabinBaggage : already?.baggageInformation?.cabinBaggage}</th>
+                      {/* <th>{fareDetails?.baggageInformation?.checkInBaggage ? fareDetails?.baggageInformation?.checkInBaggage : already?.baggageInformation?.checkInBaggage}</th> */}
+                      {/* <th>{fareDetails?.baggageInformation?.cabinBaggage ? fareDetails?.baggageInformation?.cabinBaggage : already?.baggageInformation?.cabinBaggage}</th> */}
                     </tr>
                     <tr>
                       <td colspan="3" align="left">
@@ -413,8 +357,8 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                       <tr>
                         <th>{journyPoints ?journyPoints:"0"}  </th>
                         <th>Reissue</th>
-                        <th>{routeInfo[0]?.fromCityOrAirport?.city ? routeInfo[0]?.fromCityOrAirport?.city : viewListOfFlight[0]?.departureAirportInformation?.city}</th>
-                        <th>{routeInfo[0]?.toCityOrAirport?.city ? routeInfo[0]?.toCityOrAirport?.city : viewListOfFlight[viewListOfFlight.length - 1]?.arrivalAirportInformation?.city}</th>
+                        <th>{flightDetail[0]?.departureAirportInformation?.city}</th>
+                        <th>{flightDetail[0]?.arrivalAirportInformation?.city }</th>
                         <th></th>
                         <th>INR 0*</th>
                       </tr>
@@ -434,12 +378,13 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                         </thead>
                         <tbody>
                           <tr>
-                            <th>{currency} {dateChangeList && dateChangeList.amount}</th>
-                            <th>{currency} <span style={{ marginLeft: "10px" }}>  {dateChangeList.fareComponentsRelated.airlineRescheduleFeeTax}</span>
+                          <th>eitre98
+                            {/* <th>{currency} {dateChangeList && dateChangeList.amount}</th> */}
+                            {/* <th>{currency} <span style={{ marginLeft: "10px" }}>  {dateChangeList.fareComponentsRelated.airlineRescheduleFeeTax}</span> */}
 
                             </th>
-                            <th>{currency} <span style={{ marginLeft: "10px" }}> {dateChangeList.fareComponentsRelated.airlineRescheduleFee}</span>
-                            </th>
+                            {/* <th>{currency} <span style={{ marginLeft: "10px" }}> {dateChangeList.fareComponentsRelated.airlineRescheduleFee}</span>
+                            </th> */}
                             <th></th>
                             <th>{currency}  0</th>
                           </tr>
@@ -465,13 +410,13 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                         </thead>
                         <tbody>
                           <tr>
-                            <th>{currency} <span style={{ marginLeft: "10px" }}>{cancellationList && dateChangeList.amount}</span></th>
-                            <th>{currency}<span style={{ marginLeft: "10px" }}> {cancellationList.fareComponentsRelated.airlineCancellationFeeTax}</span>
+                            {/* <th>{currency} <span style={{ marginLeft: "10px" }}>{cancellationList && dateChangeList.amount}</span></th> */}
+                            {/* <th>{currency}<span style={{ marginLeft: "10px" }}> {cancellationList.fareComponentsRelated.airlineCancellationFeeTax}</span>
 
                             </th>
                             <th>{currency}<span style={{ marginLeft: "10px" }}>  {cancellationList.fareComponentsRelated.airlineCancellationFee}</span>
 
-                            </th>
+                            </th> */}
                             <th></th>
                             <th>{currency}  0</th>
                           </tr>
@@ -481,7 +426,7 @@ export default function FlightDetailModel({ show, handleClose, currency, ruleId,
                     <div>
                       <h5>PlicyInfo</h5>
                       <ul>
-                        <li>{cancellationList && dateChangeList.plicyInfo}</li>
+                        {/* <li>{cancellationList && dateChangeList.plicyInfo}</li> */}
                       </ul>
                     </div>
                   </div>

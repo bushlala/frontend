@@ -3,9 +3,9 @@ import { Box, Heading, Text, VStack } from '@chakra-ui/react'
 import { useSearchParams } from "react-router-dom";
 import { FlightSearchService } from '../../../Services/Agent/FlightSearch.Service';
 import { useNavigate } from "react-router-dom";
-import {Modal, Button} from 'react-bootstrap'
+import { Modal, Button } from 'react-bootstrap'
 import toast, { Toaster } from 'react-hot-toast';
- 
+
 
 
 
@@ -13,46 +13,48 @@ const PaymentSuccess = () => {
   const seachQuery = useSearchParams()[0]
   const referenceNum = seachQuery.get("reference");
   const navigate = useNavigate();
-  const [errormsg,setErrormsg]=useState(false);
+  const [errormsg, setErrormsg] = useState(false);
 
   let dataList = JSON.parse(localStorage.getItem("bookingRequest"));
   let status = localStorage.getItem("bookingStatus");
   let orderId = localStorage.getItem("orderId");
 
-  useEffect(() => {
- UpdateTransactions();
-  }, [])
-
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
+  useEffect(() => {
+    UpdateTransactions();
+  }, [])
+
+
   const ConfirmholdBooking = async () => {
-   const data ={
-      bookingId:dataList.bookingId,
-      amount:dataList.amount
+    localStorage.removeItem("bookingStatus");
+    const data = {
+      bookingId: dataList.bookingId,
+      amount: dataList.amount
     }
-  
+
     FlightSearchService.ConfirmholdBooking(data)
       .then(async (response) => {
         if (response.data.status) {
           const result = response.data.data;
           setTimeout(() => {
-            localStorage.removeItem("bookingStatus");
             navigate(`/booking-success/${dataList.bookingId}`);
-          }, 200);
+          }, 500);
         } else {
           let errorMsg = response.data?.message?.message
-          toast.error(errorMsg);
-        
-          setTimeout(()=>{
-            navigate(`/agent/flight/booking-hold/${dataList.bookingId}`)
-          },500)
+          // toast.error(errorMsg);
+          setErrormsg(errorMsg);
+          handleShow()
+          setTimeout(() => {
+            navigate(`/agent/flight`);
+          }, 2000)
         }
       })
       .catch((e) => {
         console.log(e);
-        alert("Something went wrong");
+        handleShow();
       });
   };
 
@@ -61,7 +63,7 @@ const PaymentSuccess = () => {
     let newobject = dataList.travellerInfo.map(item => {
       return item;
     });
-  
+
     for (let i = 0; i < newobject.length; i++) {
       // Remove 'amount' and 'desc' keys from ssrBaggageInfos array if it exists
       if (newobject[i].ssrBaggageInfos) {
@@ -70,7 +72,7 @@ const PaymentSuccess = () => {
           delete info.desc;
         });
       }
-  
+
       // Remove specified keys from ssrSeatInfos array if it exists
       if (newobject[i].ssrSeatInfos) {
         newobject[i].ssrSeatInfos.forEach(info => {
@@ -82,7 +84,7 @@ const PaymentSuccess = () => {
           delete info.isAisle;
         });
       }
-  
+
       // Remove 'amount' and 'desc' keys from ssrMealInfos array if it exists
       if (newobject[i].ssrMealInfos) {
         newobject[i].ssrMealInfos.forEach(info => {
@@ -91,8 +93,8 @@ const PaymentSuccess = () => {
         });
       }
     }
-  
- FlightSearchService.BookingConfirm(dataList)
+
+    FlightSearchService.BookingConfirm(dataList)
       .then(async (response) => {
         if (response.data.status) {
           const result = response.data.data;
@@ -109,64 +111,66 @@ const PaymentSuccess = () => {
         alert("Something went wrong");
       });
   };
-  
-  const UpdateTransactions =()=>{
+
+  const UpdateTransactions = () => {
     let values = {
-      bookingId:dataList.bookingId,
-      orderId:orderId, // Assuming order.id is available in the scope
+      bookingId: dataList.bookingId,
+      orderId: orderId, // Assuming order.id is available in the scope
       status: "1"
     }
     FlightSearchService.UpdateTransactions(values).then(async (response) => {
       if (response.status === 200) {
-  
+
         if (response.data.status) {
           console.log("response", response.data.data)
-          if(status ==="onhold"){
+          if (status === "onhold") {
             ConfirmholdBooking();
-          }else{
+          } else {
             BookingConfirm();
           }
-          
-           } else {
+        } else {
           let errorMessage = response.data.message ? response.data.message : "someting wrong"
           console.log(errorMessage)
           setErrormsg(true);
+          localStorage.removeItem("bookingStatus");
         }
       } else {
         let errorMessage = response.data.message;
         console.log(errorMessage)
       }
-  
+
     }).catch((error) => {
       let errorMessage = error.message
       console.log(errorMessage)
     });
   }
- 
+
   return (
     <div>
-    <Box>
-      <VStack h="100vh" justifyContent={"center"}>
+      <Box>
+        <VStack h="100vh" justifyContent={"center"}>
 
-        <Heading textTransform={"uppercase"}> Payment Successfull</Heading>
+          <Heading textTransform={"uppercase"}> Payment Successfull</Heading>
 
-        <Text>
-          Reference No.{referenceNum}
-        </Text>
+          <Text>
+            Reference No.{referenceNum}
+          </Text>
 
-      </VStack>
-    </Box>
-    <Modal size="sm" show={showModal} onHide={handleClose} centered>
+        </VStack>
+      </Box>
+      <Modal size="sm" show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
-            </Modal.Header>
-                <Modal.Body>
-                  <h3>Pandding </h3>
-                </Modal.Body>
-            <Modal.Footer>
-            </Modal.Footer>
-        </Modal>
+        </Modal.Header>
+        <Modal.Body>
+          <h3>{errormsg ? "unable to process your request due to" + { errormsg } + "error. for more information please contact. " : "Pending"} </h3>
+          <h5>Thank You !</h5>
+        </Modal.Body>
+        <Modal.Footer>
+        </Modal.Footer>
+      </Modal>
     </div>
     
+
   )
 }
 

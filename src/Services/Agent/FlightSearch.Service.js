@@ -45,7 +45,7 @@ export const FlightSearchService = {
       //     params: request
       // };
       return await apiConfig.request({
-        url: `flight/roundTrip`,
+        url: `flight/roundTripSearch`,
         method: "POST",
         data: request,
         headers: { 

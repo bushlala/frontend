@@ -35,8 +35,8 @@ const AgentFlightSearch = () => {
     const [returnDate, setReturnDate] = useState(new Date());
     const [loading, setLoading] = useState(false);
     const [citySwapArrowStatus, setCitySwapArrowStatus] = useState(true);
-    const [fromCityDestination, setFromCityDestination] = useState([{ value: "BLR - India", label: "BLR - Bengaluru", image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif" }]);
-    const [toCityDestination, setToCityDestination] = useState([{ value: "DEL - India", label: "DEL - Delhi", image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif" }]);
+    const [fromDestination, setFromDestination] = useState([{ value: "BLR - India", label: "BLR - Bengaluru", image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif" }]);
+    const [toDestination, setToDestination] = useState([{ value: "DEL - India", label: "DEL - Delhi", image: "https://www.worldometers.info//img/flags/small/tn_in-flag.gif" }]);
     const [journeyDateOne, setJourneyDateOne] = useState(new Date());
     const [travellersArr, setTravellersArr] = useState("1 Pax, Economy");
     const [pc, setPc] = useState("Economy");
@@ -172,7 +172,6 @@ const AgentFlightSearch = () => {
     }
 
     const handlePrefferedClass = (event, setFieldValue, values) => {
-
         let result = event.target.value;
         setPc(result);
         if (result === "Economy") {
@@ -189,7 +188,6 @@ const AgentFlightSearch = () => {
         }
         setFieldValue("travellersShow", values.travellersShow[0] + " Pax" + ", " + result.toUpperCase());
         setTravellersArr(values.travellersShow[0] + " Pax" + ", " + result);
-
     }
 
     const handleChangeTravellersValue = (event, setFieldValue, values, fieldNamme) => {
@@ -250,20 +248,52 @@ const AgentFlightSearch = () => {
         }
     }
 
-    const handleClickCitySwap = (fromCityDestination, toCityDestination, setFieldValue) => {
-        if (fromCityDestination && toCityDestination) {
+    const handleClickCitySwap = (fromDestination, toDestination, setFieldValue,values) => {
+        console.log(fromDestination, toDestination)
+        console.log(values.fromCityDestination);
+        console.log(values.fromDestinationFlight);
+        console.log(values.toCityDestination);
+        console.log(values.toDestinationFlight);
+      
+
+      if(fromDestination && toDestination){
             if (citySwapArrowStatus) {
                 setCitySwapArrowStatus(false);
+                setFromDestination(toDestination);
+                setToDestination(fromDestination);
+                setFieldValue('fromCityDestination', values.toCityDestination);
+                setFieldValue('fromDestinationFlight', values.toDestinationFlight);
+                setFieldValue("toCityDestination",values.fromCityDestination);
+                setFieldValue("toDestinationFlight", values.fromDestinationFlight);
+    
             } else {
+                setFromDestination(toDestination);
+                setToDestination(fromDestination);
                 setCitySwapArrowStatus(true);
+                setFieldValue('fromCityDestination', values.toCityDestination);
+                setFieldValue('fromDestinationFlight', values.toDestinationFlight);
+                setFieldValue("toCityDestination",values.fromCityDestination);
+                setFieldValue("toDestinationFlight", values.fromDestinationFlight);
             }
-            setFromCityDestination(toCityDestination);
-            setToCityDestination(fromCityDestination);
-            setFieldValue('fromCityDestination', toCityDestination.value);
-            setFieldValue('fromDestinationFlight', toCityDestination.label);
-            setFieldValue("toCityDestination", fromCityDestination.value);
-            setFieldValue("toCityDestinationFlight", fromCityDestination.label);
+        //     if (Array.isArray(fromDestination)) {
+        //         alert(toDestination)
+        //         setFromDestination(toDestination);
+        //         setToDestination(fromDestination);
+        //         setFieldValue('fromCityDestination', toDestination[0].value);
+        //         setFieldValue('fromDestinationFlight', toDestination[0].label);
+        //         setFieldValue("toCityDestination", fromDestination[0].value);
+        //         setFieldValue("toDestinationFlight", fromDestination[0].label);
+        //     } else
+        //     setFromDestination(toDestination);
+        //     setToDestination(fromDestination);
+        //     setFieldValue('fromCityDestination', toDestination.value);
+        //     setFieldValue('fromDestinationFlight', toDestination.label);
+        //     setFieldValue("toCityDestination", fromDestination.value);
+        //     setFieldValue("toDestinationFlight", fromDestination.label);
+    
         }
+       
+
     }
 
 
@@ -279,6 +309,7 @@ const AgentFlightSearch = () => {
                 if (response.status === 200) {
                     if (response.data.status === true) {
                         setOnwardTripList(response.data.data.Onward);
+                        console.log(response.data.data.Onward)
                         setReturnTripList(response.data.data.Return)
                         setIsOpen(false)
 
@@ -358,6 +389,7 @@ const AgentFlightSearch = () => {
     };
 
     const handleOnSubmit = async (values, { resetForm }) => {
+        console.log("values",values)
         setLoading(true);
         setTravellersModelShow(false);
         let startDate;
@@ -408,6 +440,8 @@ const AgentFlightSearch = () => {
                 setErrorMsg(errorMessage);
             });
         } else {
+            console.log(values);
+            alert(values.fromCityDestination)
             FlightSearchService.Search(values).then(async (response) => {
                 setLoading(true);
                 if (response.status === 200) {
@@ -463,12 +497,12 @@ const AgentFlightSearch = () => {
         console.log("selectedOptions", selectedOptions)
         if (fieldName === "fromCityDestination") {
             setFromCity(true);
-            setFromCityDestination(selectedOptions);
+            setFromDestination(selectedOptions);
             setFieldValue('fromCityDestination', selectedOptions.value);
             setFieldValue('fromDestinationFlight', selectedOptions.label);
         } else {
             setToCity(true);
-            setToCityDestination(selectedOptions);
+            setToDestination(selectedOptions);
             setFieldValue('toCityDestination', selectedOptions.value);
             setFieldValue('toDestinationFlight', selectedOptions.label);
         }
@@ -521,14 +555,14 @@ const AgentFlightSearch = () => {
                                                         <Grid item className='col'>
                                                             <div className='form-group field-label search-fild'>
                                                                 <InputLabel className=''>From</InputLabel>
-                                                                <div className={`swapbtn ${citySwapArrowStatus ? 'down' : ''}`} onClick={() => handleClickCitySwap(fromCityDestination, toCityDestination, setFieldValue)}>
+                                                                <div className={`swapbtn ${citySwapArrowStatus ? 'down' : ''}`} onClick={() => handleClickCitySwap(fromDestination, toDestination, setFieldValue,values)}>
                                                                     <i className="fa fa-exchange" aria-hidden="true"></i>
                                                                 </div>
 
                                                                 <Select
                                                                     className='form-control active'
                                                                     name='fromCityDestination'
-                                                                    value={fromCityDestination}
+                                                                    value={fromDestination}
                                                                     onChange={(e) => {
                                                                         handleChangeDestination(e, setFieldValue, "fromCityDestination");
                                                                     }}
@@ -538,6 +572,7 @@ const AgentFlightSearch = () => {
 
                                                                     formatOptionLabel={(country, { context }) => (
                                                                         <div className="searchdestinationboxclass list d-flex ">
+                                                                    
                                                                             <div className='search-text'>
                                                                                 <div>
                                                                                     {context === "menu" && country.value}
@@ -547,6 +582,7 @@ const AgentFlightSearch = () => {
                                                                             {context === "menu" && <div className='search-img'><img className="flagimage" src={country.image} /></div>}
                                                                         </div>
                                                                     )}
+                                                                   
                                                                     onInputChange={handleInputChange}
                                                                 />
                                                                 {
@@ -561,7 +597,7 @@ const AgentFlightSearch = () => {
                                                                 <Select
                                                                     className='form-control'
                                                                     name='toCityDestination'
-                                                                    value={toCityDestination}
+                                                                    value={toDestination}
                                                                     onChange={(e) => {
                                                                         handleChangeDestination(e, setFieldValue, "toCityDestination");
                                                                     }}
@@ -578,7 +614,8 @@ const AgentFlightSearch = () => {
                                                                             {context === "menu" && <div><img className="flagimage" src={country.image} /></div>}
                                                                         </div>
                                                                     )}
-                                                                    onInputChange={handleOptionTOValues}
+                                                                  
+                                                                   onInputChange={handleOptionTOValues}
                                                                 />
                                                                 {
                                                                     errors.toCityDestination && <Box component="span" sx={{ display: 'block', color: 'red' }}>{errors.toCityDestination}</Box>
@@ -814,15 +851,15 @@ const AgentFlightSearch = () => {
                         <div className='container'>
                             <div className='d-flex'>
                                 <div className='me-xl-5'>
-                                    <div className="headtext">{fromCity ? fromCityDestination.value : fromCityDestination[0].value} </div>
-                                    <div className="subtext">{fromCity ? fromCityDestination.label : fromCityDestination[0].label}</div>
+                                    <div className="headtext">{fromCity ? fromDestination.value : fromDestination[0].value} </div>
+                                    <div className="subtext">{fromCity ? fromDestination.label : fromDestination[0].label}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <i className="fa fa-arrow-right" aria-hidden="true"></i>
                                 </div>
                                 <div className='me-xl-5'>
-                                    <div className="headtext">{toCity ? toCityDestination.value : toCityDestination[0].value} </div>
-                                    <div className="subtext"> {toCity ? toCityDestination.label : toCityDestination[0].label}</div>
+                                    <div className="headtext">{toCity ? toDestination.value : toDestination[0].value} </div>
+                                    <div className="subtext"> {toCity ? toDestination.label : toDestination[0].label}</div>
                                 </div>
                                 <div className='me-xl-5'>
                                     <div className="headtext">Departure Date </div>

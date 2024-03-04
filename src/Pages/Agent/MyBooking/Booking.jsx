@@ -255,10 +255,11 @@ export default function Index() {
                                 <th>Total Fare</th>
                                 <th>Commission</th>
                                 <th>Amendment</th>
+                                <th></th>
                               </tr>
                             </thead>
                             <tbody>
-                              {currentPosts &&
+                              {currentPosts ?
                                 currentPosts.map((item, index) => (
                                   <tr key={index}>
                                     <td>{index + 1}</td>
@@ -350,23 +351,36 @@ export default function Index() {
                                     </td>
                                     <td>Data Not Available</td>
                                     <td>
-                                      <button
+                                    {item.bookingStatus == 1 ? <button
                                         className="btn btn-primary"
                                         onClick={handleChangeDate}
                                       >
                                         Date Change
-                                      </button>
+                                      </button>: <button
+                                        className="btn btn-primary"
+                                        onClick={handleChangeDate}
+                                        disabled
+                                      >
+                                        Date Change
+                                      </button>}
+                                     
                                     </td>
                                     <td>
-                                      <button
+                                    {item.bookingStatus == 1 ?<button
                                         className="btn btn-danger"
                                         onClick={handleCancellation}
                                       >
                                         Cancellation
-                                      </button>
+                                      </button>:<button
+                                        className="btn btn-danger"
+                                        onClick={handleCancellation} disabled
+                                      >
+                                        Cancellation
+                                      </button>}
+                                      
                                     </td>
                                   </tr>
-                                ))}
+                                )):<tr><td colSpan={12}>Data Not Available</td></tr>}
                             </tbody>
                           </table>
                         )}

@@ -201,7 +201,7 @@ const[ruleId,setRuleId]= useState("");
                                                                                 <span className="label label-warning ars-flightlabel ars-refunsleft ars-flightlabel-positionHandle" style={{ backgroundColor: "#0099e0", color: "#FFFFFF" }}>
                                                                                     {`${fdValue?.fareIdentifier} FARE`}
                                                                                 </span>
-                                                                                <span className="label--text w-100"> {fdValue.cabinClass},  &nbsp;
+                                                                                <span className="label--text w-100"> {fdValue.CabinClass},  &nbsp;
                                                                                     <span className="rdable">{fdValue.RefundType === 0 ? 'Non Refundable' : fdValue.RefundType === 1 ? 'Refundable' : 'Partial Refundable'}<span> &nbsp; <i className="fa fa-info-circle fa-info-circle5310" aria-hidden="true" style={{ fontSize: "18px,", cursor: "pointer" }}></i></span>
                                                                                         <div className="ymessage ymsgclass5310" >
                                                                                             {`${fdValue?.fareIdentifier} FARE`}

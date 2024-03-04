@@ -26,6 +26,33 @@ export default function SeatMapModel({ showModal, handleClose, proceedForSeat, b
             if (response.data.status) {
                 const result = response.data.data[flightMapIndex];
                 const sInfo = result.sInfo;
+                const mealBaggageInfo = passangerInfoModel[flightMapIndex].mealBaggageInfo;
+                console.log("mealBaggageInfo",mealBaggageInfo);
+                console.log("sInfo",sInfo);
+                let seatInfo = [];
+                // mealBaggageInfo.forEach((mealBaggageValue, mealBaggageKey) => {
+                //     let checkSeatBooked = sInfo.find(seat => {
+                //         return (seat.seatNo === mealBaggageValue.seat)
+                //     });
+
+                //     console.log("checkSeatBooked",checkSeatBooked);
+                // })
+
+                sInfo.forEach((seatValue, seatKey) => {
+                    const checkSeatBooked = mealBaggageInfo.find(mealBaggage => {
+                        return (seatValue.seatNo === mealBaggage.seat)
+                    });
+                    if(checkSeatBooked){
+                        seatValue.selectedSeat = true;
+                    }else{
+                        seatValue.selectedSeat = false;
+                    }
+                    seatInfo.push(seatValue);
+                    //sconsole.log("checkSeatBooked",checkSeatBooked);
+                })
+                console.log("seatInfo",seatInfo);
+
+
                 setPrices(result.prices)
                 setAllFlightSeats(response.data.data);
                 var customSeatMap = [];
@@ -67,7 +94,7 @@ export default function SeatMapModel({ showModal, handleClose, proceedForSeat, b
     const [seatTab, setSeatTab] = useState(false);
     const [selectedSeats, setSelectedSeats] = useState({});
     const [activePassangerKey, setActivePassangerKey] = useState(null);
-const[totalSelectSeat,setTotalSelectSeat]= useState();
+    const[totalSelectSeat,setTotalSelectSeat]= useState();
     const handleClickSetPassanger = (selectPassangerKey, seatInfo, seatStatus) => {
         setActivePassangerKey(selectPassangerKey);
         setSeatTab(true)
@@ -174,7 +201,8 @@ const[totalSelectSeat,setTotalSelectSeat]= useState();
                                                 columns.column && columns.column.length > 0 && columns.column.map((column, columnKey) => (
                                                     <div className='seat' key={columnKey} >
                                                         <input type="radio" className="" name="options-outlined" id={`${rowKey}-${columnKey}`} onClick={() => handleClickSetPassanger(selectPassanger, column, true)} />
-                                                        <label className={column.seatStatus === 'empty' ? 'empty' : column.seat.isBooked ? 'seat-booked' : selectSeat && selectSeat.seat.seatNo === column.seat.seatNo ? 'seat-available seat-selected' : 'seat-available'} htmlFor={`${rowKey}-${columnKey}`} style={column.seatStatus !== 'empty' ? { backgroundColor: column?.seat?.color } : {}}>
+
+                                                        <label className={column.seatStatus === 'empty' ? 'empty' : column.seat.isBooked ? 'seat-booked' : selectSeat && selectSeat.seat.seatNo === column.seat.seatNo ? 'seat-available seat-selected' : column.seat.selectedSeat ?  'seat-available seat-selected' : 'seat-available'} htmlFor={`${rowKey}-${columnKey}`} style={column.seatStatus !== 'empty' ? { backgroundColor: column?.seat?.color } : {}}>
                                                             {selectPassanger === activePassangerKey && selectSeat && selectSeat.seat.seatNo === column.seat.seatNo ? <i className="fa-solid fa-check me-2 text-white"></i> : ""}
                                                             {column?.seat?.seatNo}
                                                         </label>
